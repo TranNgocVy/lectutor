@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/auth/login.dart';
+import 'package:lectutor/teacher/teacherList.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.yellow,
       ),
-      home: LogIn(),
+      // home: LogIn(),
+      home: TeacherList(),
+
     );
   }
 }

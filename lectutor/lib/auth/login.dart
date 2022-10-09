@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../const/constVar.dart';
 
 class LogIn extends StatelessWidget {
   const LogIn({super.key});
@@ -26,9 +26,7 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
-  final double minspace = 6;
-  final double mediumspace = 18;
-  final double largespace = 24;
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +47,7 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                   ),
 
-                  SizedBox(height: this.largespace),
+                  SizedBox(height: ConstVar.largespace),
 
                   Text(
                     'Become fluent faster through one on one video chat lessons tailored to your goals.',
@@ -58,7 +56,7 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                   ),
 
-                  SizedBox(height: this.largespace),
+                  SizedBox(height: ConstVar.largespace),
 
                   Text(
                     'EMAIL',
@@ -68,7 +66,7 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                   ),
 
-                  SizedBox(height: this.minspace),
+                  SizedBox(height: ConstVar.minspace),
 
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
@@ -81,7 +79,7 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                   ),
 
-                  SizedBox(height: mediumspace),
+                  SizedBox(height: ConstVar.mediumspace),
 
                   Text(
                     'PASSWORD',
@@ -91,7 +89,7 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                   ),
 
-                  SizedBox(height: this.minspace),
+                  SizedBox(height: ConstVar.minspace),
 
                   TextFormField(
                     autofocus: false,
@@ -108,7 +106,7 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                   ),
 
-                  SizedBox(height: mediumspace),
+                  SizedBox(height: ConstVar.mediumspace),
 
                   Text(
                     'Forgot Password?',
@@ -117,7 +115,7 @@ class _LogInPageState extends State<LogInPage> {
                           //   ..onTap = () {}
                   ),
 
-                  SizedBox(height: minspace),
+                  SizedBox(height: ConstVar.minspace),
 
                   ElevatedButton(
                       onPressed: null,
@@ -135,7 +133,7 @@ class _LogInPageState extends State<LogInPage> {
                       ),
                   ),
 
-                  SizedBox(height: largespace),
+                  SizedBox(height: ConstVar.largespace),
 
                   Text(
                     'Or continue with?',
@@ -143,7 +141,7 @@ class _LogInPageState extends State<LogInPage> {
                     textAlign: TextAlign.center,
                   ),
 
-                  SizedBox(height: mediumspace),
+                  SizedBox(height: ConstVar.mediumspace),
 
                   Row(
                     mainAxisSize: MainAxisSize.max,
@@ -190,7 +188,7 @@ class _LogInPageState extends State<LogInPage> {
                     ],
                   ),
 
-                  SizedBox(height: mediumspace),
+                  SizedBox(height: ConstVar.mediumspace),
 
                   RichText(
                     textAlign: TextAlign.center,
