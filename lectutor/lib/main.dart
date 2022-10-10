@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lectutor/account/profile.dart';
+import 'package:lectutor/auth/forgetPassword.dart';
 import 'package:lectutor/auth/login.dart';
+import 'package:lectutor/auth/register.dart';
 import 'package:lectutor/teacher/teacherList.dart';
 
 void main() {
@@ -17,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.yellow,
       ),
       // home: LogIn(),
-      home: TeacherList(),
+      home: Profile(),
 
     );
   }

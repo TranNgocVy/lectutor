@@ -111,6 +111,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                   children: <Column>[
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text(
                           "Find a tutor",
@@ -200,7 +201,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                         //     ),
                         //   ],
                         // )
-                        Column(
+                        Row(
                           children: <Widget>[
                             getElevatedButton("All", selected: true),
                             getElevatedButton("English for kids"),
@@ -216,6 +217,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                             getElevatedButton("TOEIC"),
                           ],
                         ),
+
 
                         ElevatedButton(
                           onPressed: null,

@@ -40,6 +40,7 @@ class _LogInPageState extends State<LogInPage> {
                 children: <Widget>[
                   Text(
                     'Say hello to your English tutors',
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.blue,
                       fontSize: 30,
@@ -51,6 +52,7 @@ class _LogInPageState extends State<LogInPage> {
 
                   Text(
                     'Become fluent faster through one on one video chat lessons tailored to your goals.',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
                     ),
