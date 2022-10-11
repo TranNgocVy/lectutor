@@ -10,7 +10,7 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Sign up',
+        title: 'Profile',
         home: Scaffold(
           // appBar: AppBar(title: const Text(_title)),
           resizeToAvoidBottomInset: false,
@@ -46,55 +46,67 @@ class _ProfilePageState extends State<ProfilePage> {
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(right: 10),
-                      child: Icon(
-                        Icons.account_circle_outlined,
-                        size: 100,
-                      ),
+                    Stack(
+                      children: <Widget>[
+                        Icon(
+                          Icons.account_circle_outlined,
+                          size: 120,
+                        ),
+                        Positioned(
+                          right: 5.0,
+                          bottom: 0.0,
+                          child: Container(
+                            padding: EdgeInsets.all(0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Colors.blue,
+                            ),
+                            child: IconButton(
+                                onPressed: null,
+
+                                icon: Icon(
+                                  Icons.mode_edit_sharp,
+                                  color: Colors.white,
+                                )
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
 
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Text(
-                            "Name of lectutor",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          "Name of lettutor",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
-                          SizedBox(height: ConstVar.mediumspace),
-                          Text(
-                            "Acount ID: 111111111",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                            ),
+                        ),
+                        Text(
+                          "Acount ID: 111111111",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
                           ),
-                          // TextButton(
-                          //     onPressed: null,
-                          //     child: Text(
-                          //       "Others review you",
-                          //       style: TextStyle(
-                          //         color: Colors.blue,
-                          //         fontSize: 16
-                          //       ),
-                          //     )
-                          // ),
-                          SizedBox(height: ConstVar.minspace),
-                          Text(
-                            "Others review you",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 16
-                            ),
-                          )
-                        ],
-                      ),
+                        ),
+
+                        SizedBox(height: ConstVar.mediumspace),
+
+
+
+                        SizedBox(height: ConstVar.minspace),
+                        Text(
+                          "Others review you",
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 16
+                          ),
+                        )
+                      ],
                     ),
                   ],
                 ),
@@ -215,9 +227,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: TextFormField(
                         autofocus: false,
                         initialValue: '',
-                        obscureText: true,
                         decoration: InputDecoration(
-                          hintText: 'Nationality of lectutor',
+                          hintText: 'Nationality of lettutor',
                           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                           suffixIcon: IconButton(
@@ -296,7 +307,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: TextFormField(
                         autofocus: false,
                         initialValue: '',
-                        obscureText: true,
                         decoration: InputDecoration(
                           hintText: '2001-01-01',
                           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -338,7 +348,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: TextFormField(
                         autofocus: false,
                         initialValue: '',
-                        obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'C1',
                           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),

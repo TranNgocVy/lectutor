@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/account/profile.dart';
+import 'package:lectutor/auth/changePassWord.dart';
 import 'package:lectutor/auth/forgetPassword.dart';
 import 'package:lectutor/auth/login.dart';
 import 'package:lectutor/auth/register.dart';
+import 'package:lectutor/teacher/teacherDetail.dart';
 import 'package:lectutor/teacher/teacherList.dart';
 
 void main() {
@@ -15,12 +17,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lectutor',
+      title: 'Lettutor',
       theme: ThemeData(
         primarySwatch: Colors.yellow,
       ),
-      // home: LogIn(),
-      home: Profile(),
+      home: TeacherDetail(),
+      // home: Profile(),
 
     );
   }

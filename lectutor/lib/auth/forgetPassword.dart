@@ -9,7 +9,7 @@ class ForgetPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Sign up',
+        title: 'Forget password',
         home: Scaffold(
           // appBar: AppBar(title: const Text(_title)),
           resizeToAvoidBottomInset: false,

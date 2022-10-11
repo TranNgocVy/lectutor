@@ -293,7 +293,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                      "Name of lectutor",
+                                      "Name of lettutor",
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -312,7 +312,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                         Container(
                                           padding: EdgeInsets.all(5),
                                           child: Text(
-                                            "Nationality of lectutor",
+                                            "Nationality of lettutor",
                                             style: TextStyle(
                                                 fontSize: 12
                                             ),
@@ -360,7 +360,7 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                           Container(
                             child: Text(
-                              "Description about lectutor",
+                              "Description about lettutor",
                               style: TextStyle(
                                 fontSize: 12,
                               ),
