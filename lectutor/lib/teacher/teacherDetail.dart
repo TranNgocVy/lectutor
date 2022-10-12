@@ -372,7 +372,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               ElevatedButton(
                 onPressed: null,
                 child: const Text(
-                  'To day',
+                  'Today',
                   style: TextStyle(
                       color: Colors.white,
                       // fontWeight: FontWeight.bold,

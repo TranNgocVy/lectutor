@@ -4,8 +4,10 @@ import 'package:lectutor/auth/changePassWord.dart';
 import 'package:lectutor/auth/forgetPassword.dart';
 import 'package:lectutor/auth/login.dart';
 import 'package:lectutor/auth/register.dart';
+import 'package:lectutor/teacher/bookAClass.dart';
 import 'package:lectutor/teacher/teacherDetail.dart';
 import 'package:lectutor/teacher/teacherList.dart';
+import 'package:lectutor/teacher/viewReview.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.yellow,
       ),
-      home: TeacherDetail(),
+      home: BookAClass(),
       // home: Profile(),
 
     );
