@@ -540,9 +540,9 @@ class _CourseListPage extends State<CourseListPage> {
     return list;
   }
 
-  List<Widget> getCourseList(List<Course> teacherList){
+  List<Widget> getCourseList(List<Course> courseList){
     List<Widget> list = [];
-    for (var i = 0; i < teacherList.length; i++){
+    for (var i = 0; i < courseList.length; i++){
       list.add(SizedBox(height: 10,));
       list.add( Card(
         child: Container(
@@ -564,7 +564,7 @@ class _CourseListPage extends State<CourseListPage> {
                           children: <Widget>[
                             Expanded(
                               child: Text(
-                                teacherList[i].title,
+                                courseList[i].title,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -581,7 +581,7 @@ class _CourseListPage extends State<CourseListPage> {
                           children: <Widget>[
                             Expanded(
                               child: Text(
-                                teacherList[i].description,
+                                courseList[i].description,
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey,
@@ -597,7 +597,7 @@ class _CourseListPage extends State<CourseListPage> {
                           children: <Widget>[
                             Expanded(
                               child: Text(
-                                teacherList[i].level + " -  ${teacherList[i].topicList.length} Lessons",
+                                courseList[i].level + " -  ${courseList[i].topicList.length} Lessons",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.black87,
