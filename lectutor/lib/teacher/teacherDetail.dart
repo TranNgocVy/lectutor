@@ -493,51 +493,6 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                       getTableRow("05:30 - 05:55", ["", "","", "", "Book","", ""]),
 
 
-                      // TableRow(
-                      //   children: <Widget>[
-                      //     getBookCell("00:00 - 00:25"),
-                      //     getBookCell("Booked"),
-                      //     getBookCell(""),
-                      //     getBookCell(""),
-                      //     getBookCell(""),
-                      //     getBookCell(""),
-                      //     getBookCell(""),
-                      //     getBookCell(""),
-                      //   ],
-                      // ),
-
-                      // TableRow(
-                      //   decoration: const BoxDecoration(
-                      //     color: Colors.grey,
-                      //   ),
-                      //   children: <Widget>[
-                      //     Container(
-                      //       height: 64,
-                      //       width: 128,
-                      //       color: Colors.purple,
-                      //     ),
-                      //     Container(
-                      //       height: 32,
-                      //       color: Colors.yellow,
-                      //     ),
-                      //     Center(
-                      //       child: Container(
-                      //         height: 32,
-                      //         width: 32,
-                      //         color: Colors.orange,
-                      //       ),
-                      //     ),
-                      //     Container(
-                      //       height: 64,
-                      //       width: 128,
-                      //       color: Colors.purple,
-                      //     ),
-                      //     Container(
-                      //       height: 32,
-                      //       color: Colors.yellow,
-                      //     ),
-                      //   ],
-                      // ),
                     ],
                   ),
                   ),

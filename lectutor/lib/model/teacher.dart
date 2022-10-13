@@ -1,0 +1,43 @@
+import 'package:lectutor/model/course.dart';
+import 'package:lectutor/model/schedule.dart';
+
+class Teacher{
+  int _id;
+  String _name;
+  String _natioonality;
+  List<Course> _courseList;
+  List<Schedule> _scheduleList;
+
+  Teacher(this._id, this._name, this._natioonality, this._courseList,
+      this._scheduleList);
+
+  List<Schedule> get scheduleList => _scheduleList;
+
+  set scheduleList(List<Schedule> value) {
+    _scheduleList = value;
+  }
+
+  List<Course> get courseList => _courseList;
+
+  set courseList(List<Course> value) {
+    _courseList = value;
+  }
+
+  String get natioonality => _natioonality;
+
+  set natioonality(String value) {
+    _natioonality = value;
+  }
+
+  String get name => _name;
+
+  set name(String value) {
+    _name = value;
+  }
+
+  int get id => _id;
+
+  set id(int value) {
+    _id = value;
+  }
+}
