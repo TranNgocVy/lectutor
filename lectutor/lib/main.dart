@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lectutor/account/profile.dart';
-import 'package:lectutor/auth/changePassWord.dart';
-import 'package:lectutor/auth/forgetPassword.dart';
-import 'package:lectutor/auth/login.dart';
-import 'package:lectutor/auth/register.dart';
-import 'package:lectutor/course/courseDetail.dart';
-import 'package:lectutor/course/courseList.dart';
-import 'package:lectutor/schedule/scheduleHistory.dart';
-import 'package:lectutor/teacher/bookAClass.dart';
-import 'package:lectutor/teacher/teacherDetail.dart';
-import 'package:lectutor/teacher/teacherList.dart';
-import 'package:lectutor/teacher/viewReview.dart';
+// import 'package:flutter_svg/svg.dart';
+import 'package:lectutor/schedule/scheduleList.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,75 +13,84 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lettutor',
-      theme: ThemeData(
-        primarySwatch: Colors.yellow,
-      ),
-      home: ScheduleHistory(),
+        title: 'Lettutor',
+        theme: ThemeData(
+          // colorSchemeSeed: const Color(0xff6750a4),
+          // useMaterial3: true,
+          // primarySwatch: Colors.grey,
+        ),
+        home: Scaffold(
+          appBar: AppBar(
+            shadowColor: Colors.grey,
+            elevation: 3,
+            title: Image(
+              image: Svg('asset/icon/lettutor.svg'),
+            ),
+            actions: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: Image(
+                    image: Svg('asset/icon/england.svg'),
+                  ),
+
+                  // icon: Icon(Icons.add),
+                  style: IconButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50.0),
+                          side: BorderSide(
+                            width: 10,
+                            color: Colors.grey.shade300,
+                          )
+                      )
+                  ),
+
+                  iconSize: 30,
+                  onPressed: () {},
+                ),
+              ),
+
+              SizedBox(width: 10,),
+
+              Container(
+                // padding: (EdgeInsets.all(10)),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                    color: Colors.grey.shade200
+                ),
+                child: IconButton(
+                  icon: Icon(Icons.menu_rounded, color: Colors.grey.shade400,),
+                  // style: IconButton.styleFrom(
+                  //   backgroundColor: Colors.black87,
+                  //   foregroundColor: Colors.black87,
+                  // ),
+                  onPressed: () {},
+                  iconSize: 40,
+                ),
+              ),
+
+              SizedBox(width: 10,),
+
+
+
+            ],
+            backgroundColor: Colors.white,
+
+            // flexibleSpace: SizedBox(height: 20,),
+          ),
+          resizeToAvoidBottomInset: false,
+          body: ScheduleListPage(),
+
+        )
       // home: Profile(),
 
     );
   }
+
+
+// AppBar appBar =
 }
-//
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-//
-// void main() => runApp(MyApp());
-//
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) => MaterialApp(
-//     title: 'Show/Hide password TextField in Flutter',
-//     theme: ThemeData(
-//       primarySwatch: Colors.blue,
-//     ),
-//     home: MyHomePage(),
-//   );
-// }
-//
-// class MyHomePage extends StatefulWidget {
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
-//
-// class _MyHomePageState extends State<MyHomePage> {
-//   bool _isVisible = false;
-//
-//   void updateStatus() {
-//     setState(() {
-//       _isVisible = !_isVisible;
-//     });
-//   }
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Show/Hide password TextField"),
-//       ),
-//       body: Center(
-//         child: Form(
-//           child: TextFormField(
-//             keyboardType: TextInputType.text,
-//             // controller: textEditingController,
-//             obscureText: _isVisible ? false : true,
-//             inputFormatters: [
-//               FilteringTextInputFormatter.deny(RegExp(r"\s\b|\b\s"))
-//             ],
-//
-//             decoration: InputDecoration(
-//               hintText: "Enter password",
-//               suffixIcon: IconButton(
-//                 onPressed: () => updateStatus(),
-//                 icon:
-//                 Icon(_isVisible ? Icons.visibility : Icons.visibility_off),
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+
+

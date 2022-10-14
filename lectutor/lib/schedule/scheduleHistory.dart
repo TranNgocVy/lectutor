@@ -15,7 +15,7 @@ class ScheduleHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Hi',
+        title: 'Schedule History',
         home: Scaffold(
           // appBar: AppBar(title: const Text(_title)),
           resizeToAvoidBottomInset: false,
