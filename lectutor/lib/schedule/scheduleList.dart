@@ -5,7 +5,7 @@ import 'package:lectutor/model/schedule.dart';
 import '../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
-import '../const/header.dart';
+import '../const/page.dart';
 import '../model/teacher.dart';
 
 
@@ -15,7 +15,7 @@ class ScheduleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, ScheduleListPage());
+    return TemplatePage.getHeader(context, ScheduleListPage());
 
   }
 }

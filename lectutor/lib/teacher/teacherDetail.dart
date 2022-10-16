@@ -2,7 +2,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
-import '../const/header.dart';
+import '../const/page.dart';
 import '../model/course.dart';
 
 class TeacherDetail extends StatelessWidget {
@@ -12,7 +12,7 @@ class TeacherDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, TeacherDetailPage());
+    return TemplatePage.getHeader(context, TeacherDetailPage());
 
   }
 }

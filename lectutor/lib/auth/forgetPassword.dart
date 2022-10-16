@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
-import '../const/header.dart';
+import '../const/page.dart';
 
 class ForgetPassword extends StatelessWidget {
   const ForgetPassword({super.key});
@@ -9,7 +9,7 @@ class ForgetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, ForgetPasswordPage());
+    return TemplatePage.getHeader(context, ForgetPasswordPage());
 
   }
 }

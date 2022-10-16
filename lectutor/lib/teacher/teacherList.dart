@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lectutor/const/header.dart';
+import 'package:lectutor/const/page.dart';
 import 'package:lectutor/model/teacher.dart';
 import '../const/constVar.dart';
 
@@ -10,7 +10,7 @@ class TeacherList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, TeacherListPage());
+    return TemplatePage.getHeader(context, TeacherListPage());
 
   }
 }

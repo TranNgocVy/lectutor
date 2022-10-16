@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
-import '../const/header.dart';
+import '../const/page.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
@@ -18,7 +18,7 @@ class Profile extends StatelessWidget {
     //       body: ProfilePage(),
     //     )
     // );
-    return Header.getHeader(context, ProfilePage());
+    return TemplatePage.getHeader(context, ProfilePage());
 
   }
 }

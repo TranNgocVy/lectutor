@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
-import '../const/header.dart';
+import '../const/page.dart';
 
 class Register extends StatelessWidget {
   const Register({super.key});
@@ -10,7 +10,7 @@ class Register extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, RegisterPage());
+    return TemplatePage.getHeader(context, RegisterPage());
 
   }
 }

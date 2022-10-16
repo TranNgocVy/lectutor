@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
-import '../const/header.dart';
+import '../const/page.dart';
 
 class ChangePassword extends StatelessWidget {
     const ChangePassword({super.key});
@@ -9,7 +9,7 @@ class ChangePassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, ChangePasswordPage());
+    return TemplatePage.getHeader(context, ChangePasswordPage());
 
   }
 }

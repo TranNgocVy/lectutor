@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:lectutor/const/header.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:lectutor/const/page.dart';
 import '../const/constVar.dart';
 
 class LogIn extends StatelessWidget {
@@ -8,7 +9,8 @@ class LogIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, LogInPage());
+    return TemplatePage.getHeader(context, LogInPage(), isLogin: false);
+
   }
 
 }
@@ -20,8 +22,6 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -103,13 +103,17 @@ class _LogInPageState extends State<LogInPage> {
               ),
 
               SizedBox(height: ConstVar.mediumspace),
-
-              Text(
-                'Forgot Password?',
-                style: TextStyle(color: Colors.blueAccent, fontSize: 14),
-                // recognizer: TapGestureRecognizer()
-                //   ..onTap = () {}
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, "/forgetpassword");
+                },
+                child: Text(
+                  'Forgot Password?',
+                  style: TextStyle(color: Colors.blueAccent, fontSize: 14),
+                ),
               ),
+
+
 
               SizedBox(height: ConstVar.minspace),
 
@@ -146,41 +150,39 @@ class _LogInPageState extends State<LogInPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Ink(
-                    decoration: const ShapeDecoration(
+                    decoration: ShapeDecoration(
                       color: Colors.white,
                       shape: CircleBorder(),
                     ),
-                    child: IconButton(
-                      icon: const Icon(Icons.facebook_sharp),
-                      color: Colors.blue,
-                      iconSize: 50,
-                      onPressed: () {},
-
+                    child: Image(
+                      image: Svg('asset/icon/facebook.svg'),
+                      width: 50,
                     ),
                   ),
+                  SizedBox(width: ConstVar.mediumspace,),
                   Ink(
-                    decoration: const ShapeDecoration(
+                    decoration: ShapeDecoration(
                       color: Colors.white,
                       shape: CircleBorder(),
                     ),
-                    child: IconButton(
-                      icon: const Icon(Icons.facebook_outlined),
-                      // color: Colors.white,
-                      iconSize: 50,
-                      onPressed: () {},
+                    child: Image(
+                      image: Svg('asset/icon/google.svg'),
+                      width: 50,
                     ),
                   ),
+                  SizedBox(width: ConstVar.mediumspace,),
                   Ink(
-                    decoration: const ShapeDecoration(
+                    decoration: ShapeDecoration(
                       color: Colors.white,
-                      shape: CircleBorder(),
+                      shape: CircleBorder(side:BorderSide(color: Colors.blueAccent, width: 2)),
                     ),
-                    child: IconButton(
-                      icon: const Icon(Icons.phone_android),
-                      // color: Colors.white,
-                      iconSize: 50,
-                      onPressed: () {},
-                    ),
+                    child: Container(
+                      padding: EdgeInsets.all(3),
+                      child: Icon(
+                        Icons.phone_android,
+                        size: 40,
+                      ),
+                    )
                   ),
 
                 ],

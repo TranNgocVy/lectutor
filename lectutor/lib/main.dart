@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/account/profile.dart';
 import 'package:lectutor/auth/changePassWord.dart';
+import 'package:lectutor/auth/forgetPassword.dart';
 import 'package:lectutor/auth/login.dart';
 import 'package:lectutor/auth/register.dart';
 import 'package:lectutor/const/constVar.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lectutor/teacher/bookAClass.dart';
 import 'package:lectutor/teacher/teacherDetail.dart';
 import 'package:lectutor/teacher/teacherList.dart';
+import 'package:lectutor/video/video.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,13 +30,14 @@ class MyApp extends StatelessWidget {
         title: 'Lettutor',
         theme: ThemeData(
         ),
-        initialRoute: '/',
+        initialRoute: '/video',
         routes: {
           '/': (context) => LogIn(),
           '/register': (context) => Register(),
-          '/menu': (context) =>Menu(),
           '/account': (context) => Profile(),
+          '/forgetpassword': (context) => ForgetPassword(),
           "/account/changepassword": (context) => ChangePassword(),
+          '/menu': (context) =>Menu(),
           '/tutor': (context) => TeacherList(),
           '/tutor/detail': (context) => TeacherDetail(),
           '/tutor/detail/bookclass': (context) => BookAClass(),
@@ -42,6 +45,7 @@ class MyApp extends StatelessWidget {
           '/schedule/history': (context) => ScheduleHistory(),
           '/course': (context) => CourseList(),
           '/course/detail': (context) => CourseDetail(),
+          '/video':(context) => Video(),
           // '/video': (context) => TeacherListPage(),
 
         },

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/topic.dart';
 import '../const/constVar.dart';
-import '../const/header.dart';
+import '../const/page.dart';
 
 
 class CourseDetail extends StatelessWidget {
@@ -12,7 +12,7 @@ class CourseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, CourseDetailPage());
+    return TemplatePage.getHeader(context, CourseDetailPage());
 
   }
 }

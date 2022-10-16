@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:lectutor/const/header.dart';
+import 'package:lectutor/const/page.dart';
 import '../const/constVar.dart';
 
 class BookAClass extends StatelessWidget {
@@ -10,7 +10,7 @@ class BookAClass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, BookAClassPage());
+    return TemplatePage.getHeader(context, BookAClassPage());
   }
 }
 

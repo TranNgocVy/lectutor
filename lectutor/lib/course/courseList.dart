@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/topic.dart';
 import '../const/constVar.dart';
-import '../const/header.dart';
+import '../const/page.dart';
 
 
 class CourseList extends StatelessWidget {
@@ -11,7 +11,7 @@ class CourseList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, CourseListPage());
+    return TemplatePage.getHeader(context, CourseListPage());
   }
 }
 

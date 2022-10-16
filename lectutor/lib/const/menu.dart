@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lectutor/const/header.dart';
+import 'package:lectutor/const/page.dart';
 import '../const/constVar.dart';
 
 class Menu extends StatelessWidget {
@@ -7,7 +7,7 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Header.getHeader(context, MenuPage(), isMenu: true);
+    return TemplatePage.getHeader(context, MenuPage(), isMenu: true);
   }
 
 }
