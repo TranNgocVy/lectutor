@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
+import '../const/header.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
@@ -9,14 +10,16 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Profile',
-        home: Scaffold(
-          // appBar: AppBar(title: const Text(_title)),
-          resizeToAvoidBottomInset: false,
-          body: ProfilePage(),
-        )
-    );
+    // return MaterialApp(
+    //     title: 'Profile',
+    //     home: Scaffold(
+    //       // appBar: AppBar(title: const Text(_title)),
+    //       resizeToAvoidBottomInset: false,
+    //       body: ProfilePage(),
+    //     )
+    // );
+    return Header.getHeader(context, ProfilePage());
+
   }
 }
 

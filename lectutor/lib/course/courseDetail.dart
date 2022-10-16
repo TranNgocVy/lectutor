@@ -1,7 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/topic.dart';
 import '../const/constVar.dart';
+import '../const/header.dart';
 
 
 class CourseDetail extends StatelessWidget {
@@ -10,13 +12,8 @@ class CourseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Course Detail',
-        home: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: CourseDetailPage(),
-        )
-    );
+    return Header.getHeader(context, CourseDetailPage());
+
   }
 }
 
@@ -340,6 +337,53 @@ class _CourseDetailPage extends State<CourseDetailPage> {
               ],
             ),
 
+            SizedBox(height: ConstVar.mediumspace,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.black12, width: 1),
+                      )
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        "Suggested Tutors",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: ConstVar.minspace,),
+
+                RichText(
+                  text: TextSpan(
+                      text: "Keegan ",
+                      style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                      children: <TextSpan>[
+                        TextSpan(text: 'More info',
+                            style: TextStyle(color: Colors.blue, fontSize: 18),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.pushNamed(context, '/tutor/detail');
+
+                              }
+                        )
+                      ]
+                  ),
+                  // loginButton,
+                  // forgotLabel
+                )
+              ],
+            ),
             SizedBox(height: ConstVar.mediumspace,),
 
 

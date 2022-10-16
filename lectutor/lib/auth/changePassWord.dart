@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
+import '../const/header.dart';
 
 class ChangePassword extends StatelessWidget {
-  const ChangePassword({super.key});
+    const ChangePassword({super.key});
 
 
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Change password',
-        home: Scaffold(
-          // appBar: AppBar(title: const Text(_title)),
-          resizeToAvoidBottomInset: false,
-          body: ChangePasswordPage(),
-        )
-    );
+    return Header.getHeader(context, ChangePasswordPage());
+
   }
 }
 

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:lectutor/const/header.dart';
 import '../const/constVar.dart';
 
 class BookAClass extends StatelessWidget {
@@ -9,14 +10,7 @@ class BookAClass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Book a class',
-        home: Scaffold(
-          // appBar: AppBar(title: const Text(_title)),
-          resizeToAvoidBottomInset: false,
-          body: BookAClassPage(),
-        )
-    );
+    return Header.getHeader(context, BookAClassPage());
   }
 }
 
@@ -255,6 +249,8 @@ class _BookAClassPage extends State<BookAClassPage> {
                                   child: TextFormField(
                                     keyboardType: TextInputType.multiline,
                                     autofocus: false,
+                                    minLines: 4,
+                                    maxLines: null,
                                     initialValue: '',
                                     decoration: InputDecoration(
                                       hintText: '',
@@ -276,7 +272,9 @@ class _BookAClassPage extends State<BookAClassPage> {
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       ElevatedButton(
-                        onPressed: null,
+                        onPressed: (){
+                      Navigator.pop(context);
+                      },
                         child: const Text(
                           'Cancel',
                           style: TextStyle(
@@ -311,7 +309,9 @@ class _BookAClassPage extends State<BookAClassPage> {
                             fontSize: 20,
                           ),
                         ),
-                        onPressed: null,
+                        onPressed: (){
+                          Navigator.pop(context);
+                        },
                       ),
                     ],
                   ),

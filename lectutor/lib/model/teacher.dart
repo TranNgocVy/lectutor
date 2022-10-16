@@ -5,11 +5,19 @@ class Teacher{
   int _id;
   String _name;
   String _natioonality;
+  String _description;
   List<Course> _courseList;
   List<Schedule> _scheduleList;
 
-  Teacher(this._id, this._name, this._natioonality, this._courseList,
+  Teacher(this._id, this._name, this._natioonality, this._description, this._courseList,
       this._scheduleList);
+
+
+  String get description => _description;
+
+  set description(String value) {
+    _description = value;
+  }
 
   List<Schedule> get scheduleList => _scheduleList;
 

@@ -1,6 +1,9 @@
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
+import '../const/header.dart';
+import '../model/course.dart';
 
 class TeacherDetail extends StatelessWidget {
   const TeacherDetail({super.key});
@@ -9,14 +12,8 @@ class TeacherDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Teacher detail',
-        home: Scaffold(
-          // appBar: AppBar(title: const Text(_title)),
-          resizeToAvoidBottomInset: false,
-          body: TeacherDetailPage(),
-        )
-    );
+    return Header.getHeader(context, TeacherDetailPage());
+
   }
 }
 
@@ -267,50 +264,10 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             ),
           ),
 
-          Row(
-            children: <Widget>[
-              SizedBox(width: 10),
-              RichText(
-                text: TextSpan(
-                    text: 'Basic Conversation Topics: ',
-                    style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-                    children: <TextSpan>[
-                      TextSpan(text: 'Link',
-                        style: TextStyle(color: Colors.blue, fontSize: 18),
-                        // recognizer: TapGestureRecognizer()
-                        //   ..onTap = () {}
-                      )
-                    ]
-                ),
-                // loginButton,
-                // forgotLabel
-              )
-
-            ],
+          Column(
+            children: getSuggestedCourse([Course("Basic conversation topics", "", "", []), Course("Life in the internet age", "", "", [])]),
           ),
 
-          SizedBox(height: ConstVar.minspace),
-          Row(
-            children: <Widget>[
-              SizedBox(width: 10),
-              RichText(
-                text: TextSpan(
-                    text: 'Life in the Internet Age: ',
-                    style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-                    children: <TextSpan>[
-                      TextSpan(text: 'Link',
-                        style: TextStyle(color: Colors.blue, fontSize: 18),
-                        // recognizer: TapGestureRecognizer()
-                        //   ..onTap = () {}
-                      )
-                    ]
-                ),
-                // loginButton,
-                // forgotLabel
-              )
-
-            ],
-          ),
 
           SizedBox(height: ConstVar.largespace),
 
@@ -600,9 +557,9 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
            child: Container(
              padding: EdgeInsets.all(5),
              child: ElevatedButton(
-               onPressed: null,
-
-
+               onPressed: (){
+                 Navigator.pushNamed(context, '/tutor/detail/bookclass');
+               },
                child: const Text(
                  'Book',
                  style: TextStyle(
@@ -686,6 +643,40 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     return TableRow(
       children: row,
     );
+  }
+
+  List<Widget> getSuggestedCourse(List<Course> courseLisst){
+    List<Widget> list = [];
+
+    for (var i = 0; i < courseLisst.length; i++){
+      list.add(Row(
+        children: <Widget>[
+          SizedBox(width: 10),
+          RichText(
+            text: TextSpan(
+                text: courseLisst[i].title + ": ",
+                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+                children: <TextSpan>[
+                  TextSpan(text: 'Link',
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                    Navigator.pushNamed(context, '/course/detail');
+
+                      }
+                  )
+                ]
+            ),
+            // loginButton,
+            // forgotLabel
+          )
+
+        ],
+      ),);
+      list.add(SizedBox(height: ConstVar.minspace),);
+    }
+    return list;
+
   }
 
 }

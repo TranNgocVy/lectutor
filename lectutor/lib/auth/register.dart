@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
+import '../const/header.dart';
 
 class Register extends StatelessWidget {
   const Register({super.key});
@@ -8,14 +10,8 @@ class Register extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Sign up',
-        home: Scaffold(
-          // appBar: AppBar(title: const Text(_title)),
-          resizeToAvoidBottomInset: false,
-          body: RegisterPage(),
-        )
-    );
+    return Header.getHeader(context, RegisterPage());
+
   }
 }
 
@@ -190,9 +186,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       style: TextStyle(color: Colors.black, fontSize: 14),
                       children: <TextSpan>[
                         TextSpan(text: ' Log in',
-                          style: TextStyle(color: Colors.blueAccent, fontSize: 14),
-                          // recognizer: TapGestureRecognizer()
-                          //   ..onTap = () {}
+                          style: TextStyle(color: Colors.blueAccent, fontSize: 16),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+
+                          Navigator.pop(context);
+                            }
                         )
                       ]
                   ),

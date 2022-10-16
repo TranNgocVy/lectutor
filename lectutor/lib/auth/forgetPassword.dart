@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
+import '../const/header.dart';
 
 class ForgetPassword extends StatelessWidget {
   const ForgetPassword({super.key});
@@ -8,14 +9,8 @@ class ForgetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Forget password',
-        home: Scaffold(
-          // appBar: AppBar(title: const Text(_title)),
-          resizeToAvoidBottomInset: false,
-          body: ForgetPasswordPage(),
-        )
-    );
+    return Header.getHeader(context, ForgetPasswordPage());
+
   }
 }
 

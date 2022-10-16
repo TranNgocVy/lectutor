@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/topic.dart';
 import '../const/constVar.dart';
+import '../const/header.dart';
 
 
 class CourseList extends StatelessWidget {
@@ -10,13 +11,7 @@ class CourseList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Course List',
-        home: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: CourseListPage(),
-        )
-    );
+    return Header.getHeader(context, CourseListPage());
   }
 }
 
@@ -545,74 +540,79 @@ class _CourseListPage extends State<CourseListPage> {
     for (var i = 0; i < courseList.length; i++){
       list.add(SizedBox(height: 10,));
       list.add( Card(
-        child: Container(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            children: <Widget>[
-              Container(
-                width: 300,
-                height: 200,
-                color: Colors.blue,
-              ),
+        child: GestureDetector(
+          onTap: (){
+            Navigator.pushNamed(context, '/course/detail');
+          },
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  width: 300,
+                  height: 200,
+                  color: Colors.blue,
+                ),
 
-              Container(
-                  padding: EdgeInsets.all(20),
-                  child: Expanded(
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                courseList[i].title,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                Container(
+                    padding: EdgeInsets.all(20),
+                    child: Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  courseList[i].title,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
 
 
-                        SizedBox(height: ConstVar.minspace,),
+                          SizedBox(height: ConstVar.minspace,),
 
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                courseList[i].description,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  courseList[i].description,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
 
-                        SizedBox(height: ConstVar.mediumspace,),
+                          SizedBox(height: ConstVar.mediumspace,),
 
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                courseList[i].level + " -  ${courseList[i].topicList.length} Lessons",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  courseList[i].level + " -  ${courseList[i].topicList.length} Lessons",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
                                 ),
                               ),
-                            ),
 
-                          ],
-                        ),
+                            ],
+                          ),
 
-                      ],
-                    ),
-                  )
-              )
-            ],
+                        ],
+                      ),
+                    )
+                )
+              ],
+            ),
           ),
         ),
         elevation: 5,

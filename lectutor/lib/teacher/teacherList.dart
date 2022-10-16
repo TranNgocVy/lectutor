@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lectutor/const/header.dart';
+import 'package:lectutor/model/teacher.dart';
 import '../const/constVar.dart';
 
 
@@ -8,13 +10,8 @@ class TeacherList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Teacher List',
-        home: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: TeacherListPage(),
-        )
-    );
+    return Header.getHeader(context, TeacherListPage());
+
   }
 }
 
@@ -267,151 +264,8 @@ class _TeacherListPage extends State<TeacherListPage> {
                 ),
 
                 Column(
-                  children: <Card>[
-                    Card(
-                      borderOnForeground: true,
-                      margin: EdgeInsets.all(10),
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                child: Icon(
-                                  Icons.account_circle_outlined,
-                                  size: 60,
-                                ),
-                              ),
-
-                              Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      "Name of lettutor",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-
-                                    Row(
-                                      children: <Widget>[
-                                        Container(
-                                          padding: EdgeInsets.only(top: 5),
-                                          child: Icon(
-                                            Icons.south_america_sharp,
-                                            size: 20,
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.all(5),
-                                          child: Text(
-                                            "Nationality of lettutor",
-                                            style: TextStyle(
-                                                fontSize: 12
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Icon>[
-                                        Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                        Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                        Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                        Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                        Icon(Icons.star, color: Colors.yellow, size: 15,),
-
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-
-                              Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Icon>[
-                                      Icon(
-                                        Icons.favorite_border,
-                                        color: Colors.blue,
-                                        size: 30,
-                                      ),
-                                    ],
-                                  )
-                              ),
-                            ],
-                          ),
-
-                          Row(
-                            children: <Widget>[
-                              getElevatedButton("English for Business", selected: true),
-                              getElevatedButton("TEIC", selected: true),
-                            ],
-                          ),
-
-                          Container(
-                            child: Text(
-                              "Description about lettutor",
-                              style: TextStyle(
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.max,
-
-                            children: <Widget>[
-                              ElevatedButton.icon(
-
-                                // style: const ButtonStyle(
-                                //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                                //
-                                // ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(32.0),
-                                    side: BorderSide(
-                                        width: 1,
-                                        color: Colors.blue
-                                    ),
-                                  ),
-                                ),
-
-                                icon: Icon(Icons.calendar_month_sharp, size: 20,color: Colors.blue,),
-                                label: Text(
-                                  'Book',
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                onPressed: null,
-
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                      ),
-
-                    )
-                  ],
+                  children: getTutorList([Teacher(1, "Keengan", "France", "Description about him",[], []), Teacher(1, "Keengan", "France", "Description about him", [], [])])
                 )
-
-
-
-
               ],
             )
           ),
@@ -449,6 +303,162 @@ class _TeacherListPage extends State<TeacherListPage> {
     );
 
     return btn;
+  }
+  List<Widget> getTutorList(List<Teacher> teachetList){
+    List<Widget> list = [];
+
+    for(var i = 0; i < teachetList.length; i++){
+      list.add(
+          Card(
+            borderOnForeground: true,
+            elevation: 3,
+            shadowColor: Colors.grey.shade100,
+            margin: EdgeInsets.all(10),
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context, '/tutor/detail');
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          child: Icon(
+                            Icons.account_circle_outlined,
+                            size: 60,
+                          ),
+                        ),
+
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                teachetList[i].name,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              Row(
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.only(top: 5),
+                                    child: Icon(
+                                      Icons.south_america_sharp,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.all(5),
+                                    child: Text(
+                                      teachetList[i].natioonality,
+                                      style: TextStyle(
+                                          fontSize: 12
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Icon>[
+                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
+                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
+                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
+                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
+                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
+
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+
+                        Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Icon>[
+                                Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.blue,
+                                  size: 30,
+                                ),
+                              ],
+                            )
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Row(
+                    children: <Widget>[
+                      getElevatedButton("English for Business", selected: true),
+                      getElevatedButton("TEIC", selected: true),
+                    ],
+                  ),
+
+                  Container(
+                    child: Text(
+                      teachetList[i].description,
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+
+                    children: <Widget>[
+                      ElevatedButton.icon(
+
+                        // style: const ButtonStyle(
+                        //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+                        //
+                        // ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(32.0),
+                            side: BorderSide(
+                                width: 1,
+                                color: Colors.blue
+                            ),
+                          ),
+                        ),
+
+                        icon: Icon(Icons.calendar_month_sharp, size: 20,color: Colors.blue,),
+                        label: Text(
+                          'Book',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 13,
+                          ),
+                        ),
+                        onPressed: (){
+                          Navigator.pushNamed(context, '/tutor/detail');
+                        },
+
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+
+          )
+      );
+    }
+    return list;
   }
 
 }

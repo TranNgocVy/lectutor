@@ -5,6 +5,7 @@ import 'package:lectutor/model/schedule.dart';
 import '../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
+import '../const/header.dart';
 import '../model/teacher.dart';
 
 
@@ -14,18 +15,8 @@ class ScheduleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Schedule List',
-        // theme: ThemeData(
-        //   primarySwatch: Colors.green,
-        // ),
+    return Header.getHeader(context, ScheduleListPage());
 
-        home: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(title: const Text("123456")),
-          body: ScheduleListPage(),
-        )
-    );
   }
 }
 
@@ -273,7 +264,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
               Column(
                 children:
                 getScheduleList([Schedule("Fri, 30 Sep 22","01:30", "01:55", "finish",1), Schedule("Fri, 30 Sep 22", "02:", "02:25", "finish",1)],
-                    [Teacher(1, "Keengan", "France", [], []), Teacher(1, "Keengan", "France", [], [])]),
+                    [Teacher(1, "Keengan", "France", "Description about him",[], []), Teacher(1, "Keengan", "France", "Description about him", [], [])]),
               )
             ]
         )
