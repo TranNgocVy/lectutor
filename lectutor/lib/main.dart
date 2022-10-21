@@ -4,6 +4,9 @@ import 'package:lectutor/auth/changePassWord.dart';
 import 'package:lectutor/auth/forgetPassword.dart';
 import 'package:lectutor/auth/login.dart';
 import 'package:lectutor/auth/register.dart';
+import 'package:lectutor/becomeatutor/approval.dart';
+import 'package:lectutor/becomeatutor/completeProfile.dart';
+import 'package:lectutor/becomeatutor/videointroduction.dart';
 import 'package:lectutor/const/constVar.dart';
 import 'package:lectutor/const/menu.dart';
 import 'package:lectutor/course/courseDetail.dart';
@@ -30,7 +33,7 @@ class MyApp extends StatelessWidget {
         title: 'Lettutor',
         theme: ThemeData(
         ),
-        initialRoute: '/video',
+        initialRoute: '/becometutor/approval',
         routes: {
           '/': (context) => LogIn(),
           '/register': (context) => Register(),
@@ -46,6 +49,9 @@ class MyApp extends StatelessWidget {
           '/course': (context) => CourseList(),
           '/course/detail': (context) => CourseDetail(),
           '/video':(context) => Video(),
+          '/becometutor/completeproflie': (context) => CompleteProfile(),
+          '/becometutor/videointroduction': (context) => VideoIntroduction(),
+          '/becometutor/approval': (context) => Approval(),
           // '/video': (context) => TeacherListPage(),
 
         },
