@@ -180,7 +180,9 @@ class _VideoIntroductionPage extends State<VideoIntroductionPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               ElevatedButton(
-                onPressed: null,
+                onPressed: (){
+                  Navigator.pushNamed(context, "/becometutor/completeproflie");
+                },
                 child: Text("Previous", style: TextStyle(color: Colors.blue, fontSize: 18)),
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -195,7 +197,9 @@ class _VideoIntroductionPage extends State<VideoIntroductionPage> {
               ),
 
               ElevatedButton(
-                onPressed: null,
+                onPressed: (){
+                  Navigator.pushNamed(context, "/becometutor/approval");
+                },
                 child: Text("Done", style: TextStyle(color: Colors.white, fontSize: 18)),
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(

@@ -623,7 +623,9 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               ElevatedButton(
-                onPressed: null,
+                onPressed: (){
+                  Navigator.pushNamed(context, "/becometutor/videointroduction");
+                },
                 child: Text("Next", style: TextStyle(color: Colors.white, fontSize: 18)),
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(

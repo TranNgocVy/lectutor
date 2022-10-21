@@ -15,4 +15,6 @@ class ConstVar{
     "TOEFL",
     "TOEIC",
   ];
+
+  static List<String> tutornationalityList = ["Foreign Tutor", "Vietnamese Tutor", "Native English Tutor"];
 }

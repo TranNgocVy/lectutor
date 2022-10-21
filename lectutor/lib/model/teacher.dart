@@ -8,10 +8,19 @@ class Teacher{
   String _description;
   List<Course> _courseList;
   List<Schedule> _scheduleList;
+  List<String> _specialtyList;
 
-  Teacher(this._id, this._name, this._natioonality, this._description, this._courseList,
-      this._scheduleList);
 
+
+  Teacher(this._id, this._name, this._natioonality, this._description,
+      this._courseList, this._scheduleList, this._specialtyList);
+
+
+  List<String> get specialtyList => _specialtyList;
+
+  set specialtyList(List<String> value) {
+    _specialtyList = value;
+  }
 
   String get description => _description;
 

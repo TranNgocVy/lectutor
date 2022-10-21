@@ -49,7 +49,7 @@ class _ApprovalPage extends State<ApprovalPage> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.add_reaction_outlined, size: 80, color: Colors.blue,),
+                    Icon(Icons.sentiment_satisfied_alt, size: 80, color: Colors.blue,),
                   ],
                 ),
                 SizedBox(height: ConstVar.mediumspace,),
@@ -86,7 +86,9 @@ class _ApprovalPage extends State<ApprovalPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ElevatedButton(
-                      onPressed: null,
+                      onPressed: (){
+                        Navigator.pushNamed(context, "/tutor");
+                      },
                       child: Text("Back Home", style: TextStyle(color: Colors.white, fontSize: 18)),
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(

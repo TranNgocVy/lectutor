@@ -1,8 +1,10 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
+import '../const/specialtieschoiceschip.dart';
 import '../model/course.dart';
 
 class TeacherDetail extends StatelessWidget {
@@ -26,6 +28,7 @@ class TeacherDetailPage extends StatefulWidget {
 
 class _TeacherDetailPage extends State<TeacherDetailPage> {
 
+  final FocusNode _tgFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +40,9 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Icon(
-                Icons.account_circle_outlined,
-                size: 100,
+              CircleAvatar(
+                backgroundImage: AssetImage('asset/icon/avatar.jpg'),
+                maxRadius: 50,
               ),
 
               Expanded(
@@ -68,10 +71,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                           children: <Widget>[
                             Container(
                               padding: EdgeInsets.only(top: 5),
-                              child: Icon(
-                                Icons.south_america_sharp,
-                                size: 25,
-                              ),
+                              child: Image(image: Svg("asset/icon/nationality.svg"), width: 30,)
                             ),
                             Expanded(
                                 child: Container(
@@ -236,23 +236,42 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             ),
           ),
 
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                  child: Row(
-                    children: <Widget>[
-                      getElevatedButton("English for business"),
-                      getElevatedButton("Conversational"),
-                      getElevatedButton("English for kids"),
-                      getElevatedButton("IELTS"),
-                      getElevatedButton("TOEIC"),
+          // Row(
+          //   mainAxisSize: MainAxisSize.min,
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     Expanded(
+          //         child: Row(
+          //           children: <Widget>[
+          //             getElevatedButton(),
+          //             getElevatedButton(),
+          //             getElevatedButton(),
+          //             getElevatedButton(),
+          //             getElevatedButton(),
+          //
+          //           ],
+          //         ))
+          //   ],
+          // ),
 
-                    ],
-                  ))
-            ],
-          ),
+          Container(
+            child: Wrap(
+              runSpacing: 2,
+              spacing: 5,
+              children: SpecialtiesChoiceChips.getSpecialties(["English for business", "Conversational", "English for kids", "IELTS",  "TOEIC"], true).map((value) => ChoiceChip(
+                label: Text(value.label),
+                selected: value.isSelected,
+                selectedColor: Colors.blue.shade200,
+                focusNode: _tgFocus,
+                labelStyle: TextStyle(
+                  fontSize: 15,
+                ),
+                // onSelected: (isSltd) => setState(() {
+                //   _tgFocus.requestFocus();
+                //   value.isSelected = value.isSelected?false: true;
+                // }),
+              )).toList(),
+            ),),
 
           SizedBox(height: ConstVar.largespace),
 

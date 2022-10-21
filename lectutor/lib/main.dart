@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         title: 'Lettutor',
         theme: ThemeData(
         ),
-        initialRoute: '/becometutor/approval',
+        initialRoute: '/tutor',
         routes: {
           '/': (context) => LogIn(),
           '/register': (context) => Register(),

@@ -264,7 +264,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
               Column(
                 children:
                 getScheduleList([Schedule("Fri, 30 Sep 22","01:30", "01:55", "finish",1), Schedule("Fri, 30 Sep 22", "02:", "02:25", "finish",1)],
-                    [Teacher(1, "Keengan", "France", "Description about him",[], []), Teacher(1, "Keengan", "France", "Description about him", [], [])]),
+                    [Teacher(1, "Keengan", "France", "Description about him",[], [],[]), Teacher(1, "Keengan", "France", "Description about him", [], [],[])]),
               )
             ]
         )

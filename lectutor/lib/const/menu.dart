@@ -257,7 +257,7 @@ class _MenuPage extends State<MenuPage> {
           GestureDetector(
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, "/account");
+              Navigator.pushNamed(context, "/becometutor/completeproflie");
             },
             child: Container(
               padding: EdgeInsets.all(10),
