@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../const/constVar.dart';
@@ -30,6 +31,47 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final TextEditingController _dController = TextEditingController();
+  final FocusNode _dFocus = FocusNode();
+  DateTime selectedDate = DateTime.now();
+  _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2050),
+    );
+    if (picked != null && picked != selectedDate) {
+      selectedDate = picked;
+      setState(() {
+        _dController.text = "${selectedDate.toLocal()}".split(' ')[0];
+        _dFocus.requestFocus();
+      });
+    }
+    else if (picked == selectedDate) {
+      return;
+    }
+    else {
+      setState(() {
+        _dController.clear();
+        selectedDate = DateTime.now();
+      });
+    }
+  }
+
+  final FocusNode _ntFocus = FocusNode();
+  String level = "Pre A1 (Beginner)";
+
+  List<DropdownMenuItem<String>> get dropdownItems{
+    List<DropdownMenuItem<String>> menuItems = [
+      DropdownMenuItem(child: Text("USA"),value: "USA"),
+      DropdownMenuItem(child: Text("Canada"),value: "Canada"),
+      DropdownMenuItem(child: Text("Brazil"),value: "Brazil"),
+      DropdownMenuItem(child: Text("England"),value: "England"),
+    ];
+    return menuItems;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
         shrinkWrap: true,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.all(24.0,),
+            padding: EdgeInsets.all(5.0,),
             decoration: BoxDecoration(
               border: Border.all( color: Colors.grey, width: 2),
               borderRadius: BorderRadius.circular(12),
@@ -49,33 +91,39 @@ class _ProfilePageState extends State<ProfilePage> {
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Icon(
-                          Icons.account_circle_outlined,
-                          size: 120,
-                        ),
-                        Positioned(
-                          right: 5.0,
-                          bottom: 0.0,
-                          child: Container(
-                            padding: EdgeInsets.all(0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Colors.blue,
+                    Container(
+                      child: Stack(
+                          children: <Widget>[
+                            CircleAvatar(
+                              backgroundImage: AssetImage('asset/icon/avatar.jpg'),
+                              maxRadius: 40,
                             ),
-                            child: IconButton(
-                                onPressed: null,
+                            Positioned(
+                              right: 0.0,
+                              bottom: 0.0,
+                              child: Container(
+                                padding: EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.blue,
+                                ),
+                                child: Icon(
+                                    // onPressed: null,
+                                    // style: ButtonStyle(
+                                    //   padding: MaterialStatePropertyAll(EdgeInsets.zero),
+                                    // ),
+                                      Icons.mode_edit_sharp,
+                                      color: Colors.white,
+                                      size: 20,
+                                    // )
+                                ),
+                              ),
+                            ),
+                          ],
 
-                                icon: Icon(
-                                  Icons.mode_edit_sharp,
-                                  color: Colors.white,
-                                )
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
+                    SizedBox(width: 10,),
 
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,21 +203,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    // createLabel("Name", true),
-
-                    // createLabel("Email Address", false),
-                    // TextFormField(
-                    //   keyboardType: TextInputType.text,
-                    //   autofocus: false,
-                    //   enabled: false,
-                    //   initialValue: '',
-                    //   decoration: InputDecoration(
-                    //     hintText: 'Email address of lectotur',
-                    //     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                    //   ),
-                    // ),
-
                   ],
 
 
@@ -307,34 +340,50 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     new Expanded(
                       flex :2,
-                      child: TextFormField(
-                        autofocus: false,
-                        initialValue: '',
-                        decoration: InputDecoration(
-                          hintText: '2001-01-01',
-                          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                          suffixIcon: IconButton(
-                            onPressed: null,
-                            icon: Icon(Icons.date_range_outlined),
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: TextFormField(
+                          keyboardType: TextInputType.text,
+                          // initialValue: "2001-04-04",
+                          focusNode: _dFocus,
+                          controller: _dController..text="2001-04-04",
+                          autovalidateMode: AutovalidateMode.always,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 0),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 1, color: Colors.grey),
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 1, color: Colors.blue),
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                            ),
+                            suffixIcon: (_dController.text.isNotEmpty && _dFocus.hasFocus) ?
+                            IconButton(onPressed: () {setState(() {
+                              _dController.clear();
+                              selectedDate = DateTime.now();
+                              _dFocus.unfocus();
+                            });}, icon: Icon(Icons.clear)) :
+                            Icon(Icons.calendar_month_outlined),
                           ),
+                          readOnly: true,
+                          onTap: () => _selectDate(context),
                         ),
                       ),
+                      // child: TextFormField(
+                      //   autofocus: false,
+                      //   initialValue: '',
+                      //   decoration: InputDecoration(
+                      //     hintText: '2001-01-01',
+                      //     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                      //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                      //     suffixIcon: IconButton(
+                      //       onPressed: null,
+                      //       icon: Icon(Icons.date_range_outlined),
+                      //     ),
+                      //   ),
+                      // ),
                     ),
-                    // createLabel("Name", true),
-
-                    // createLabel("Email Address", false),
-                    // TextFormField(
-                    //   keyboardType: TextInputType.text,
-                    //   autofocus: false,
-                    //   enabled: false,
-                    //   initialValue: '',
-                    //   decoration: InputDecoration(
-                    //     hintText: 'Email address of lectotur',
-                    //     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                    //   ),
-                    // ),
                   ],
                 ),
 
@@ -346,36 +395,38 @@ class _ProfilePageState extends State<ProfilePage> {
                       flex:1,
                       child : createLabel("My Level", true),
                     ),
-                    new Expanded(
+                    Expanded(
                       flex :2,
-                      child: TextFormField(
-                        autofocus: false,
-                        initialValue: '',
+                      child: DropdownButtonFormField(
                         decoration: InputDecoration(
-                          hintText: 'C1',
-                          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                          suffixIcon: IconButton(
-                            onPressed: null,
-                            icon: Icon(Icons.arrow_drop_down),
+                          enabledBorder: OutlineInputBorder( //<-- SEE HERE
+                            borderSide: BorderSide(color: Colors.grey, width: 1),
                           ),
+                          focusedBorder: OutlineInputBorder( //<-- SEE HERE
+                            borderSide: BorderSide(color: Colors.grey, width: 1),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
                         ),
+                        dropdownColor: Colors.white,
+                        value: level,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            level = newValue!;
+                          });
+                        },
+                        items: (ConstVar.levelList).map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Expanded(
+                              child: Text(
+                              value,
+                            ),
+                            )
+                          );
+                        }).toList(),
                       ),
                     ),
-                    // createLabel("Name", true),
-
-                    // createLabel("Email Address", false),
-                    // TextFormField(
-                    //   keyboardType: TextInputType.text,
-                    //   autofocus: false,
-                    //   enabled: false,
-                    //   initialValue: '',
-                    //   decoration: InputDecoration(
-                    //     hintText: 'Email address of lectotur',
-                    //     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                    //   ),
-                    // ),
                   ],
                 ),
 
@@ -389,14 +440,49 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     new Expanded(
                       flex :2,
-                      child: TextFormField(
-                        keyboardType: TextInputType.text,
-                        autofocus: false,
-                        initialValue: '',
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                        ),
+                      child: Focus(
+                          focusNode: _ntFocus,
+                          child: Listener(
+                            onPointerDown: (_) {
+                              FocusScope.of(context).requestFocus(_ntFocus);
+                            },
+                            child: DropdownSearch<String>.multiSelection(
+                              items: ConstVar.type,
+                              popupProps: PopupPropsMultiSelection.menu(
+                                showSelectedItems: true,
+                                showSearchBox: true,
+                              ),
+                              clearButtonProps: ClearButtonProps(
+                                isVisible: false,
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.zero,
+                              ),
+                              dropdownButtonProps: DropdownButtonProps(
+
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.only(right: 12),
+                              ),
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
+                                  contentPadding: EdgeInsets.fromLTRB(5, 15, 0, 0),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(width: 1, color: Colors.grey),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(width: 1, color: Colors.blue),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  ),
+                                ),
+                              ),
+                              selectedItems: ['Business English', 'TOEIC'],
+                              onChanged: (val) {
+                                setState(() {
+                                  _ntFocus.requestFocus();
+                                });
+                              },
+                            ),
+                          )
                       ),
                     ),
 
@@ -411,15 +497,19 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     new Expanded (
                       flex:1,
-                      child : createLabel("Study Schedule", false),
+                      child : createLabel("Learn Schedule", false),
                     ),
                     new Expanded(
                       flex :2,
                       child: TextFormField(
                         keyboardType: TextInputType.multiline,
                         autofocus: false,
+                        minLines: 3,
+                        maxLines: null,
                         initialValue: '',
                         decoration: InputDecoration(
+                          hintText: "Note the time of the week you want to study on Lettutor",
+                          hintMaxLines: 3,
                           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                         ),

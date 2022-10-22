@@ -66,6 +66,9 @@ class _TeacherListPage extends State<TeacherListPage> {
     }
   }
 
+  List<Teacher> teacherList = [Teacher(1, "Keengan", "France", "Description about him",[], [], ["English for kids", "English for Business", "Conversational", "STARTERS",]),
+    Teacher(1, "Keengan", "France", "Description about him", [], [], ["Conversational", "STARTERS", "MOVERS", "FLYERS", "KET", "PET",])];
+  List<int> favoriteIdList = [0];
 
   @override
   Widget build(BuildContext context) {
@@ -219,33 +222,6 @@ class _TeacherListPage extends State<TeacherListPage> {
                             )
                         ),
                       ),
-
-
-                      // Container(
-                      //   margin: EdgeInsets.only(bottom: 10),
-                      //   child: TextFormField(
-                      //     keyboardType: TextInputType.text,
-                      //     focusNode: _nFocus,
-                      //     controller: _nController,
-                      //     decoration: InputDecoration(
-                      //       contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-                      //       enabledBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(width: 1, color: Colors.grey),
-                      //         borderRadius: BorderRadius.all(Radius.circular(50)),
-                      //       ),
-                      //       focusedBorder: OutlineInputBorder(
-                      //         borderSide: BorderSide(width: 1, color: Colors.blue),
-                      //         borderRadius: BorderRadius.all(Radius.circular(50)),
-                      //       ),
-                      //       hintText: 'Enter tutor name',
-                      //     ),
-                      //     onTap: () {
-                      //       setState(() {
-                      //         _nFocus.requestFocus();
-                      //       });
-                      //     },
-                      //   ),
-                      // ),
 
                       SizedBox(height: ConstVar.minspace),
                       Text(
@@ -415,108 +391,6 @@ class _TeacherListPage extends State<TeacherListPage> {
                       ),
 
                       SizedBox(height: ConstVar.mediumspace),
-
-                      // TextFormField(
-                      //   decoration: InputDecoration(
-                      //     hintText: "1345",
-                      //   ),
-                      // )
-                      // TextField(
-                      //   // keyboardType: TextInputType.text,
-                      //   autofocus: false,
-                      //   // initialValue: '',
-                      //   decoration: InputDecoration(
-                      //     hintText: 'Enter tutor name...',
-                      //     hintStyle: TextStyle(fontSize: 20.0, color: Colors.grey),
-                      //     // contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                      //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                      //   ),
-                      // ),
-                      // TextFormField(
-                      //   keyboardType: TextInputType.text,
-                      //   autofocus: false,
-                      //   initialValue: '',
-                      //   obscureText: true,
-                      //   decoration: InputDecoration(
-                      //     hintText: 'Select tutor nationality',
-                      //     hintStyle: TextStyle(fontSize: 20.0, color: Colors.grey),
-                      //     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                      //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                      //     suffixIcon: IconButton(
-                      //       onPressed: null,
-                      //       icon: Icon(Icons.visibility),
-                      //     ),
-                      //   ),
-                      // ),
-                      // Row(
-                      //   children: <TextFormField>[
-                      //     TextFormField(
-                      //       keyboardType: TextInputType.text,
-                      //       autofocus: false,
-                      //       initialValue: '',
-                      //       decoration: InputDecoration(
-                      //         hintText: 'Enter tutor name...',
-                      //         hintStyle: TextStyle(fontSize: 20.0, color: Colors.grey),
-                      //         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                      //         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                      //       ),
-                      //     ),
-                      //     TextFormField(
-                      //       keyboardType: TextInputType.text,
-                      //       autofocus: false,
-                      //       initialValue: '',
-                      //       obscureText: true,
-                      //       decoration: InputDecoration(
-                      //         hintText: 'Select tutor nationality',
-                      //         hintStyle: TextStyle(fontSize: 20.0, color: Colors.grey),
-                      //         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                      //         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                      //         suffixIcon: IconButton(
-                      //           onPressed: null,
-                      //           icon: Icon(Icons.visibility),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // )
-                      // Row(
-                      //   children: <Widget>[
-                      //     getElevatedButton("All", selected: true),
-                      //     getElevatedButton("English for kids"),
-                      //     getElevatedButton("English for business"),
-                      //     getElevatedButton("Conversational"),
-                      //     getElevatedButton("STARTERS"),
-                      //     getElevatedButton("MOVERS"),
-                      //     getElevatedButton("FLYRS"),
-                      //     getElevatedButton("KET"),
-                      //     getElevatedButton("PET"),
-                      //     getElevatedButton("IELTS"),
-                      //     getElevatedButton("TOEFL"),
-                      //     getElevatedButton("TOEIC"),
-                      //   ],
-                      // ),
-
-
-                      // ElevatedButton(
-                      //   onPressed: null,
-                      //   child: Text(
-                      //     "Reset Filters",
-                      //     style: TextStyle(
-                      //       color: Colors.blue,
-                      //       fontSize: 16,
-                      //     ),
-                      //   ),
-                      //   style: ElevatedButton.styleFrom(
-                      //     // backgroundColor: Colors.white,
-                      //     shape: RoundedRectangleBorder(
-                      //         borderRadius: BorderRadius.circular(50),
-                      //         side: BorderSide(
-                      //           color: Colors.blue,
-                      //           style: BorderStyle.solid,
-                      //         )
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -543,8 +417,8 @@ class _TeacherListPage extends State<TeacherListPage> {
                 ),
 
                 Column(
-                  children: getTutorList([Teacher(1, "Keengan", "France", "Description about him",[], [], ["English for kids", "English for Business", "Conversational", "STARTERS",]),
-                    Teacher(1, "Keengan", "France", "Description about him", [], [], ["Conversational", "STARTERS", "MOVERS", "FLYERS", "KET", "PET",])])
+                  children: getTutorList(),
+                  // [true, false])
                 )
               ],
             )
@@ -584,11 +458,9 @@ class _TeacherListPage extends State<TeacherListPage> {
 
     return btn;
   }
-  List<Widget> getTutorList(List<Teacher> teachetList){
+  List<Widget> getTutorList(){
     List<Widget> list = [];
-    bool isFavorite = false;
-
-    for(var i = 0; i < teachetList.length; i++){
+    for(var i = 0; i < teacherList.length; i++){
       list.add(
           Card(
             borderOnForeground: true,
@@ -622,7 +494,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                teachetList[i].name,
+                                teacherList[i].name,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -639,7 +511,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                     padding: EdgeInsets.all(5),
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      teachetList[i].natioonality,
+                                      teacherList[i].natioonality,
                                       style: TextStyle(
                                           fontSize: 14
                                       ),
@@ -669,15 +541,14 @@ class _TeacherListPage extends State<TeacherListPage> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: <IconButton>[
                                   IconButton(
-                                      onPressed: () => {
+                                      onPressed: (){
                                         setState(() {
-                                          isFavorite = isFavorite ? false: true;
-
-                                        })
+                                          favoriteIdList.contains(i) ?  favoriteIdList.remove(i) : favoriteIdList.add(i);
+                                        });
                                       },
                                       icon: Icon(
-                                        isFavorite? Icons.favorite_border : Icons.favorite,
-                                        color: isFavorite? Colors.blue: Colors.red,
+                                        favoriteIdList.contains(i) ? Icons.favorite: Icons.favorite_border,
+                                        color: favoriteIdList.contains(i) ? Colors.red: Colors.blue,
                                         size: 30,
                                       ),
                                   )
@@ -692,9 +563,10 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                   Container(
                     child: Wrap(
-                      runSpacing: 2,
+                      runSpacing: 0,
+
                       spacing: 5,
-                      children: SpecialtiesChoiceChips.getSpecialties(teachetList[i].specialtyList, true).map((value) => ChoiceChip(
+                      children: SpecialtiesChoiceChips.getSpecialties(teacherList[i].specialtyList, true).map((value) => ChoiceChip(
                         label: Text(value.label,),
                         selected: value.isSelected,
                         selectedColor: Colors.blue.shade100,
@@ -703,10 +575,6 @@ class _TeacherListPage extends State<TeacherListPage> {
                           fontSize: 15,
                           color: Colors.black
                         ),
-                        // onSelected: (isSltd) => setState(() {
-                        //   _tgFocus.requestFocus();
-                        //   value.isSelected = value.isSelected?false: true;
-                        // }),
                       )).toList(),
                     ),
 
@@ -714,7 +582,7 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                   Container(
                     child: Text(
-                      teachetList[i].description,
+                      teacherList[i].description,
                       style: TextStyle(
                         fontSize: 16,
                       ),

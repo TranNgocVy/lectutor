@@ -16,5 +16,15 @@ class ConstVar{
     "TOEIC",
   ];
 
+  static List<String> levelList = [
+    "Pre A1 (Beginner)",
+    "A1 (Higher Beginner)",
+    "A2 (Pre-Intermediate)",
+    "B1 (Intermediate)",
+    "B2 (Upper-Intermediate)",
+    "C1 (Advanced)",
+    "C2 (Proficiency",
+  ];
+
   static List<String> tutornationalityList = ["Foreign Tutor", "Vietnamese Tutor", "Native English Tutor"];
 }
