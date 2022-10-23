@@ -1,4 +1,5 @@
 
+import 'package:chewie/chewie.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -30,23 +31,102 @@ class TeacherDetailPage extends StatefulWidget {
 class _TeacherDetailPage extends State<TeacherDetailPage> {
 
   final FocusNode _tgFocus = FocusNode();
+  TargetPlatform? _platform;
+  late VideoPlayerController _videoPlayerController1;
+  // late VideoPlayerController _videoPlayerController2;
+  ChewieController? _chewieController;
+  int? bufferDelay;
 
-  late VideoPlayerController controller;
   @override
   void initState() {
-    loadVideoPlayer();
     super.initState();
+    initializePlayer();
   }
 
-  loadVideoPlayer(){
-    controller = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
-    controller.addListener(() {
-      setState(() {});
-    });
-    controller.initialize().then((value){
-      setState(() {});
-    });
+  @override
+  void dispose() {
+    _videoPlayerController1.dispose();
+    // _videoPlayerController2.dispose();
+    _chewieController?.dispose();
+    super.dispose();
+  }
 
+  List<String> srcs = [
+    "https://assets.mixkit.co/videos/preview/mixkit-spinning-around-the-earth-29351-large.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4"
+  ];
+
+  Future<void> initializePlayer() async {
+    _videoPlayerController1 =
+        VideoPlayerController.network(srcs[currPlayIndex]);
+    // _videoPlayerController2 =
+    // VideoPlayerController.network(srcs[currPlayIndex]);
+    await Future.wait([
+      _videoPlayerController1.initialize(),
+      // _videoPlayerController2.initialize()
+    ]);
+    _createChewieController();
+    setState(() {});
+  }
+
+  void _createChewieController() {
+
+    _chewieController = ChewieController(
+      videoPlayerController: _videoPlayerController1,
+      autoPlay: true,
+      looping: true,
+      progressIndicatorDelay:
+      bufferDelay != null ? Duration(milliseconds: bufferDelay!) : null,
+
+      additionalOptions: (context) {
+        return <OptionItem>[
+          OptionItem(
+            onTap: toggleVideo,
+            iconData: Icons.live_tv_sharp,
+            title: 'Toggle Video Src',
+          ),
+        ];
+      },
+      subtitleBuilder: (context, dynamic subtitle) => Container(
+        padding: const EdgeInsets.all(10.0),
+        child: subtitle is InlineSpan
+            ? RichText(
+          text: subtitle,
+        )
+            : Text(
+          subtitle.toString(),
+          style: const TextStyle(color: Colors.black),
+        ),
+      ),
+
+      hideControlsTimer: const Duration(seconds: 1),
+
+      // Try playing around with some of these other options:
+
+      // showControls: false,
+      // materialProgressColors: ChewieProgressColors(
+      //   playedColor: Colors.red,
+      //   handleColor: Colors.blue,
+      //   backgroundColor: Colors.grey,
+      //   bufferedColor: Colors.lightGreen,
+      // ),
+      // placeholder: Container(
+      //   color: Colors.grey,
+      // ),
+      // autoInitialize: true,
+    );
+  }
+
+  int currPlayIndex = 0;
+
+  Future<void> toggleVideo() async {
+    await _videoPlayerController1.pause();
+    currPlayIndex += 1;
+    if (currPlayIndex >= srcs.length) {
+      currPlayIndex = 0;
+    }
+    await initializePlayer();
   }
   @override
   Widget build(BuildContext context) {
@@ -217,87 +297,105 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           SizedBox(height: ConstVar.largespace),
 
           Container(
-            // color: Colors.blue,
-            // height: 300,
-            child: Stack(
-                children:[
-                  AspectRatio(
-                    aspectRatio: controller.value.aspectRatio,
-                    child: VideoPlayer(controller),
-                  ),
-
-                  // Container( //duration of video
-                  //   child: Text("Total Duration: " + controller.value.duration.toString()),
-                  // ),
-
-                  Positioned(
-                    bottom: 15,
-                    right: 0,
-                    child: Row(
-                      children: <Widget>[
-                        IconButton(onPressed: null, icon: Icon(Icons.volume_up,size: 30,color: Colors.white,),),
-
-                        IconButton(onPressed: null, icon: Icon(Icons.fullscreen_rounded,size: 30,color: Colors.white,),),
-
-                      ],
-                    ),
-                  ),
-
-                  // Positioned(
-                  //   bottom: 7,
-                  //   child: Container(
-                  //     child: VideoProgressIndicator(
-                  //         controller,
-                  //         allowScrubbing: true,
-                  //         colors:VideoProgressColors(
-                  //           backgroundColor: Colors.redAccent,
-                  //           playedColor: Colors.green,
-                  //           bufferedColor: Colors.purple,
-                  //         )
-                  //     )
-                  // ),
-                  // ),
-
-
-
-
-                  Positioned(
-                    left: 0,
-                    bottom: 15,
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: (){
-                              if(controller.value.isPlaying){
-                                controller.pause();
-                              }else{
-                                controller.play();
-                              }
-
-                              setState(() {
-
-                              });
-                            },
-                            icon:Icon(controller.value.isPlaying?Icons.pause:Icons.play_arrow, color: Colors.white,size: 30,)
-                        ),
-                        Text(controller.value.duration.toString(), style: TextStyle(color: Colors.white, fontSize: 18),),
-
-                        // IconButton(
-                        //     onPressed: (){
-                        //       controller.seekTo(Duration(seconds: 0));
-                        //
-                        //       setState(() {
-                        //
-                        //       });
-                        //     },
-                        //     icon:Icon(Icons.stop)
-                        // )
-                      ],
-                    ),
-                  )
-                ]
+            height: 200,
+            child: _chewieController != null &&
+                _chewieController!
+                    .videoPlayerController.value.isInitialized
+                ? Chewie(
+              controller: _chewieController!,
+            )
+                : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                CircularProgressIndicator(),
+                SizedBox(height: 20),
+                Text('Loading'),
+              ],
             ),
           ),
+
+          // Container(
+          //   // color: Colors.blue,
+          //   // height: 300,
+          //   child: Stack(
+          //       children:[
+          //         AspectRatio(
+          //           aspectRatio: controller.value.aspectRatio,
+          //           child: VideoPlayer(controller),
+          //         ),
+          //
+          //         // Container( //duration of video
+          //         //   child: Text("Total Duration: " + controller.value.duration.toString()),
+          //         // ),
+          //
+          //         Positioned(
+          //           bottom: 15,
+          //           right: 0,
+          //           child: Row(
+          //             children: <Widget>[
+          //               IconButton(onPressed: null, icon: Icon(Icons.volume_up,size: 30,color: Colors.white,),),
+          //
+          //               IconButton(onPressed: null, icon: Icon(Icons.fullscreen_rounded,size: 30,color: Colors.white,),),
+          //
+          //             ],
+          //           ),
+          //         ),
+          //
+          //         // Positioned(
+          //         //   bottom: 7,
+          //         //   child: Container(
+          //         //     child: VideoProgressIndicator(
+          //         //         controller,
+          //         //         allowScrubbing: true,
+          //         //         colors:VideoProgressColors(
+          //         //           backgroundColor: Colors.redAccent,
+          //         //           playedColor: Colors.green,
+          //         //           bufferedColor: Colors.purple,
+          //         //         )
+          //         //     )
+          //         // ),
+          //         // ),
+          //
+          //
+          //
+          //
+          //         Positioned(
+          //           left: 0,
+          //           bottom: 15,
+          //           child: Row(
+          //             children: [
+          //               IconButton(
+          //                   onPressed: (){
+          //                     if(controller.value.isPlaying){
+          //                       controller.pause();
+          //                     }else{
+          //                       controller.play();
+          //                     }
+          //
+          //                     setState(() {
+          //
+          //                     });
+          //                   },
+          //                   icon:Icon(controller.value.isPlaying?Icons.pause:Icons.play_arrow, color: Colors.white,size: 30,)
+          //               ),
+          //               Text(controller.value.duration.toString(), style: TextStyle(color: Colors.white, fontSize: 18),),
+          //
+          //               // IconButton(
+          //               //     onPressed: (){
+          //               //       controller.seekTo(Duration(seconds: 0));
+          //               //
+          //               //       setState(() {
+          //               //
+          //               //       });
+          //               //     },
+          //               //     icon:Icon(Icons.stop)
+          //               // )
+          //             ],
+          //           ),
+          //         )
+          //       ]
+          //   ),
+          // ),
 
           SizedBox(height: ConstVar.largespace),
 
