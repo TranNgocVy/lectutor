@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/topic.dart';
@@ -22,6 +23,11 @@ class CourseListPage extends StatefulWidget {
 }
 
 class _CourseListPage extends State<CourseListPage> {
+  String level = "";
+  String category = "";
+  String sortby = "";
+  final FocusNode _lvlFocus = FocusNode();
+  final FocusNode _catFocus = FocusNode();
 
 
   @override
@@ -50,22 +56,6 @@ class _CourseListPage extends State<CourseListPage> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: ConstVar.mediumspace,),
-                      // TextFormField(
-                      //   autofocus: false,
-                      //   initialValue: '',
-                      //   decoration: InputDecoration(
-                      //     hintText: 'Course',
-                      //     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                      //     border: OutlineInputBorder(
-                      //       borderRadius: BorderRadius.circular(5.0),
-                      //       // borderSide: BorderSide(color: Colors.black38)
-                      //     ),
-                      //     suffixIcon: IconButton(
-                      //       onPressed: null,
-                      //       icon: Icon(Icons.search, color: Colors.black54,),
-                      //     ),
-                      //   ),
-                      // ),
 
                     ],
                   ),
@@ -78,59 +68,216 @@ class _CourseListPage extends State<CourseListPage> {
                 child: Text(
                   "LiveTutor has built the most quality, methodical and scientific courses in the fields of life for those who are in need of improving their knowledge of the fields.",
                   style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 16
+                      color: Colors.black54,
+                      fontSize: 16
                   ),
                 )
             ),
 
             SizedBox(height: ConstVar.mediumspace,),
 
-            TextFormField(
-              autofocus: false,
-              initialValue: '',
-              decoration: InputDecoration(
-                hintText: 'Select level',
-                contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                suffixIcon: IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.expand_more_outlined),
-                ),
-              ),
+            // DropdownButtonFormField(
+            //   decoration: InputDecoration(
+            //     enabledBorder: OutlineInputBorder( //<-- SEE HERE
+            //       borderSide: BorderSide(color: Colors.grey, width: 1),
+            //     ),
+            //     focusedBorder: OutlineInputBorder( //<-- SEE HERE
+            //       borderSide: BorderSide(color: Colors.grey, width: 1),
+            //     ),
+            //     filled: true,
+            //     fillColor: Colors.white,
+            //   ),
+            //   dropdownColor: Colors.white,
+            //   // value: level,
+            //   hint: Text("Select level"),
+            //
+            //   onChanged: (String? newValue) {
+            //     setState(() {
+            //       level = newValue!;
+            //     });
+            //   },
+            //   items: (ConstVar.levelList).map<DropdownMenuItem<String>>((String value) {
+            //     return DropdownMenuItem<String>(
+            //         value: value,
+            //         child: Expanded(
+            //           child: Text(
+            //             value,
+            //           ),
+            //         )
+            //     );
+            //   }).toList(),
+            // ),
+
+            Focus(
+                focusNode: _lvlFocus,
+                child: Listener(
+                  onPointerDown: (_) {
+                    FocusScope.of(context).requestFocus(_lvlFocus);
+                  },
+                  child: DropdownSearch<String>.multiSelection(
+                    items: ConstVar.levelList,
+                    popupProps: PopupPropsMultiSelection.menu(
+                      showSelectedItems: true,
+                      showSearchBox: true,
+                    ),
+                    clearButtonProps: ClearButtonProps(
+                      isVisible: true,
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.zero,
+                    ),
+                    dropdownButtonProps: DropdownButtonProps(
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.only(right: 12),
+                    ),
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 0),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Colors.grey),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Colors.blue),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        hintText: 'Select level',
+                      ),
+                    ),
+                    // selectedItems: ['Item1', 'Item2'],
+                    onChanged: (val) {
+                      setState(() {
+                        _lvlFocus.requestFocus();
+                      });
+                    },
+                  ),
+                )
             ),
+            SizedBox(height: ConstVar.minspace,),
+
+            // TextFormField(
+            //   autofocus: false,
+            //   initialValue: '',
+            //   decoration: InputDecoration(
+            //     hintText: 'Select category',
+            //     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+            //     suffixIcon: IconButton(
+            //       onPressed: null,
+            //       icon: Icon(Icons.expand_more_outlined),
+            //     ),
+            //   ),
+            // ),
+            Focus(
+                focusNode: _catFocus,
+                child: Listener(
+                  onPointerDown: (_) {
+                    FocusScope.of(context).requestFocus(_catFocus);
+                  },
+                  child: DropdownSearch<String>.multiSelection(
+                    items: ConstVar.type,
+                    popupProps: PopupPropsMultiSelection.menu(
+                      showSelectedItems: true,
+                      showSearchBox: true,
+                    ),
+                    clearButtonProps: ClearButtonProps(
+                      isVisible: true,
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.zero,
+                    ),
+                    dropdownButtonProps: DropdownButtonProps(
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.only(right: 12),
+                    ),
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 0),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Colors.grey),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Colors.blue),
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        hintText: 'Select category',
+                      ),
+                    ),
+                    // selectedItems: ['Item1', 'Item2'],
+                    onChanged: (val) {
+                      setState(() {
+                        _catFocus.requestFocus();
+                      });
+                    },
+                  ),
+                )
+            ),
+
+            // DropdownButtonFormField(
+            //   decoration: InputDecoration(
+            //     enabledBorder: OutlineInputBorder( //<-- SEE HERE
+            //       borderSide: BorderSide(color: Colors.grey, width: 1),
+            //     ),
+            //     focusedBorder: OutlineInputBorder( //<-- SEE HERE
+            //       borderSide: BorderSide(color: Colors.grey, width: 1),
+            //     ),
+            //     filled: true,
+            //     fillColor: Colors.white,
+            //   ),
+            //   dropdownColor: Colors.white,
+            //   hint: Text("Select category"),
+            //   // value: level,
+            //   onChanged: (String? newValue) {
+            //     setState(() {
+            //       category = newValue!;
+            //     });
+            //   },
+            //   items: (ConstVar.type).map<DropdownMenuItem<String>>((String value) {
+            //     return DropdownMenuItem<String>(
+            //         value: value,
+            //         child: Expanded(
+            //           child: Text(
+            //             value,
+            //           ),
+            //         )
+            //     );
+            //   }).toList(),
+            // ),
+
 
             SizedBox(height: ConstVar.minspace,),
 
-            TextFormField(
-              autofocus: false,
-              initialValue: '',
+            DropdownButtonFormField(
               decoration: InputDecoration(
-                hintText: 'Select category',
-                contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                suffixIcon: IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.expand_more_outlined),
+                enabledBorder: OutlineInputBorder( //<-- SEE HERE
+                  borderSide: BorderSide(color: Colors.grey, width: 1),
                 ),
+                focusedBorder: OutlineInputBorder( //<-- SEE HERE
+                  borderSide: BorderSide(color: Colors.grey, width: 1),
+                ),
+                filled: true,
+                fillColor: Colors.white,
               ),
+              dropdownColor: Colors.white,
+              hint: Text("Sort by level"),
+              // value: level,
+              onChanged: (String? newValue) {
+                setState(() {
+                  sortby = newValue!;
+                });
+              },
+              items: <String>["level decreasing", "level assending"].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                    value: value,
+                    child: Expanded(
+                      child: Text(
+                        value,
+                      ),
+                    )
+                );
+              }).toList(),
             ),
 
-            SizedBox(height: ConstVar.minspace,),
 
-            TextFormField(
-              autofocus: false,
-              initialValue: '',
-              decoration: InputDecoration(
-                hintText: 'Sort by level',
-                contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                suffixIcon: IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.expand_more_outlined),
-                ),
-              ),
-            ),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -181,325 +328,6 @@ class _CourseListPage extends State<CourseListPage> {
                     ]
                 )]),
             ),
-
-
-
-
-            // Container(
-            //     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            //     child: Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: <Widget>[
-            //         Row(
-            //           mainAxisSize: MainAxisSize.max,
-            //           children: <Column>[
-            //             Column(
-            //               crossAxisAlignment: CrossAxisAlignment.start,
-            //               mainAxisSize: MainAxisSize.min,
-            //               children: <Widget>[
-            //                 Text(
-            //                   "Find a tutor",
-            //                   textAlign: TextAlign.left,
-            //                   style: TextStyle(
-            //                     fontSize: 25,
-            //                     fontWeight: FontWeight.bold,
-            //                     color: Colors.red,
-            //                   ),
-            //                 ),
-            //                 SizedBox(height: ConstVar.mediumspace),
-            //
-            //                 // TextField(
-            //                 //   decoration: InputDecoration(
-            //                 //     hintText: "1256",
-            //                 //   ),
-            //                 // ),
-            //
-            //                 SizedBox(height: ConstVar.minspace),
-            //                 Text(
-            //                   "Select availiable tutoring time:",
-            //                   style: TextStyle(
-            //                     fontSize: 15,
-            //                     fontWeight: FontWeight.bold,
-            //                   ),
-            //                 ),
-            //                 // TextFormField(
-            //                 //   decoration: InputDecoration(
-            //                 //     hintText: "1345",
-            //                 //   ),
-            //                 // )
-            //                 // TextField(
-            //                 //   // keyboardType: TextInputType.text,
-            //                 //   autofocus: false,
-            //                 //   // initialValue: '',
-            //                 //   decoration: InputDecoration(
-            //                 //     hintText: 'Enter tutor name...',
-            //                 //     hintStyle: TextStyle(fontSize: 20.0, color: Colors.grey),
-            //                 //     // contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            //                 //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-            //                 //   ),
-            //                 // ),
-            //                 // TextFormField(
-            //                 //   keyboardType: TextInputType.text,
-            //                 //   autofocus: false,
-            //                 //   initialValue: '',
-            //                 //   obscureText: true,
-            //                 //   decoration: InputDecoration(
-            //                 //     hintText: 'Select tutor nationality',
-            //                 //     hintStyle: TextStyle(fontSize: 20.0, color: Colors.grey),
-            //                 //     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            //                 //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-            //                 //     suffixIcon: IconButton(
-            //                 //       onPressed: null,
-            //                 //       icon: Icon(Icons.visibility),
-            //                 //     ),
-            //                 //   ),
-            //                 // ),
-            //                 // Row(
-            //                 //   children: <TextFormField>[
-            //                 //     TextFormField(
-            //                 //       keyboardType: TextInputType.text,
-            //                 //       autofocus: false,
-            //                 //       initialValue: '',
-            //                 //       decoration: InputDecoration(
-            //                 //         hintText: 'Enter tutor name...',
-            //                 //         hintStyle: TextStyle(fontSize: 20.0, color: Colors.grey),
-            //                 //         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            //                 //         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-            //                 //       ),
-            //                 //     ),
-            //                 //     TextFormField(
-            //                 //       keyboardType: TextInputType.text,
-            //                 //       autofocus: false,
-            //                 //       initialValue: '',
-            //                 //       obscureText: true,
-            //                 //       decoration: InputDecoration(
-            //                 //         hintText: 'Select tutor nationality',
-            //                 //         hintStyle: TextStyle(fontSize: 20.0, color: Colors.grey),
-            //                 //         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            //                 //         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-            //                 //         suffixIcon: IconButton(
-            //                 //           onPressed: null,
-            //                 //           icon: Icon(Icons.visibility),
-            //                 //         ),
-            //                 //       ),
-            //                 //     ),
-            //                 //   ],
-            //                 // )
-            //                 Row(
-            //                   children: <Widget>[
-            //                     getElevatedButton("All", selected: true),
-            //                     getElevatedButton("English for kids"),
-            //                     getElevatedButton("English for business"),
-            //                     getElevatedButton("Conversational"),
-            //                     getElevatedButton("STARTERS"),
-            //                     getElevatedButton("MOVERS"),
-            //                     getElevatedButton("FLYRS"),
-            //                     getElevatedButton("KET"),
-            //                     getElevatedButton("PET"),
-            //                     getElevatedButton("IELTS"),
-            //                     getElevatedButton("TOEFL"),
-            //                     getElevatedButton("TOEIC"),
-            //                   ],
-            //                 ),
-            //
-            //
-            //                 ElevatedButton(
-            //                   onPressed: null,
-            //                   child: Text(
-            //                     "Reset Filters",
-            //                     style: TextStyle(
-            //                       color: Colors.blue,
-            //                       fontSize: 16,
-            //                     ),
-            //                   ),
-            //                   style: ElevatedButton.styleFrom(
-            //                     // backgroundColor: Colors.white,
-            //                     shape: RoundedRectangleBorder(
-            //                         borderRadius: BorderRadius.circular(50),
-            //                         side: BorderSide(
-            //                           color: Colors.blue,
-            //                           style: BorderStyle.solid,
-            //                         )
-            //                     ),
-            //                   ),
-            //                 ),
-            //                 SizedBox(height: ConstVar.mediumspace),
-            //               ],
-            //             ),
-            //           ],
-            //         ),
-            //
-            //         Container(
-            //           padding: EdgeInsets.only(top: ConstVar.largespace, bottom: ConstVar.minspace),
-            //           decoration: BoxDecoration(
-            //             border: Border(
-            //               top: BorderSide(color: Colors.grey,),
-            //             ),
-            //           ),
-            //           child: Row(
-            //             mainAxisSize: MainAxisSize.max,
-            //             children: <Text>[
-            //               Text(
-            //                 "Recommended Tutors",
-            //                 style: TextStyle(
-            //                   fontSize: 20,
-            //                   fontWeight: FontWeight.bold,
-            //                 ),
-            //               ),
-            //             ],
-            //           ),
-            //         ),
-            //
-            //         Column(
-            //           children: <Card>[
-            //             Card(
-            //               borderOnForeground: true,
-            //               margin: EdgeInsets.all(10),
-            //               child: Container(
-            //                 padding: EdgeInsets.all(10),
-            //                 child: Column(
-            //                   mainAxisSize: MainAxisSize.min,
-            //                   crossAxisAlignment: CrossAxisAlignment.start,
-            //                   children: <Widget>[
-            //                     Row(
-            //                       mainAxisSize: MainAxisSize.max,
-            //                       crossAxisAlignment: CrossAxisAlignment.start,
-            //                       children: <Widget>[
-            //                         Container(
-            //                           child: Icon(
-            //                             Icons.account_circle_outlined,
-            //                             size: 60,
-            //                           ),
-            //                         ),
-            //
-            //                         Container(
-            //                           child: Column(
-            //                             crossAxisAlignment: CrossAxisAlignment.start,
-            //                             children: <Widget>[
-            //                               Text(
-            //                                 "Name of lettutor",
-            //                                 style: TextStyle(
-            //                                   fontSize: 18,
-            //                                   fontWeight: FontWeight.bold,
-            //                                 ),
-            //                               ),
-            //
-            //                               Row(
-            //                                 children: <Widget>[
-            //                                   Container(
-            //                                     padding: EdgeInsets.only(top: 5),
-            //                                     child: Icon(
-            //                                       Icons.south_america_sharp,
-            //                                       size: 20,
-            //                                     ),
-            //                                   ),
-            //                                   Container(
-            //                                     padding: EdgeInsets.all(5),
-            //                                     child: Text(
-            //                                       "Nationality of lettutor",
-            //                                       style: TextStyle(
-            //                                           fontSize: 12
-            //                                       ),
-            //                                     ),
-            //                                   ),
-            //                                 ],
-            //                               ),
-            //                               Row(
-            //                                 mainAxisAlignment: MainAxisAlignment.start,
-            //                                 children: <Icon>[
-            //                                   Icon(Icons.star, color: Colors.yellow, size: 15,),
-            //                                   Icon(Icons.star, color: Colors.yellow, size: 15,),
-            //                                   Icon(Icons.star, color: Colors.yellow, size: 15,),
-            //                                   Icon(Icons.star, color: Colors.yellow, size: 15,),
-            //                                   Icon(Icons.star, color: Colors.yellow, size: 15,),
-            //
-            //                                 ],
-            //                               )
-            //                             ],
-            //                           ),
-            //                         ),
-            //
-            //                         Container(
-            //                             child: Row(
-            //                               mainAxisAlignment: MainAxisAlignment.end,
-            //                               mainAxisSize: MainAxisSize.max,
-            //                               children: <Icon>[
-            //                                 Icon(
-            //                                   Icons.favorite_border,
-            //                                   color: Colors.blue,
-            //                                   size: 30,
-            //                                 ),
-            //                               ],
-            //                             )
-            //                         ),
-            //                       ],
-            //                     ),
-            //
-            //                     Row(
-            //                       children: <Widget>[
-            //                         getElevatedButton("English for Business", selected: true),
-            //                         getElevatedButton("TEIC", selected: true),
-            //                       ],
-            //                     ),
-            //
-            //                     Container(
-            //                       child: Text(
-            //                         "Description about lettutor",
-            //                         style: TextStyle(
-            //                           fontSize: 12,
-            //                         ),
-            //                       ),
-            //                     ),
-            //                     Row(
-            //                       mainAxisAlignment: MainAxisAlignment.end,
-            //                       mainAxisSize: MainAxisSize.max,
-            //
-            //                       children: <Widget>[
-            //                         ElevatedButton.icon(
-            //
-            //                           // style: const ButtonStyle(
-            //                           //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-            //                           //
-            //                           // ),
-            //                           style: ElevatedButton.styleFrom(
-            //                             backgroundColor: Colors.white,
-            //                             shape: RoundedRectangleBorder(
-            //                               borderRadius: BorderRadius.circular(32.0),
-            //                               side: BorderSide(
-            //                                   width: 1,
-            //                                   color: Colors.blue
-            //                               ),
-            //                             ),
-            //                           ),
-            //
-            //                           icon: Icon(Icons.calendar_month_sharp, size: 20,color: Colors.blue,),
-            //                           label: Text(
-            //                             'Book',
-            //                             style: TextStyle(
-            //                               color: Colors.blue,
-            //                               fontSize: 13,
-            //                             ),
-            //                           ),
-            //                           onPressed: null,
-            //
-            //                         ),
-            //                       ],
-            //                     )
-            //                   ],
-            //                 ),
-            //               ),
-            //
-            //             )
-            //           ],
-            //         )
-            //
-            //
-            //
-            //
-            //       ],
-            //     )
-            // ),
-            // ),
           ],
         ),
       ),
@@ -510,14 +338,14 @@ class _CourseListPage extends State<CourseListPage> {
     // );
 
   }
-  
+
   List<Widget> getType(List<String> types, int selectId){
     List<Widget> list = [];
     for (var i = 0; i < types.length; i++){
       list.add(Container(
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: i == selectId ? Colors.blue : Colors.white, width: 2)
+              bottom: BorderSide(color: i == selectId ? Colors.blue : Colors.white, width: 2)
           ),
         ),
         child: TextButton(
@@ -549,9 +377,7 @@ class _CourseListPage extends State<CourseListPage> {
             child: Column(
               children: <Widget>[
                 Container(
-                  width: 300,
-                  height: 200,
-                  color: Colors.blue,
+                  child: Image(image: AssetImage("assets/icon/course.png")),
                 ),
 
                 Container(

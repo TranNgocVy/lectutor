@@ -93,33 +93,33 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     Container(
                       child: Stack(
-                          children: <Widget>[
-                            CircleAvatar(
-                              backgroundImage: AssetImage('asset/icon/avatar.jpg'),
-                              maxRadius: 40,
-                            ),
-                            Positioned(
-                              right: 0.0,
-                              bottom: 0.0,
-                              child: Container(
-                                padding: EdgeInsets.all(3),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Colors.blue,
-                                ),
-                                child: Icon(
-                                    // onPressed: null,
-                                    // style: ButtonStyle(
-                                    //   padding: MaterialStatePropertyAll(EdgeInsets.zero),
-                                    // ),
-                                      Icons.mode_edit_sharp,
-                                      color: Colors.white,
-                                      size: 20,
-                                    // )
-                                ),
+                        children: <Widget>[
+                          CircleAvatar(
+                            backgroundImage: AssetImage('assets/icon/avatar.jpg'),
+                            maxRadius: 40,
+                          ),
+                          Positioned(
+                            right: 0.0,
+                            bottom: 0.0,
+                            child: Container(
+                              padding: EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.blue,
+                              ),
+                              child: Icon(
+                                // onPressed: null,
+                                // style: ButtonStyle(
+                                //   padding: MaterialStatePropertyAll(EdgeInsets.zero),
+                                // ),
+                                Icons.mode_edit_sharp,
+                                color: Colors.white,
+                                size: 20,
+                                // )
                               ),
                             ),
-                          ],
+                          ),
+                        ],
 
                       ),
                     ),
@@ -417,12 +417,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                         items: (ConstVar.levelList).map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
-                            value: value,
-                            child: Expanded(
-                              child: Text(
-                              value,
-                            ),
-                            )
+                              value: value,
+                              child: Expanded(
+                                child: Text(
+                                  value,
+                                ),
+                              )
                           );
                         }).toList(),
                       ),
@@ -573,13 +573,13 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
 
             new Expanded(
-                child: Text(
-                  field + ": ",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),
+              child: Text(
+                field + ": ",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
                 ),
+              ),
             ),
           ],
         ),

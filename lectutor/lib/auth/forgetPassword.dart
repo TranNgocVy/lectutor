@@ -79,7 +79,9 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 SizedBox(height: ConstVar.largespace),
 
                 ElevatedButton(
-                  onPressed: null,
+                  onPressed: (){
+                    Navigator.pushNamed(context, '/');
+                  },
                   child: const Text(
                     'Send reset link',
                     style: TextStyle(

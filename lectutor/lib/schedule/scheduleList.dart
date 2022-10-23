@@ -42,7 +42,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                 // mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Image(
-                    image: Svg('asset/icon/schedule.svg'),
+                    image: Svg('assets/icon/schedule.svg'),
                   ),
 
                   Text(
@@ -144,8 +144,8 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                           child: Container(
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                                // border: Border.all(color: Colors.grey.shade200, width: 1),
-                              color: Colors.white
+                              // border: Border.all(color: Colors.grey.shade200, width: 1),
+                                color: Colors.white
                             ),
                             child: Text(
                               "Name of the book",
@@ -188,7 +188,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                           child: Container(
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                                // border: Border.all(color: Colors.grey.shade200, width: 1),
+                              // border: Border.all(color: Colors.grey.shade200, width: 1),
                               color: Colors.white,
                             ),
                             child: Text(
@@ -205,8 +205,8 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300, width: 1),
-                      color: Colors.grey.shade100
+                        border: Border.all(color: Colors.grey.shade300, width: 1),
+                        color: Colors.grey.shade100
                     ),
                     child: Row(
                       children: [
@@ -231,8 +231,8 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                           child: Container(
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
-                                // border: Border.all(color: Colors.grey.shade200, width: 1),
-                              color: Colors.white
+                              // border: Border.all(color: Colors.grey.shade200, width: 1),
+                                color: Colors.white
 
                             ),
                             child: Text(
@@ -348,7 +348,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                             Row(
                               children: <Widget>[
                                 Image(
-                                  image: Svg('asset/icon/nationality.svg'),
+                                  image: Svg('assets/icon/nationality.svg'),
                                   height: 25,
 
                                 ),
@@ -420,12 +420,12 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                         ElevatedButton.icon(
                           style: ButtonStyle(
                             backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      side: BorderSide(color: Colors.red)
-                                  )
-                              ),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    side: BorderSide(color: Colors.red)
+                                )
+                            ),
                           ),
                           icon: Icon(Icons.cancel_presentation, size: 20,color: Colors.red),
                           label: Text(
@@ -475,9 +475,9 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              border: Border(
-                                top: BorderSide(color: Colors.grey.shade400, width: 1),
-                              )
+                                border: Border(
+                                  top: BorderSide(color: Colors.grey.shade400, width: 1),
+                                )
                             ),
                             child: TextFormField(
                               keyboardType: TextInputType.multiline,
@@ -486,6 +486,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                               autofocus: false,
                               initialValue: '',
                               decoration: InputDecoration(
+                                hintMaxLines: 3,
                                 hintText: 'Currently there are no requests for this class. Please write down any requests for the teacher.',
                                 contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),
                                 // border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -530,7 +531,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                 children: <Widget>[
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey.shade50),
+                        backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey.shade50),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -542,8 +543,8 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                     child: Text(
                       "Go to meeting",
                       style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey.shade400
+                          fontSize: 18,
+                          color: Colors.grey.shade400
                       ),
                     ),
 

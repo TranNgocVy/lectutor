@@ -30,7 +30,7 @@ class _LogInPageState extends State<LogInPage> {
             shrinkWrap: true,
             padding: EdgeInsets.all(24.0,),
             children: <Widget>[
-              Image(image: AssetImage("asset/icon/background.png")),
+              Image(image: AssetImage("assets/icon/background.png")),
 
               Text(
                 'Say hello to your English tutors',
@@ -155,7 +155,7 @@ class _LogInPageState extends State<LogInPage> {
                       shape: CircleBorder(),
                     ),
                     child: Image(
-                      image: Svg('asset/icon/facebook.svg'),
+                      image: Svg('assets/icon/facebook.svg'),
                       width: 50,
                     ),
                   ),
@@ -166,23 +166,23 @@ class _LogInPageState extends State<LogInPage> {
                       shape: CircleBorder(),
                     ),
                     child: Image(
-                      image: Svg('asset/icon/google.svg'),
+                      image: Svg('assets/icon/google.svg'),
                       width: 50,
                     ),
                   ),
                   SizedBox(width: ConstVar.mediumspace,),
                   Ink(
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: CircleBorder(side:BorderSide(color: Colors.blueAccent, width: 2)),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.all(3),
-                      child: Icon(
-                        Icons.phone_android,
-                        size: 40,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: CircleBorder(side:BorderSide(color: Colors.blueAccent, width: 2)),
                       ),
-                    )
+                      child: Container(
+                        padding: EdgeInsets.all(3),
+                        child: Icon(
+                          Icons.phone_android,
+                          size: 40,
+                        ),
+                      )
                   ),
 
                 ],
@@ -197,12 +197,12 @@ class _LogInPageState extends State<LogInPage> {
                     style: TextStyle(color: Colors.black, fontSize: 14),
                     children: <TextSpan>[
                       TextSpan(text: ' Sign up',
-                        style: TextStyle(color: Colors.blueAccent, fontSize: 16),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                        Navigator.pushNamed(context, '/register');
+                          style: TextStyle(color: Colors.blueAccent, fontSize: 16),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushNamed(context, '/register');
 
-                          }
+                            }
                       )
                     ]
                 ),

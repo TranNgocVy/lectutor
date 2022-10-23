@@ -33,97 +33,97 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
-      child: ListView(
-        children: <Widget>[
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+        padding: EdgeInsets.all(20),
+        child: ListView(
             children: <Widget>[
-              Image(
-                image: Svg('asset/icon/history.svg'),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Image(
+                    image: Svg('assets/icon/history.svg'),
+                  ),
+
+                  Text(
+                    "History",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+
+                  // Expanded(
+                  //   child: Container(
+                  //     padding: EdgeInsets.only(left: 5,top: 5),
+                  //     child: Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       mainAxisSize: MainAxisSize.min,
+                  //       children: <Widget>[
+                  //         SizedBox(height: ConstVar.minspace),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+
+                ],
               ),
 
-              Text(
-                "History",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+              SizedBox(height: ConstVar.minspace),
+
+              Container(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(color: Colors.black12, width: 3),
+                  ),
+                ),
+                child: Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              "The following is a list of lessons you have attended",
+                              style: TextStyle(
+                                  color: Colors.black38,
+                                  fontSize: 16
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              "You can review the details of the lessons you have attended",
+                              style: TextStyle(
+                                  color: Colors.black38,
+                                  fontSize: 16
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
 
-              // Expanded(
-              //   child: Container(
-              //     padding: EdgeInsets.only(left: 5,top: 5),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       mainAxisSize: MainAxisSize.min,
-              //       children: <Widget>[
-              //         SizedBox(height: ConstVar.minspace),
-              //       ],
-              //     ),
-              //   ),
-              // ),
+              SizedBox(height: ConstVar.largespace),
 
-            ],
-          ),
-
-          SizedBox(height: ConstVar.minspace),
-
-          Container(
-            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(color: Colors.black12, width: 3),
-              ),
-            ),
-            child: Expanded(
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          "The following is a list of lessons you have attended",
-                          style: TextStyle(
-                              color: Colors.black38,
-                              fontSize: 16
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          "You can review the details of the lessons you have attended",
-                          style: TextStyle(
-                              color: Colors.black38,
-                              fontSize: 16
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-
-          SizedBox(height: ConstVar.largespace),
-
-          Column(
-            children:
-            getScheduleList([Schedule("Fri, 30 Sep 22","01:30", "01:55", "finish",1), Schedule("Fri, 30 Sep 22", "02:", "02:25", "finish",1)],
-                [Teacher(1, "Keengan", "France", "Description about him", [], [],[]), Teacher(1, "Keengan", "France", "Description about him", [], [],[])]),
-          )
-        ]
-      )
+              Column(
+                children:
+                getScheduleList([Schedule("Fri, 30 Sep 22","01:30", "01:55", "finish",1), Schedule("Fri, 30 Sep 22", "02:", "02:25", "finish",1)],
+                    [Teacher(1, "Keengan", "France", "Description about him", [], [],[]), Teacher(1, "Keengan", "France", "Description about him", [], [],[])]),
+              )
+            ]
+        )
     );
 
 
@@ -349,10 +349,10 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                     Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        border: Border(
-                          top: BorderSide(color: Colors.grey.shade100, width: 1),
-                          bottom: BorderSide(color: Colors.grey.shade100, width: 1),
-                        )
+                          border: Border(
+                            top: BorderSide(color: Colors.grey.shade100, width: 1),
+                            bottom: BorderSide(color: Colors.grey.shade100, width: 1),
+                          )
                       ),
                       child: Row(
                         children: <Widget>[

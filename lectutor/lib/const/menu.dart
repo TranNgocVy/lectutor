@@ -37,9 +37,8 @@ class _MenuPage extends State<MenuPage> {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  ImageIcon(
-                    AssetImage("asset/icon/background.png"),
-                    size: 40,
+                  CircleAvatar(
+                    backgroundImage: AssetImage('assets/icon/avatar.jpg'),
                   ),
                   SizedBox(width: ConstVar.mediumspace,),
 

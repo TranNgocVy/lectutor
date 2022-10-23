@@ -1,9 +1,17 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+// import 'package:lectutor/course/temp.dart';
+import 'package:lectutor/course/topicdetail.dart';
 import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/topic.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
+// import 'package:path_provider/path_provider.dart';
+
 
 
 class CourseDetail extends StatelessWidget {
@@ -24,6 +32,39 @@ class CourseDetailPage extends StatefulWidget {
 }
 
 class _CourseDetailPage extends State<CourseDetailPage> {
+  String pathPDF = "";
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fromAsset('assets/file/the_internet.pdf', 'demo.pdf').then((f) {
+  //     setState(() {
+  //       pathPDF = f.path;
+  //     });
+  //   });
+  //
+  // }
+
+  // Future<File> fromAsset(String asset, String filename) async {
+  //   // To open from assets, you can copy them to the app storage folder, and the access them "locally"
+  //   Completer<File> completer = Completer();
+  //
+  //   try {
+  //     var dir = await getApplicationDocumentsDirectory();
+  //     File file = File("${dir.path}/$filename");
+  //     var data = await rootBundle.load(asset);
+  //     var bytes = data.buffer.asUint8List();
+  //     await file.writeAsBytes(bytes, flush: true);
+  //     completer.complete(file);
+  //   } catch (e) {
+  //     throw Exception('Error parsing asset file!');
+  //   }
+  //
+  //   return completer.future;
+  // }
+
+
+
   Course course = Course("Life in the Internet Age",
       "Let's discuss how technology is changing the way we live",
       "Intermediate",
@@ -42,7 +83,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(10,30,10,10),
+      padding: EdgeInsets.fromLTRB(10,5,10,10),
       child: Expanded(
         child: ListView(
           children: <Widget>[
@@ -52,9 +93,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                 child: Column(
                   children: <Widget>[
                     Container(
-                      width: 300,
-                      height: 200,
-                      color: Colors.blue,
+                      child: Image(image: AssetImage("assets/icon/course.png"),),
                     ),
 
                     Container(
@@ -99,19 +138,29 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   ElevatedButton(
-                                      onPressed: null,
-                                      style: ButtonStyle(
+                                    onPressed: (){
+                                      Navigator.pushNamed(context, '/course/detail/topic');
+                                      // if (pathPDF.isNotEmpty) {
+                                      //   Navigator.push(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //       builder: (context) => PDFScreen(path: pathPDF),
+                                      //     ),
+                                      //   );
+                                      // }
+                                    },
+                                    style: ButtonStyle(
                                       // backgroundColor: Colors.blue,
                                       backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
                                     ),
-                                      child: Text(
-                                        "Discover",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                        ),
+                                    child: Text(
+                                      "Discover",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.white,
                                       ),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -269,7 +318,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                       Text(
                         "Course Length",
                         style: TextStyle(
-                            fontSize: 25,
+                          fontSize: 25,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -399,38 +448,38 @@ class _CourseDetailPage extends State<CourseDetailPage> {
       list.add(SizedBox(height: 10,));
       list.add( Card(
         child: Container(
-          padding: EdgeInsets.fromLTRB(20,40,10,20),
-          child: Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "${i+1}",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black54,
+            padding: EdgeInsets.fromLTRB(20,40,10,20),
+            child: Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    "${i+1}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black54,
+                    ),
                   ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                        child: Text(
-                          topicList[i].title,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                    )
-                  ],
-                ),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: Text(
+                            topicList[i].title,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                      )
+                    ],
+                  ),
 
 
-              ],
-            ),
-          )
+                ],
+              ),
+            )
         ),
         elevation: 5,
         shadowColor: Colors.grey,

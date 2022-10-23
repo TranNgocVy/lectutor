@@ -25,6 +25,33 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
   String level = "";
   final List<String> _selectedItems = [];
   // List<bool> _isCheckedList =;
+  final TextEditingController _dController = TextEditingController();
+  final FocusNode _dFocus = FocusNode();
+  DateTime selectedDate = DateTime.now();
+  _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2050),
+    );
+    if (picked != null && picked != selectedDate) {
+      selectedDate = picked;
+      setState(() {
+        _dController.text = "${selectedDate.toLocal()}".split(' ')[0];
+        _dFocus.requestFocus();
+      });
+    }
+    else if (picked == selectedDate) {
+      return;
+    }
+    else {
+      setState(() {
+        _dController.clear();
+        selectedDate = DateTime.now();
+      });
+    }
+  }
 
 
   @override
@@ -34,14 +61,14 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
       child: ListView(
         children: <Widget>[
           Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: getRound(["Complete profile", "Video introduction", "Approval"], 1)
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: getRound(["Complete profile", "Video introduction", "Approval"], 1)
           ),
           Container(
             decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(width: 1, color: Colors.grey.shade200),
-              )
+                border: Border(
+                  bottom: BorderSide(width: 1, color: Colors.grey.shade200),
+                )
             ),
           ),
           Container(
@@ -49,7 +76,7 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Image(image: AssetImage("asset/icon/completeprofile.png"),width: 80,),
+                Image(image: AssetImage("assets/icon/completeprofile.png"),width: 80,),
                 SizedBox(width: 10,),
                 Expanded(
                     child: Column(
@@ -204,18 +231,48 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
 
                 Text("Date of Birth", style: TextStyle(fontSize: 16, color: Colors.black87 , fontWeight: FontWeight.bold),),
                 SizedBox(height: ConstVar.minspace,),
-                TextFormField(
-                  autofocus: false,
-                  initialValue: '',
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                    suffixIcon: IconButton(
-                      onPressed: null,
-                      icon: Icon(Icons.calendar_today_outlined, color: Colors.grey,),
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: TextFormField(
+                    keyboardType: TextInputType.text,
+                    // initialValue: "2001-04-04",
+                    focusNode: _dFocus,
+                    controller: _dController..text="2001-04-04",
+                    autovalidateMode: AutovalidateMode.always,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 0),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: Colors.grey),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: Colors.blue),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+                      suffixIcon: (_dController.text.isNotEmpty && _dFocus.hasFocus) ?
+                      IconButton(onPressed: () {setState(() {
+                        _dController.clear();
+                        selectedDate = DateTime.now();
+                        _dFocus.unfocus();
+                      });}, icon: Icon(Icons.clear)) :
+                      Icon(Icons.calendar_month_outlined),
                     ),
+                    readOnly: true,
+                    onTap: () => _selectDate(context),
                   ),
                 ),
+                // TextFormField(
+                //   autofocus: false,
+                //   initialValue: '',
+                //   decoration: InputDecoration(
+                //     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                //     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                //     suffixIcon: IconButton(
+                //       onPressed: null,
+                //       icon: Icon(Icons.calendar_today_outlined, color: Colors.grey,),
+                //     ),
+                //   ),
+                // ),
                 SizedBox(height: ConstVar.mediumspace,),
 
 
@@ -345,21 +402,21 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
                 Text("Current or Previous Profession", style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.bold),),
                 SizedBox(height: ConstVar.minspace,),
                 ElevatedButton(
-                    onPressed: null,
-                    child: Text(
-                      "Add new certificate",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                      ),
+                  onPressed: null,
+                  child: Text(
+                    "Add new certificate",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 16,
                     ),
+                  ),
                   style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              side: BorderSide(color: Colors.blue)
-                          )
-                      ),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            side: BorderSide(color: Colors.blue)
+                        )
+                    ),
                     backgroundColor:  MaterialStateProperty.all(Colors.white),
                   ),
                 ),
@@ -375,9 +432,9 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
                             child: Container(
                               padding: EdgeInsets.only(left: 5),
                               decoration: BoxDecoration(
-                                border: Border(
-                                  right: BorderSide(color: Colors.grey.shade400, width:  1)
-                                )
+                                  border: Border(
+                                      right: BorderSide(color: Colors.grey.shade400, width:  1)
+                                  )
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
@@ -592,9 +649,9 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
                 Column(
                   children: ConstVar.type.map((type) => Container(
                     decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey.shade300, width: 1),
-                      )
+                        border: Border(
+                          bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+                        )
                     ),
                     child: CheckboxListTile(
                       title: Text(type),
@@ -630,7 +687,7 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
+                        borderRadius: BorderRadius.circular(5.0),
                       )
                   ),
                   backgroundColor:  MaterialStateProperty.all(Colors.blue),
@@ -672,9 +729,9 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
                 padding: EdgeInsets.all(10),
 
                 decoration: BoxDecoration(
-                  color: i < step ? Colors.blue : Colors.white,
-                  border: Border.all(width: 1, color: i < step ? Colors.blue : Colors.grey),
-                  shape: BoxShape.circle
+                    color: i < step ? Colors.blue : Colors.white,
+                    border: Border.all(width: 1, color: i < step ? Colors.blue : Colors.grey),
+                    shape: BoxShape.circle
                   // borderRadius: BorderRadius.circular(50),
                 ),
                 child: Text(

@@ -2,6 +2,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:video_player/video_player.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 import '../const/specialtieschoiceschip.dart';
@@ -30,6 +31,23 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
   final FocusNode _tgFocus = FocusNode();
 
+  late VideoPlayerController controller;
+  @override
+  void initState() {
+    loadVideoPlayer();
+    super.initState();
+  }
+
+  loadVideoPlayer(){
+    controller = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
+    controller.addListener(() {
+      setState(() {});
+    });
+    controller.initialize().then((value){
+      setState(() {});
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,76 +59,76 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               CircleAvatar(
-                backgroundImage: AssetImage('asset/icon/avatar.jpg'),
+                backgroundImage: AssetImage('assets/icon/avatar.jpg'),
                 maxRadius: 50,
               ),
 
               Expanded(
-                  child: Container(
-                    padding: EdgeInsets.only(left: 5,top: 5),
-                    child: Column(
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                "Name of lettutor",
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),)
-                          ],
-                          mainAxisSize: MainAxisSize.min,
-                        ),
-                        SizedBox(height: ConstVar.minspace),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(top: 5),
-                              child: Image(image: Svg("asset/icon/nationality.svg"), width: 30,)
-                            ),
-                            Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.all(5),
-                                  child: Text(
-                                    "Nationality of lettutor",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.black38,
-                                    ),
-                                  ),
-                                ),),
-
-                          ],
-                        ),
-
-                        SizedBox(height: ConstVar.minspace),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(Icons.star, color: Colors.yellow, size: 20,),
-                            Icon(Icons.star, color: Colors.yellow, size: 20,),
-                            Icon(Icons.star, color: Colors.yellow, size: 20,),
-                            Icon(Icons.star, color: Colors.yellow, size: 20,),
-                            Icon(Icons.star, color: Colors.yellow, size: 20,),
-                            Text(
-                              "(58)",
+                child: Container(
+                  padding: EdgeInsets.only(left: 5,top: 5),
+                  child: Column(
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Name of lettutor",
                               style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black38,
-                                  fontStyle: FontStyle.italic
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ),
+                            ),)
+                        ],
+                        mainAxisSize: MainAxisSize.min,
+                      ),
+                      SizedBox(height: ConstVar.minspace),
+                      Row(
+                        children: <Widget>[
+                          Container(
+                              padding: EdgeInsets.only(top: 5),
+                              child: Image(image: Svg("assets/icon/nationality.svg"), width: 30,)
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              child: Text(
+                                "Nationality of lettutor",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black38,
+                                ),
+                              ),
+                            ),),
 
-                          ],
-                        )
-                      ],
-                    ),
+                        ],
+                      ),
+
+                      SizedBox(height: ConstVar.minspace),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Icon(Icons.star, color: Colors.yellow, size: 20,),
+                          Icon(Icons.star, color: Colors.yellow, size: 20,),
+                          Icon(Icons.star, color: Colors.yellow, size: 20,),
+                          Icon(Icons.star, color: Colors.yellow, size: 20,),
+                          Icon(Icons.star, color: Colors.yellow, size: 20,),
+                          Text(
+                            "(58)",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black38,
+                                fontStyle: FontStyle.italic
+                            ),
+                          ),
+
+                        ],
+                      )
+                    ],
                   ),
+                ),
               ),
 
             ],
@@ -148,7 +166,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                   ),
                   SizedBox(height: ConstVar.minspace),
                   Text(
-                      "Favorite",
+                    "Favorite",
                     style: TextStyle(
                       color: Colors.blue,
                       fontSize: 14,
@@ -199,8 +217,86 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           SizedBox(height: ConstVar.largespace),
 
           Container(
-            color: Colors.blue,
-            height: 300,
+            // color: Colors.blue,
+            // height: 300,
+            child: Stack(
+                children:[
+                  AspectRatio(
+                    aspectRatio: controller.value.aspectRatio,
+                    child: VideoPlayer(controller),
+                  ),
+
+                  // Container( //duration of video
+                  //   child: Text("Total Duration: " + controller.value.duration.toString()),
+                  // ),
+
+                  Positioned(
+                    bottom: 15,
+                    right: 0,
+                    child: Row(
+                      children: <Widget>[
+                        IconButton(onPressed: null, icon: Icon(Icons.volume_up,size: 30,color: Colors.white,),),
+
+                        IconButton(onPressed: null, icon: Icon(Icons.fullscreen_rounded,size: 30,color: Colors.white,),),
+
+                      ],
+                    ),
+                  ),
+
+                  // Positioned(
+                  //   bottom: 7,
+                  //   child: Container(
+                  //     child: VideoProgressIndicator(
+                  //         controller,
+                  //         allowScrubbing: true,
+                  //         colors:VideoProgressColors(
+                  //           backgroundColor: Colors.redAccent,
+                  //           playedColor: Colors.green,
+                  //           bufferedColor: Colors.purple,
+                  //         )
+                  //     )
+                  // ),
+                  // ),
+
+
+
+
+                  Positioned(
+                    left: 0,
+                    bottom: 15,
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: (){
+                              if(controller.value.isPlaying){
+                                controller.pause();
+                              }else{
+                                controller.play();
+                              }
+
+                              setState(() {
+
+                              });
+                            },
+                            icon:Icon(controller.value.isPlaying?Icons.pause:Icons.play_arrow, color: Colors.white,size: 30,)
+                        ),
+                        Text(controller.value.duration.toString(), style: TextStyle(color: Colors.white, fontSize: 18),),
+
+                        // IconButton(
+                        //     onPressed: (){
+                        //       controller.seekTo(Duration(seconds: 0));
+                        //
+                        //       setState(() {
+                        //
+                        //       });
+                        //     },
+                        //     icon:Icon(Icons.stop)
+                        // )
+                      ],
+                    ),
+                  )
+                ]
+            ),
           ),
 
           SizedBox(height: ConstVar.largespace),
@@ -236,23 +332,6 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             ),
           ),
 
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   mainAxisAlignment: MainAxisAlignment.start,
-          //   children: [
-          //     Expanded(
-          //         child: Row(
-          //           children: <Widget>[
-          //             getElevatedButton(),
-          //             getElevatedButton(),
-          //             getElevatedButton(),
-          //             getElevatedButton(),
-          //             getElevatedButton(),
-          //
-          //           ],
-          //         ))
-          //   ],
-          // ),
 
           Container(
             child: Wrap(
@@ -364,11 +443,11 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               SizedBox(width: ConstVar.minspace),
 
               IconButton(
-                  onPressed: null,
-                  icon: Icon(
-                      Icons.chevron_left_rounded,
-                    color: Colors.black38,
-                  ),
+                onPressed: null,
+                icon: Icon(
+                  Icons.chevron_left_rounded,
+                  color: Colors.black38,
+                ),
               ),
 
               SizedBox(width: ConstVar.minspace),
@@ -386,8 +465,8 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               Text(
                 "Oct, 2022",
                 style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 20
+                    color: Colors.black54,
+                    fontSize: 20
                 ),
               ),
             ],
@@ -471,8 +550,8 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
                     ],
                   ),
-                  ),
                 ),
+              ),
             ],
           )
         ],
@@ -570,83 +649,83 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
         );
       }
       else{
-       if(status == "Book") {
-         return TableCell(
-           verticalAlignment: TableCellVerticalAlignment.middle,
-           child: Container(
-             padding: EdgeInsets.all(5),
-             child: ElevatedButton(
-               onPressed: (){
-                 Navigator.pushNamed(context, '/tutor/detail/bookclass');
-               },
-               child: const Text(
-                 'Book',
-                 style: TextStyle(
-                     color: Colors.white,
-                     fontSize: 16
-                 ),
-               ),
-               style: ButtonStyle(
-                 // backgroundColor: Colors.blue,
-                 backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-                 shape: MaterialStateProperty.all(RoundedRectangleBorder( borderRadius: BorderRadius.circular(40) ),),
-               ),
-             ),
-           ),
-         );
-       }
-       else{
-         if (status == "UnBook"){
-           return TableCell(
-             verticalAlignment: TableCellVerticalAlignment.middle,
-             child: Container(
-               padding: EdgeInsets.all(5),
-               child: ElevatedButton(
-                 onPressed: null,
+        if(status == "Book") {
+          return TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Container(
+              padding: EdgeInsets.all(5),
+              child: ElevatedButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, '/tutor/detail/bookclass');
+                },
+                child: const Text(
+                  'Book',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16
+                  ),
+                ),
+                style: ButtonStyle(
+                  // backgroundColor: Colors.blue,
+                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder( borderRadius: BorderRadius.circular(40) ),),
+                ),
+              ),
+            ),
+          );
+        }
+        else{
+          if (status == "UnBook"){
+            return TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: Container(
+                padding: EdgeInsets.all(5),
+                child: ElevatedButton(
+                  onPressed: null,
 
-                 child: const Text(
-                   'Book',
-                   style: TextStyle(
-                       color: Colors.grey,
-                       fontSize: 16
-                   ),
-                 ),
-                 style: ButtonStyle(
-                   // backgroundColor: Colors.blue,
-                   backgroundColor: MaterialStatePropertyAll<Color>(Colors.black12),
-                   shape: MaterialStateProperty.all(RoundedRectangleBorder( borderRadius: BorderRadius.circular(40) ),),
-                 ),
-               ),
-             ),
-           );
-         }
-         else{
-           if(status == ""){
-             return TableCell(
-               verticalAlignment: TableCellVerticalAlignment.middle,
-               child: Container(),
-             );
-           }
-           else{
-             return TableCell(
-               verticalAlignment: TableCellVerticalAlignment.middle,
-               child: Container(
-                 color: Colors.black12,
-                 padding: EdgeInsets.all(5),
-                 height: 60,
-                 child: Text(
-                   status,
-                   textAlign: TextAlign.center,
-                   style: TextStyle(
-                     color: Colors.black87,
-                     fontSize: 18,
-                   ),
-                 ),
-               ),
-             );
-           }
-         }
-       }
+                  child: const Text(
+                    'Book',
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    // backgroundColor: Colors.blue,
+                    backgroundColor: MaterialStatePropertyAll<Color>(Colors.black12),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder( borderRadius: BorderRadius.circular(40) ),),
+                  ),
+                ),
+              ),
+            );
+          }
+          else{
+            if(status == ""){
+              return TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Container(),
+              );
+            }
+            else{
+              return TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Container(
+                  color: Colors.black12,
+                  padding: EdgeInsets.all(5),
+                  height: 60,
+                  child: Text(
+                    status,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              );
+            }
+          }
+        }
 
       }
     }
@@ -677,12 +756,12 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                 style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                 children: <TextSpan>[
                   TextSpan(text: 'Link',
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                    Navigator.pushNamed(context, '/course/detail');
+                      style: TextStyle(color: Colors.blue, fontSize: 18),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushNamed(context, '/course/detail');
 
-                      }
+                        }
                   )
                 ]
             ),

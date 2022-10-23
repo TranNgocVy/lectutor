@@ -50,7 +50,7 @@ class _VideoIntroductionPage extends State<VideoIntroductionPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Image(
-                  image: Svg('asset/icon/videointroduction.svg', size: Size(80, 80)),
+                  image: Svg('assets/icon/videointroduction.svg', size: Size(80, 80)),
                 ),
                 SizedBox(width: 10,),
                 Expanded(
@@ -187,8 +187,8 @@ class _VideoIntroductionPage extends State<VideoIntroductionPage> {
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        side: BorderSide(color: Colors.blue, width: 1)
+                          borderRadius: BorderRadius.circular(5.0),
+                          side: BorderSide(color: Colors.blue, width: 1)
                       )
                   ),
                   backgroundColor:  MaterialStateProperty.all(Colors.white),
