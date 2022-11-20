@@ -2,6 +2,8 @@ class ConstVar{
   static double minspace = 6;
   static double mediumspace = 12;
   static double largespace = 24;
+
+  static String ULR = "https://sandbox.api.lettutor.com/";
   static List<String> type = [
     "English for kids",
     "English for Business",

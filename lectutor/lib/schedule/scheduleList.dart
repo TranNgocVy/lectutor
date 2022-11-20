@@ -539,7 +539,9 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                             )
                         )
                     ),
-                    onPressed: null,
+                    onPressed: (){
+                      Navigator.pushNamed(context, '/video');
+                    },
                     child: Text(
                       "Go to meeting",
                       style: TextStyle(

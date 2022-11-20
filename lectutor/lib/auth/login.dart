@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lectutor/const/page.dart';
+import 'package:lectutor/model/auth.dart';
 import '../const/constVar.dart';
+import 'package:dio/dio.dart';
 
 class LogIn extends StatelessWidget {
   const LogIn({super.key});
@@ -22,6 +26,24 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool isVisiblePassword = false;
+  bool isValidAuth = true;
+
+  Future <void> login(Auth auth) async{
+    var dio = Dio();
+    try{
+      var response = await dio.post(ConstVar.ULR + 'auth/login', data: auth.toJson());
+
+      if(response.statusCode == 200){
+        Navigator.pushNamed(context, '/tutor');
+      }
+    }catch(e){
+      isValidAuth = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,7 +89,8 @@ class _LogInPageState extends State<LogInPage> {
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 autofocus: false,
-                initialValue: '',
+                // initialValue: '',
+                controller: emailController,
                 decoration: InputDecoration(
                   hintText: 'Enter your email...',
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -89,18 +112,45 @@ class _LogInPageState extends State<LogInPage> {
 
               TextFormField(
                 autofocus: false,
-                initialValue: '',
-                obscureText: true,
+                controller: passwordController,
+                obscureText: !isVisiblePassword,
                 decoration: InputDecoration(
                   hintText: 'Enter your password...',
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                   suffixIcon: IconButton(
-                    onPressed: null,
-                    icon: Icon(Icons.visibility),
+                    onPressed: (){
+                      setState(() {
+                        isVisiblePassword = !isVisiblePassword;
+                      });
+
+                    },
+                    icon: isVisiblePassword ? Icon(Icons.visibility_off) : Icon(Icons.visibility),
                   ),
                 ),
               ),
+
+              if(!isValidAuth)
+                Container(
+                  padding: EdgeInsets.fromLTRB(0,12, 0,0),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.error,
+                        color: Colors.red,
+                      ),
+                      SizedBox(width: ConstVar.minspace,),
+                      const Text(
+                        "Log in failed! Incorrect email or password.",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.red,
+                        ),
+                      )
+                    ],
+
+                  ),
+                ),
 
               SizedBox(height: ConstVar.mediumspace),
               GestureDetector(
@@ -119,7 +169,10 @@ class _LogInPageState extends State<LogInPage> {
 
               ElevatedButton(
                 onPressed: (){
-                  Navigator.pushNamed(context, '/tutor');
+                  Auth auth = new Auth(emailController.text, passwordController.text);
+                  setState(() {
+                    login(auth);
+                  });
                 },
                 child: const Text(
                   'LOG IN',

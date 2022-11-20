@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Lettutor',
       theme: ThemeData(
       ),
-      initialRoute: '/course/detail',
+      initialRoute: '/',
       routes: {
         '/': (context) => LogIn(),
         '/register': (context) => Register(),
@@ -54,7 +54,6 @@ class MyApp extends StatelessWidget {
         '/becometutor/completeproflie': (context) => CompleteProfile(),
         '/becometutor/videointroduction': (context) => VideoIntroduction(),
         '/becometutor/approval': (context) => Approval(),
-        // '/video': (context) => TeacherListPage(),
 
       },
     );
