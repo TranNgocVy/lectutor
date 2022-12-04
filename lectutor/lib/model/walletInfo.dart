@@ -8,7 +8,7 @@ class WalletInfo {
 
   String id;
   String userId;
-  int amount;
+  String amount;
   bool isBlocked;
   DateTime createdAt;
   DateTime updatedAt;

@@ -1,34 +1,51 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:lectutor/model/topic.dart';
 
-class Course{
-  String _title;
-  String _description;
-  String _level;
-  List<Topic> _topicList;
+import 'category.dart';
+part 'course.g.dart';
+@JsonSerializable()
+class Course {
 
-  Course(this._title, this._description, this._level, this._topicList);
+  String id;
+  String name;
+  String description;
+  String imageUrl;
+  String level;
+  String reason;
+  String purpose;
+  String other_details;
+  int default_price;
+  int course_price;
+  String courseType;
+  String sectionType;
+  bool visible;
+  String displayOrder;
+  DateTime createdAt;
+  DateTime updatedAt;
+  List<Topic> topics;
+  List<Category> categories;
 
-  List<Topic> get topicList => _topicList;
+  factory Course.fromJson(Map<String, dynamic> json) => _$CourseFromJson(json);
 
-  set topicList(List<Topic> value) {
-    _topicList = value;
-  }
+  Map<String, dynamic> toJson() => _$CourseToJson(this);
 
-  String get level => _level;
-
-  set level(String value) {
-    _level = value;
-  }
-
-  String get description => _description;
-
-  set description(String value) {
-    _description = value;
-  }
-
-  String get title => _title;
-
-  set title(String value) {
-    _title = value;
-  }
+  Course(
+      this.id,
+      this.name,
+      this.description,
+      this.imageUrl,
+      this.level,
+      this.reason,
+      this.purpose,
+      this.other_details,
+      this.default_price,
+      this.course_price,
+      this.courseType,
+      this.sectionType,
+      this.visible,
+      this.displayOrder,
+      this.createdAt,
+      this.updatedAt,
+      this.topics,
+      this.categories);
 }

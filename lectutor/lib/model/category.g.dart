@@ -1,28 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'walletInfo.dart';
+part of 'category.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-WalletInfo _$WalletInfoFromJson(Map<String, dynamic> json) => WalletInfo(
+Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
       json['id'] as String,
-      json['userId'] as String,
-      json['amount'] as String,
-      json['isBlocked'] as bool,
+      json['title'] as String,
+      json['description'] as String,
+      json['key'] as String,
+      json['displayOrder'] as int,
       DateTime.parse(json['createdAt'] as String),
       DateTime.parse(json['updatedAt'] as String),
-      json['bonus'] as int,
     );
 
-Map<String, dynamic> _$WalletInfoToJson(WalletInfo instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
       'id': instance.id,
-      'userId': instance.userId,
-      'amount': instance.amount,
-      'isBlocked': instance.isBlocked,
+      'title': instance.title,
+      'description': instance.description,
+      'key': instance.key,
+      'displayOrder': instance.displayOrder,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
-      'bonus': instance.bonus,
     };

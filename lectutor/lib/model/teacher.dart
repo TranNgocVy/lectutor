@@ -1,4 +1,4 @@
-import 'package:lectutor/model/course.dart';
+import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/schedule.dart';
 
 class Teacher{
@@ -6,7 +6,7 @@ class Teacher{
   String _name;
   String _natioonality;
   String _description;
-  List<Course> _courseList;
+  List<Courses> _courseList;
   List<Schedule> _scheduleList;
   List<String> _specialtyList;
 
@@ -34,9 +34,9 @@ class Teacher{
     _scheduleList = value;
   }
 
-  List<Course> get courseList => _courseList;
+  List<Courses> get courseList => _courseList;
 
-  set courseList(List<Course> value) {
+  set courseList(List<Courses> value) {
     _courseList = value;
   }
 
