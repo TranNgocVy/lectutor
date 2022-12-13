@@ -43,3 +43,19 @@ Future <dynamic> searchTeacher(BuildContext context, String name, List<String> n
   }
   return null;
 }
+
+Future <dynamic> getTeacherDetail(BuildContext context, String id) async{
+  var dio = Dio();
+  try{
+    // dio.options.headers["Authorization"] = "Bearer ${context.watch<Tokens>().access.token}";
+    dio.options.headers["Authorization"] = "Bearer ${Const.token}";
+    var response = await dio.get(ConstVar.ULR + 'tutor/$id');
+
+    if(response.statusCode == 200){
+      return response.data;
+    }
+  }catch(e){
+    // print(e);
+  }
+  return null;
+}

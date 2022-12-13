@@ -119,8 +119,8 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
 
               Column(
                 children:
-                getScheduleList([Schedule("Fri, 30 Sep 22","01:30", "01:55", "finish",1), Schedule("Fri, 30 Sep 22", "02:", "02:25", "finish",1)],
-                    [Teacher(1, "Keengan", "France", "Description about him", [], [],[]), Teacher(1, "Keengan", "France", "Description about him", [], [],[])]),
+                getScheduleList([],
+                    []),
               )
             ]
         )
@@ -146,7 +146,9 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      scheduleList[i].day,
+                      //Todo
+                      "",
+                      // scheduleList[i].day,
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
@@ -295,7 +297,9 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
 
                       children: <Widget>[
                         Expanded(child: Text(
-                          "Lesson time: " + scheduleList[i].start + " - " + scheduleList[i].end,
+                          //Todo
+                          "",
+                          // "Lesson time: " + scheduleList[i].start + " - " + scheduleList[i].end,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20,

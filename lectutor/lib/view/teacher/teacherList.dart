@@ -4,12 +4,16 @@ import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/handle/teacher.dart';
 import 'package:lectutor/model/teacher.dart';
+import 'package:lectutor/model/tutorDetail.dart';
 import 'package:lectutor/model/user.dart';
 import 'package:provider/provider.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 import '../../config/const.dart';
+import '../../config/pkg.dart';
+import '../../model/schedule.dart';
 import '../../model/tokens.dart';
 import '../../model/tutor.dart';
 import '../const/choicechip.dart';
@@ -589,9 +593,35 @@ class _TeacherListPage extends State<TeacherListPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   GestureDetector(
-                    // onTap: (){
-                    //   Navigator.pushNamed(context, '/tutor/detail');
-                    // },
+                    onTap:  ()  async {
+                      late TutorDetail tutorDetail;
+                      List<Schedule> schedules = [];
+
+                      var data = await  getTeacherDetail(context, tutorList[i].userId.toString());
+                      if (data != null){
+                        tutorDetail = TutorDetail.fromJson(data);
+                      }
+
+                      // print("1111111111111111111111111111111111111111\n");
+                      // print(tutorDetail.bio.toString());
+                      // print("\n22222222222222222222222222222222222222222\n");
+                      //
+                      // data = await getScheduleByTutorId(context, );
+                      // if (data!=null){
+                      //     try{
+                      //       for(int i = 0;; i++){
+                      //         schedules.add(Schedule.fromJson(data[i]));
+                      //       }
+                      //
+                      //     }catch(e){}
+                      // }
+                      // print("33333333333333333333333333333333333333\n");
+                      // print(schedules.length);
+                      // print("\n44444444444444444444444444444444444\n");
+
+                      Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
+
+                    },
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -649,7 +679,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                children: getRating(tutorList[i].rating),
+                                children: Pkg.getRating(tutorList[i].rating),
                                 // children: <Icon>[
                                 //   Icon(Icons.star, color: Colors.yellow, size: 15,),
                                 //   Icon(Icons.star, color: Colors.yellow, size: 15,),
@@ -749,7 +779,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                           ),
                         ),
                         onPressed: (){
-                          Navigator.pushNamed(context, '/tutor/detail', arguments: tutorList[i].id);
+                          Navigator.pushNamed(context, '/tutor/detail', arguments: tutorList[i].userId);
                         },
 
                       ),
@@ -765,28 +795,6 @@ class _TeacherListPage extends State<TeacherListPage> {
     return list;
   }
 
-  List<Widget> getRating(double? rating){
-    if (rating == null){
-      return [Text(
-        "No reviews yet",
-        style: TextStyle(
-          color: Colors.grey.shade400,
-          fontSize: 15,
-          fontStyle: FontStyle.italic,
-        ),
-      )];
-    }
-    List<Icon> icons = [];
-    for (int i = 1; i <= 5; i++){
-      if (rating >= i){
-        icons.add(Icon(Icons.star, color: Colors.yellow, size: 15,));
-      }
-      else{
-        icons.add(Icon(Icons.star_border, color: Colors.grey, size: 15,));
-      }
-    }
-    return icons;
-  }
 
 }
 

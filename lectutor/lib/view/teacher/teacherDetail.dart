@@ -3,26 +3,40 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:lectutor/config/pkg.dart';
+import 'package:lectutor/handle/schedule.dart';
+import 'package:lectutor/handle/teacher.dart';
+import 'package:lectutor/model/bookingInfo.dart';
+import 'package:lectutor/model/schedule.dart';
+import 'package:lectutor/model/tutorCourseList.dart';
+import 'package:lectutor/model/tutorDetail.dart';
+import 'package:lectutor/test.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import '../../config/const.dart';
 import '../../model/courses.dart';
+import '../../model/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 import '../const/specialtieschoiceschip.dart';
 
 class TeacherDetail extends StatelessWidget {
-  const TeacherDetail({super.key});
+  final TutorDetail tutorDetail;
+
+  const TeacherDetail({super.key, required this.tutorDetail});
 
 
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, TeacherDetailPage());
+    return TemplatePage.getHeader(context, TeacherDetailPage(tutorDetail: tutorDetail));
 
   }
 }
 
 class TeacherDetailPage extends StatefulWidget {
-  const TeacherDetailPage({super.key});
+  final TutorDetail tutorDetail;
+  const TeacherDetailPage({super.key, required this.tutorDetail});
   @override
   State<TeacherDetailPage> createState() => _TeacherDetailPage();
 
@@ -36,10 +50,16 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   // late VideoPlayerController _videoPlayerController2;
   ChewieController? _chewieController;
   int? bufferDelay;
+  // TutorDetail tutorDetail = widget.teacherDetail;
+  List<Schedule> schedules = [];
+  DateTime date = DateTime.now();
 
   @override
   void initState() {
     super.initState();
+    // getTutorDetail(widget.id);
+    getScedule(widget.tutorDetail.User.id);
+    print(schedules.length);
     initializePlayer();
   }
 
@@ -59,7 +79,8 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
   Future<void> initializePlayer() async {
     _videoPlayerController1 =
-        VideoPlayerController.network(srcs[currPlayIndex]);
+        // VideoPlayerController.network((tutorDetail?.video).toString());
+    VideoPlayerController.network(srcs[currPlayIndex]);
     // _videoPlayerController2 =
     // VideoPlayerController.network(srcs[currPlayIndex]);
     await Future.wait([
@@ -82,7 +103,8 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
       additionalOptions: (context) {
         return <OptionItem>[
           OptionItem(
-            onTap: toggleVideo,
+            // onTap: toggleVideo,
+            onTap: null,
             iconData: Icons.live_tv_sharp,
             title: 'Toggle Video Src',
           ),
@@ -120,16 +142,53 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
   int currPlayIndex = 0;
 
-  Future<void> toggleVideo() async {
-    await _videoPlayerController1.pause();
-    currPlayIndex += 1;
-    if (currPlayIndex >= srcs.length) {
-      currPlayIndex = 0;
+  // Future<void> toggleVideo() async {
+  //   await _videoPlayerController1.pause();
+  //   currPlayIndex += 1;
+  //   if (currPlayIndex >= srcs.length) {
+  //     currPlayIndex = 0;
+  //   }
+  //   await initializePlayer();
+  // }
+
+  // void getTutorDetail(String id) async{
+  //   var data = await getTeacherDetail(context, id);
+  //   if (data != null){
+  //     setState(() {
+  //       updateTutorDetail(data);
+  //     });
+  //   }
+  // }
+
+  void getScedule (String id) async{
+    var data = await getScheduleByTutorId(context, id);
+    if (data != null){
+      setState(() {
+        updateSchedule(data);
+      });
     }
-    await initializePlayer();
   }
+
+  // void updateTutorDetail (dynamic data){
+  //   tutorDetail = TutorDetail.fromJson(data);
+  // }
+  void updateSchedule (dynamic data){
+    try{
+      for(int i = 0;; i++){
+        schedules.add(Schedule.fromJson(data[i]));
+      }
+    }catch(e){}
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    List<String> specialtyList = (widget.tutorDetail?.User?.name).toString().split(",");
+    String alias = "";
+    List<String> nameSplit = (widget.tutorDetail?.User?.name).toString().split(" ");
+    for(int i = 0; i < nameSplit.length && i < 2; i++){
+      alias = alias + nameSplit[i][0];
+    }
     return Container(
       padding: EdgeInsets.all(20),
       child: ListView(
@@ -138,10 +197,31 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              CircleAvatar(
-                backgroundImage: AssetImage('assets/icon/avatar.jpg'),
-                maxRadius: 50,
+              Container(
+                padding: EdgeInsets.only(top: 5),
+                child: widget.tutorDetail.User?.avatar != null?
+                CircleAvatar(
+                  // backgroundImage: ,
+                  // backgroundImage: NetworkImage((tutorDetail?.User?.avatar).toString()),
+                  backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
+                  maxRadius: 50,
+                ):
+                CircleAvatar(
+                  backgroundColor: Colors.blue.shade200,
+                  maxRadius: 50,
+                  child: Text(
+                    alias,
+                    style: TextStyle(
+                        fontSize: 45,
+                        color: Colors.white
+                    ),
+                  ),
+                ),
               ),
+              // CircleAvatar(
+              //   backgroundImage: AssetImage('assets/icon/avatar.jpg'),
+              //   maxRadius: 50,
+              // ),
 
               Expanded(
                 child: Container(
@@ -155,7 +235,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                           Expanded(
                             flex: 1,
                             child: Text(
-                              "Name of lettutor",
+                                (widget.tutorDetail.User?.name).toString(),
                               style: TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold,
@@ -167,15 +247,15 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                       SizedBox(height: ConstVar.minspace),
                       Row(
                         children: <Widget>[
+
                           Container(
-                              padding: EdgeInsets.only(top: 5),
                               child: Image(image: Svg("assets/icon/nationality.svg"), width: 30,)
                           ),
                           Expanded(
                             child: Container(
                               padding: EdgeInsets.all(5),
                               child: Text(
-                                "Nationality of lettutor",
+                                (widget.tutorDetail?.User?.country).toString(),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.black38,
@@ -189,23 +269,19 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                       SizedBox(height: ConstVar.minspace),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Icon(Icons.star, color: Colors.yellow, size: 20,),
-                          Icon(Icons.star, color: Colors.yellow, size: 20,),
-                          Icon(Icons.star, color: Colors.yellow, size: 20,),
-                          Icon(Icons.star, color: Colors.yellow, size: 20,),
-                          Icon(Icons.star, color: Colors.yellow, size: 20,),
+                        children: [Row(
+                          children: Pkg.getRating((widget.tutorDetail?.rating)),
+                        ),
                           Text(
-                            "(58)",
+                            "(${(widget.tutorDetail?.totalFeedback).toString()})",
                             style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.black38,
                                 fontStyle: FontStyle.italic
                             ),
                           ),
-
-                        ],
-                      )
+                        ]
+                      ),
                     ],
                   ),
                 ),
@@ -222,7 +298,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  "Desscription about lettutor",
+                    (widget.tutorDetail?.bio).toString(),
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black38,
@@ -239,10 +315,30 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             children: [
               Column(
                 children: [
-                  Icon(
-                    Icons.favorite_border,
-                    color: Colors.blue,
-                    size: 25,
+                  (widget.tutorDetail?.isFavorite != true) ?
+                  IconButton(
+                    onPressed: (){
+                      setState(() {
+                        widget.tutorDetail?.isFavorite = true;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.favorite_border,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                  ):
+                  IconButton(
+                    onPressed: (){
+                      setState(() {
+                        widget.tutorDetail?.isFavorite = false;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 25,
+                    ),
                   ),
                   SizedBox(height: ConstVar.minspace),
                   Text(
@@ -414,7 +510,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               Expanded(
                   child: Row(
                     children: <Widget>[
-                      getElevatedButton("English"),
+                      Pkg.getElevatedButton((widget.tutorDetail?.User?.language).toString()),
                     ],
                   ))
             ],
@@ -435,7 +531,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             child: Wrap(
               runSpacing: 2,
               spacing: 5,
-              children: SpecialtiesChoiceChips.getSpecialties(["English for business", "Conversational", "English for kids", "IELTS",  "TOEIC"], true).map((value) => ChoiceChip(
+              children: SpecialtiesChoiceChips.getSpecialties((widget.tutorDetail?.specialties).toString().split(","), true).map((value) => ChoiceChip(
                 label: Text(value.label),
                 selected: value.isSelected,
                 selectedColor: Colors.blue.shade200,
@@ -461,7 +557,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           ),
 
           Column(
-            children: getSuggestedCourse([Courses("Basic conversation topics", "", "", []), Courses("Life in the internet age", "", "", [])]),
+            children: getSuggestedCourse(widget.tutorDetail!.User.courses),
           ),
 
 
@@ -482,7 +578,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  "I loved the weather, the scenery and the laid-back lifestyle of the locals.",
+                    (widget.tutorDetail?.interests).toString(),
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black38,
@@ -508,7 +604,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  "I have more than 10 years of teaching english experience",
+                  (widget.tutorDetail?.experience).toString(),
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black38,
@@ -541,7 +637,15 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               SizedBox(width: ConstVar.minspace),
 
               IconButton(
-                onPressed: null,
+                onPressed: (){
+                  DateTime now = DateTime.now();
+                  setState(() {
+                    date = date.subtract(Duration(days: 7));
+                    if (date.isBefore(now)){
+                      date = now;
+                    }
+                  });
+                },
                 icon: Icon(
                   Icons.chevron_left_rounded,
                   color: Colors.black38,
@@ -551,7 +655,11 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               SizedBox(width: ConstVar.minspace),
 
               IconButton(
-                onPressed: null,
+                onPressed: (){
+                  setState(() {
+                    date = date.add(Duration(days: 7));
+                  });
+                },
                 icon: Icon(
                   Icons.chevron_right_rounded,
                   color: Colors.black38,
@@ -561,7 +669,11 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               SizedBox(width: ConstVar.minspace),
 
               Text(
-                "Oct, 2022",
+                date.add(Duration(days: 6)).month == date.month ?
+                  "${Const.months[date.month - 1]}, ${date.year}":
+                    date.add(Duration(days: 6)).year == date.year ?
+                      "${Const.months[date.month - 1]} - ${Const.months[date.add(Duration(days: 6)).month - 1]}, ${date.year}":
+                      "${Const.months[date.month - 1]}, ${date.year} - ${Const.months[date.add(Duration(days: 6)).month - 1]}, ${date.add(Duration(days: 6)).year}",
                 style: TextStyle(
                     color: Colors.black54,
                     fontSize: 20
@@ -592,61 +704,26 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
                     },
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: <TableRow>[
-                      TableRow(
-                        children: <Widget>[
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: Container(
-                              color: Colors.grey,
-                            ),
-                          ),
-
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: getDate("11/10", "Tue"),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: getDate("12/10", "Wed"),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: getDate("13/10", "Thu"),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: getDate("14/10", "Fri"),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: getDate("15/10", "Sat"),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: getDate("16/10", "Sun"),
-                          ),
-                          TableCell(
-                            verticalAlignment: TableCellVerticalAlignment.middle,
-                            child: getDate("17/10", "Mon"),
-                          ),
-                        ],
-                      ),
-                      getTableRow("00:00 - 00:25", ["Booked", "","", "", "Book","", ""]),
-                      getTableRow("00:30 - 00:55", ["Booked", "","", "", "Book","", ""]),
-                      getTableRow("01:00 - 01:25", ["UnBook", "","", "", "Book","", ""]),
-                      getTableRow("01:30 - 01:55", ["Book", "","", "", "Book","", ""]),
-                      getTableRow("02:00 - 02:25", ["Book", "Booked","Book", "Reserved", "Book","", ""]),
-                      getTableRow("02:30 - 02:55", ["Reserved", "","", "", "","", ""]),
-                      getTableRow("03:00 - 03:25", ["", "","", "", "Reserved","", ""]),
-                      getTableRow("03:30 - 03:55", ["Booked", "Reserved","", "", "","", ""]),
-                      getTableRow("04:00 - 04:25", ["Book", "UnBook","", "", "","", ""]),
-                      getTableRow("04:30 - 04:55", ["", "","", "", "Book","", ""]),
-                      getTableRow("05:00 - 05:25", ["", "UnBook","", "", "Book","", ""]),
-                      getTableRow("05:30 - 05:55", ["", "","", "", "Book","", ""]),
-
-
-                    ],
+                    children: getTableRow(date, schedules, '${context.watch<User>().id}')
+                    // <TableRow>[
+                    //   TableRow(
+                    //     children: getDayHeader(date),
+                    //   ),
+                    //   getTableRow("00:00 - 00:25", ["Booked", "","", "", "Book","", ""]),
+                    //   getTableRow("00:30 - 00:55", ["Booked", "","", "", "Book","", ""]),
+                    //   getTableRow("01:00 - 01:25", ["UnBook", "","", "", "Book","", ""]),
+                    //   getTableRow("01:30 - 01:55", ["Book", "","", "", "Book","", ""]),
+                    //   getTableRow("02:00 - 02:25", ["Book", "Booked","Book", "Reserved", "Book","", ""]),
+                    //   getTableRow("02:30 - 02:55", ["Reserved", "","", "", "","", ""]),
+                    //   getTableRow("03:00 - 03:25", ["", "","", "", "Reserved","", ""]),
+                    //   getTableRow("03:30 - 03:55", ["Booked", "Reserved","", "", "","", ""]),
+                    //   getTableRow("04:00 - 04:25", ["Book", "UnBook","", "", "","", ""]),
+                    //   getTableRow("04:30 - 04:55", ["", "","", "", "Book","", ""]),
+                    //   getTableRow("05:00 - 05:25", ["", "UnBook","", "", "Book","", ""]),
+                    //   getTableRow("05:30 - 05:55", ["", "","", "", "Book","", ""]),
+                    //
+                    //
+                    // ],
                   ),
                 ),
               ),
@@ -660,29 +737,26 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
   }
 
-  Container getElevatedButton(String txt){
-    Container btn = Container(
-      padding: EdgeInsets.fromLTRB(10, 0, 5, 0),
-      child: ElevatedButton(
-        onPressed: null,
-        child: Text(
-          txt,
-          style: TextStyle(
-            color: Colors.blue,
-            fontSize: 14,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          // backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-        ),
+  List<Widget> getDayHeader(DateTime start){
+    List<Widget> list = [];
+    list.add(TableCell(
+      verticalAlignment: TableCellVerticalAlignment.middle,
+      child: Container(
+        color: Colors.grey,
       ),
-    );
+    ),);
 
-    return btn;
+    for (int i = 0; i < 7; i++){
+      DateTime temp = start.add(Duration(days: i));
+      list.add(TableCell(
+        verticalAlignment: TableCellVerticalAlignment.middle,
+        child: getDate("${temp.day}/${temp.month}", Const.weekday[temp.weekday - 1]),
+      ),);
+    }
+
+    return list;
   }
+
 
   Container getDate(String day_month, String date){
     return Container(
@@ -829,28 +903,102 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     }
   }
 
-  TableRow getTableRow(String time, List<String> date){
-    List<Widget> row = [];
-    row.add(getBookCell(time));
-    for (var i = 0; i < 7; i++){
-      row.add(getBookCell(date[i]));
-    }
+  // TableRow getTableRow(String time, List<String> date){
+  //   List<Widget> row = [];
+  //   row.add(getBookCell(time));
+  //   for (var i = 0; i < 7; i++){
+  //     row.add(getBookCell(date[i]));
+  //   }
+  //
+  //   return TableRow(
+  //     children: row,
+  //   );
+  // }
+  List<TableRow> getTableRow(DateTime start, List<Schedule> schedules, String userId){
+    print(start);
+    print(schedules.length);
+    print(userId);
 
-    return TableRow(
-      children: row,
-    );
+    List<TableRow> list = [];
+    list.add(TableRow(
+      children: getDayHeader(start),
+    ),);
+    Map<String, List<String>> map = {};
+
+    print("Toi map");
+    for(int i = 0 ; i < schedules.length; i++){
+      for (int j = 0; j < schedules[i].scheduleDetails.length; j++){
+        DateTime startTime = Const.time.add(Duration(milliseconds: schedules[i].scheduleDetails[j].startPeriodTimestamp));
+        print(startTime);
+        int difDay = Pkg.diffDay(start, startTime);
+        if (startTime.isAfter(start) && diffDay(start, startTime) < 7){
+          String key = "${schedules[i].scheduleDetails[j].startPeriod} - ${schedules[i].scheduleDetails[j].endPeriod}";
+          if (schedules[i].scheduleDetails[j].isBooked == false){
+            if (!map.containsKey(key)){
+              map[key] = ["", "", "", "", "", "", ""];
+            }
+            map[key]![difDay] = "Book";
+          }else{
+            for (int k = 0; k < schedules[i].scheduleDetails[j].bookingInfo.length; k ++){
+              if (schedules[i].scheduleDetails[j].bookingInfo[k].isDeleted != true){
+                if (!map.containsKey(key)){
+                  map[key] = ["", "", "", "", "", "", ""];
+                }
+                if(schedules[i].scheduleDetails[j].bookingInfo[k].userId == userId){
+                  map[key]![difDay] = "Booked";
+                }
+                else{
+                  map[key]![difDay] = "Reserved";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    map.forEach((key, value) {
+      List<Widget> row = [];
+      print("${key}: ${value}");
+      row.add(getBookCell(key));
+      for (var i = 0; i < value.length; i++){
+        row.add(getBookCell(value[i]));
+
+
+      }
+      list.add(TableRow(
+        children: row,
+      ));
+    });
+
+    if (list.length == 1){
+      for (var i = 0 ; i < Const.defualtTimeRange.length; i++){
+        List<Widget> row = [];
+        row.add(getBookCell(Const.defualtTimeRange[i]));
+        for (var i = 0; i < 7; i++){
+          row.add(getBookCell(""));
+        }
+        list.add(TableRow(
+          children: row,
+        ));
+      }
+      print("Khpong cod gì ti");
+    }
+    else{
+      print("co giá trị");
+    }
+    return list;
   }
 
-  List<Widget> getSuggestedCourse(List<Courses> courseLisst){
+  List<Widget> getSuggestedCourse(List<TutorCourseList> courseList){
     List<Widget> list = [];
 
-    for (var i = 0; i < courseLisst.length; i++){
+    for (var i = 0; i < courseList.length; i++){
       list.add(Row(
         children: <Widget>[
           SizedBox(width: 10),
           RichText(
             text: TextSpan(
-                text: courseLisst[i].title + ": ",
+                text: "${courseList![i].name.toString() }: ",
                 style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                 children: <TextSpan>[
                   TextSpan(text: 'Link',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/model/token.dart';
 import 'package:lectutor/model/tokens.dart';
+import 'package:lectutor/model/tutorDetail.dart';
 import 'package:lectutor/model/user.dart';
 import 'package:lectutor/view/account/profile.dart';
 import 'package:lectutor/view/auth/changePassWord.dart';
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
         "/account/changepassword": (context) => ChangePassword(),
         '/menu': (context) =>Menu(),
         '/tutor': (context) => TeacherList(),
-        '/tutor/detail': (context) => TeacherDetail(),
+
         '/tutor/detail/bookclass': (context) => BookAClass(),
         '/schedule': (context) => ScheduleList(),
         '/schedule/history': (context) => ScheduleHistory(),
@@ -67,6 +68,34 @@ class MyApp extends StatelessWidget {
         '/becometutor/videointroduction': (context) => VideoIntroduction(),
         '/becometutor/approval': (context) => Approval(),
 
+      },
+      onGenerateRoute: (settings) {
+        // If you push the PassArguments route
+        if (settings.name == '/tutor/detail') {
+          // Cast the arguments to the correct
+          // type: ScreenArguments.
+          final args = settings.arguments as TutorDetail;
+
+          // Then, extract the required data from
+          // the arguments and pass the data to the
+          // correct screen.
+          return MaterialPageRoute(
+            builder: (context) {
+              return TeacherDetail(
+                tutorDetail: args,
+              );
+            },
+          );
+        }
+        // The code only supports
+        // PassArgumentsScreen.routeName right now.
+        // Other values need to be implemented if we
+        // add them. The assertion here will help remind
+        // us of that higher up in the call stack, since
+        // this assertion would otherwise fire somewhere
+        // in the framework.
+        assert(false, 'Need to implement ${settings.name}');
+        return null;
       },
       // onGenerateRoute: (settings){
       //   if (settings.name == '/tutor'){
