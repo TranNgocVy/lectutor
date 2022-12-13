@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/view/const/page.dart';
+import 'package:provider/provider.dart';
+import '../../model/user.dart';
 import '../const/constVar.dart';
 
 class Menu extends StatelessWidget {
@@ -20,9 +22,10 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPage extends State<MenuPage> {
 
-
   @override
   Widget build(BuildContext context) {
+    // String name = ;
+
     return Container(
       color: Colors.grey.shade200,
       child: ListView(
@@ -38,12 +41,12 @@ class _MenuPage extends State<MenuPage> {
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   CircleAvatar(
-                    backgroundImage: AssetImage('assets/icon/avatar.jpg'),
+                    backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
                   ),
                   SizedBox(width: ConstVar.mediumspace,),
 
                   Text(
-                    "Name of lettutor",
+                    "${context.watch<User>().name}",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

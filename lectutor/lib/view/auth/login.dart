@@ -7,6 +7,8 @@ import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/tokens.dart';
 import 'package:lectutor/model/auth.dart';
 import 'package:lectutor/model/user.dart';
+import 'package:provider/provider.dart';
+import '../../handle/auth.dart';
 import '../const/constVar.dart';
 import 'package:dio/dio.dart';
 
@@ -33,25 +35,9 @@ class _LogInPageState extends State<LogInPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isVisiblePassword = false;
-  bool isValidAuth = true;
+  bool isValid = true;
 
-  Future <void> login(Auth auth) async{
-    var dio = Dio();
-    try{
-      print("---------------------------------------------");
-      var response = await dio.post(ConstVar.ULR + 'auth/login', data: auth.toJson());
 
-      var user = response.data["user"];
-      var tokens = response.data["tokens"];
-
-      if(response.statusCode == 200){
-        Navigator.pushNamed(context, '/tutor');
-      }
-    }catch(e){
-      isValidAuth = false;
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +125,7 @@ class _LogInPageState extends State<LogInPage> {
                 ),
               ),
 
-              if(!isValidAuth)
+              if(!isValid)
                 Container(
                   padding: EdgeInsets.fromLTRB(0,12, 0,0),
                   child: Row(
@@ -177,10 +163,30 @@ class _LogInPageState extends State<LogInPage> {
               SizedBox(height: ConstVar.minspace),
 
               ElevatedButton(
-                onPressed: (){
+                onPressed: () async{
                   Auth auth = new Auth(emailController.text, passwordController.text);
-                  setState(() {
-                    login(auth);
+                  final data = await login(auth);
+
+                  setState((){
+                    if (data != false) {
+                      isValid = true;
+
+                      // for (final String key in data["user"].keys) {
+                      //   if (data["user"][key] is Null){
+                      //     data["user"][key] = "";
+                      //   }
+                      // }
+                      User user = User.fromJson(data["user"]);
+                      Tokens tokens = Tokens.fromJson(data["tokens"]);
+                      context.read<User>().update(user);
+                      context.read<Tokens>().update(tokens);
+                      print(tokens.access.token);
+
+                      Navigator.pushNamed(context, '/tutor');
+                    }
+                    else {
+                      isValid = false;
+                    }
                   });
                 },
                 child: const Text(

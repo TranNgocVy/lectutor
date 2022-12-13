@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lectutor/model/token.dart';
+import 'package:lectutor/model/tokens.dart';
+import 'package:lectutor/model/user.dart';
 import 'package:lectutor/view/account/profile.dart';
 import 'package:lectutor/view/auth/changePassWord.dart';
 import 'package:lectutor/view/auth/forgetPassword.dart';
@@ -17,9 +20,21 @@ import 'package:lectutor/view/teacher/bookAClass.dart';
 import 'package:lectutor/view/teacher/teacherDetail.dart';
 import 'package:lectutor/view/teacher/teacherList.dart';
 import 'package:lectutor/view/video/video.dart';
+import 'package:provider/provider.dart';
+
+import 'model/walletInfo.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => User("", "", "", "", "", "", [], "", "", false, WalletInfo("", "", "", false, DateTime.now(), DateTime.now(), 0), [], "", "", [], [], 0, "", false)),
+      ChangeNotifierProvider(create: (_) => Tokens(Token("", DateTime.now()), Token("", DateTime.now()))),
+
+    ],
+    child: const MyApp(),
+  ));
+
+  // runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -53,6 +68,35 @@ class MyApp extends StatelessWidget {
         '/becometutor/approval': (context) => Approval(),
 
       },
+      // onGenerateRoute: (settings){
+      //   if (settings.name == '/tutor'){
+      //     User user = settings.arguments as User;
+      //     return MaterialPageRoute(builder: (context) => TeacherList(user: user,));
+      //     // return MaterialPageRoute(builder: (context) => User(
+      //     //   user.id,
+      //     //   user.email,
+      //     //   user.name,
+      //     //   user.avatar,
+      //     //   user.country,
+      //     //   user.phone,
+      //     //   user.roles,
+      //     //   user.language,
+      //     //   user.birthday,
+      //     //   user.isActivated,
+      //     //   user.walletInfo,
+      //     //   user.courses,
+      //     //   user.requireNote,
+      //     //   user.level,
+      //     //   user.learnTopics,
+      //     //   user.testPreparations,
+      //     //   // user.isPhoneActivivated,
+      //     //   user.timezone,
+      //     //   user.studySchedule,
+      //     //   user.canSendMessage
+      //     // ));
+      //   }
+      // }
+      // ,
     );
   }
 }

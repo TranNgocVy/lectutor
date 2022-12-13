@@ -5,9 +5,9 @@ part 'learnTopic.g.dart';
 class LearnTopic {
 
 
-  String id;
-  String key;
-  String name;
+  int? id;
+  String? key;
+  String? name;
 
   factory LearnTopic.fromJson(Map<String, dynamic> json) => _$LearnTopicFromJson(json);
 

@@ -7,27 +7,31 @@ part of 'course.dart';
 // **************************************************************************
 
 Course _$CourseFromJson(Map<String, dynamic> json) => Course(
-      json['id'] as String,
-      json['name'] as String,
-      json['description'] as String,
-      json['imageUrl'] as String,
-      json['level'] as String,
-      json['reason'] as String,
-      json['purpose'] as String,
-      json['other_details'] as String,
-      json['default_price'] as int,
-      json['course_price'] as int,
-      json['courseType'] as String,
-      json['sectionType'] as String,
-      json['visible'] as bool,
-      json['displayOrder'] as String,
-      DateTime.parse(json['createdAt'] as String),
-      DateTime.parse(json['updatedAt'] as String),
-      (json['topics'] as List<dynamic>)
-          .map((e) => Topic.fromJson(e as Map<String, dynamic>))
+      json['id'] as String?,
+      json['name'] as String?,
+      json['description'] as String?,
+      json['imageUrl'] as String?,
+      json['level'] as String?,
+      json['reason'] as String?,
+      json['purpose'] as String?,
+      json['other_details'] as String?,
+      json['default_price'] as int?,
+      json['course_price'] as int?,
+      json['courseType'] as String?,
+      json['sectionType'] as String?,
+      json['visible'] as bool?,
+      json['displayOrder'] as String?,
+      json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+      (json['topics'] as List<dynamic>?)
+          ?.map((e) => Topic.fromJson(e as Map<String, dynamic>))
           .toList(),
-      (json['categories'] as List<dynamic>)
-          .map((e) => Category.fromJson(e as Map<String, dynamic>))
+      (json['categories'] as List<dynamic>?)
+          ?.map((e) => Category.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -46,8 +50,8 @@ Map<String, dynamic> _$CourseToJson(Course instance) => <String, dynamic>{
       'sectionType': instance.sectionType,
       'visible': instance.visible,
       'displayOrder': instance.displayOrder,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'updatedAt': instance.updatedAt.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'updatedAt': instance.updatedAt?.toIso8601String(),
       'topics': instance.topics,
       'categories': instance.categories,
     };

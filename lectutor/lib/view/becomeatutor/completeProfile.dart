@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -22,6 +27,7 @@ class CompleteProfilePage extends StatefulWidget {
 }
 
 class _CompleteProfilePage extends State<CompleteProfilePage> {
+  File? file;
   String level = "";
   final List<String> _selectedItems = [];
   // List<bool> _isCheckedList =;
@@ -155,26 +161,31 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
                 ),
                 SizedBox(height: ConstVar.minspace,),
 
-                Container(
-                  decoration: BoxDecoration(
-                    color:  Colors.grey.shade100,
-                    border: Border.all(color: Colors.grey.shade200, width: 2),
-                  ),
-                  width: 200,
-                  height: 200,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Upload avatar here ...",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
+                GestureDetector(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color:  Colors.grey.shade100,
+                      border: Border.all(color: Colors.grey.shade200, width: 2),
+                    ),
+                    width: 200,
+                    height: 200,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Upload avatar here ...",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                  onTap: (){
+                    seletFile();
+                  },
                 ),
                 SizedBox(height: ConstVar.minspace,),
                 Text("Click to edit", style: TextStyle(fontSize: 16, color: Colors.black87),),
@@ -755,5 +766,16 @@ class _CompleteProfilePage extends State<CompleteProfilePage> {
       list.add(SizedBox(height: 5,));
     }
     return list;
+  }
+
+  Future seletFile()async{
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+    if (result != null){
+      final path = result.files.single.path;
+      setState(() {
+        file = File(path.toString());
+      });
+    }
+
   }
 }

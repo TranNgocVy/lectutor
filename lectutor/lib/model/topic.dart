@@ -4,16 +4,16 @@ part 'topic.g.dart';
 @JsonSerializable()
 class Topic {
 
-  String id;
-  String courseId;
-  int orderCourse;
-  String name;
-  int numberOfPages;
-  String description;
-  String videoUrl;
-  String type;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String? id;
+  String? courseId;
+  int? orderCourse;
+  String? name;
+  int? numberOfPages;
+  String? description;
+  String? videoUrl;
+  String? type;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory Topic.fromJson(Map<String, dynamic> json) => _$TopicFromJson(json);
 

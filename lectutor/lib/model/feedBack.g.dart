@@ -7,15 +7,21 @@ part of 'feedBack.dart';
 // **************************************************************************
 
 FeedBack _$FeedBackFromJson(Map<String, dynamic> json) => FeedBack(
-      json['id'] as String,
-      json['bookingId'] as String,
-      json['firstId'] as String,
-      json['secondId'] as String,
-      json['rating'] as int,
-      json['content'] as String,
-      DateTime.parse(json['createdAt'] as String),
-      DateTime.parse(json['updatedAt'] as String),
-      TutorInfo.fromJson(json['firstInfo'] as Map<String, dynamic>),
+      json['id'] as String?,
+      json['bookingId'] as String?,
+      json['firstId'] as String?,
+      json['secondId'] as String?,
+      json['rating'] as int?,
+      json['content'] as String?,
+      json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+      json['firstInfo'] == null
+          ? null
+          : TutorInfo.fromJson(json['firstInfo'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$FeedBackToJson(FeedBack instance) => <String, dynamic>{
@@ -25,7 +31,7 @@ Map<String, dynamic> _$FeedBackToJson(FeedBack instance) => <String, dynamic>{
       'secondId': instance.secondId,
       'rating': instance.rating,
       'content': instance.content,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'updatedAt': instance.updatedAt.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'updatedAt': instance.updatedAt?.toIso8601String(),
       'firstInfo': instance.firstInfo,
     };

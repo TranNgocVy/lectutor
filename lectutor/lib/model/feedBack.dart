@@ -4,15 +4,15 @@ part 'feedBack.g.dart';
 @JsonSerializable()
 class FeedBack {
 
-  String id;
-  String bookingId;
-  String firstId;
-  String secondId;
-  int rating;
-  String content;
-  DateTime createdAt;
-  DateTime updatedAt;
-  TutorInfo firstInfo;
+  String? id;
+  String? bookingId;
+  String? firstId;
+  String? secondId;
+  int? rating;
+  String? content;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  TutorInfo? firstInfo;
 
   factory FeedBack.fromJson(Map<String, dynamic> json) => _$FeedBackFromJson(json);
 

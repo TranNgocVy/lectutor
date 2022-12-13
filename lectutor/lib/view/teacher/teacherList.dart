@@ -1,9 +1,17 @@
+import 'dart:core';
+
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:lectutor/handle/teacher.dart';
 import 'package:lectutor/model/teacher.dart';
+import 'package:lectutor/model/user.dart';
+import 'package:provider/provider.dart';
 import 'package:time_range_picker/time_range_picker.dart';
+import '../../config/const.dart';
+import '../../model/tokens.dart';
+import '../../model/tutor.dart';
 import '../const/choicechip.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
@@ -14,6 +22,10 @@ class TeacherList extends StatelessWidget {
   const TeacherList({super.key});
 
 
+  // const TeacherList({super.key, required this.user});
+
+  // final User user;
+
   @override
   Widget build(BuildContext context) {
     return TemplatePage.getHeader(context, TeacherListPage());
@@ -23,12 +35,13 @@ class TeacherList extends StatelessWidget {
 
 class TeacherListPage extends StatefulWidget {
   const TeacherListPage({super.key});
+
   @override
   State<TeacherListPage> createState() => _TeacherListPage();
 }
 
 class _TeacherListPage extends State<TeacherListPage> {
-
+  final TextEditingController _nameController = TextEditingController();
   final FocusNode _ntFocus = FocusNode();
   final TextEditingController _dController = TextEditingController();
   final FocusNode _dFocus = FocusNode();
@@ -71,28 +84,40 @@ class _TeacherListPage extends State<TeacherListPage> {
     Teacher(1, "Keengan", "France", "Description about him", [], [], ["Conversational", "STARTERS", "MOVERS", "FLYERS", "KET", "PET",])];
   List<int> favoriteIdList = [0];
 
-  Future <void> getTeacherList() async{
-    var dio = Dio();
-    try{
-      print("---------------------------------------------");
-      var response = await dio.get(ConstVar.ULR + 'tutor/more?perPage=9&page=1',);
-
-      print(response.statusCode);
-      print(response.data);
-      print("---------------------------------------------");
-
-
-      if(response.statusCode == 200){
-        Navigator.pushNamed(context, '/tutor');
-      }
-    }catch(e){
+  List<Tutor>  tutorList = [];
+  List<Tutor>  favoriteTutorList = [];
+  void getTutor() async{
+    var data = await getTeacherList(context);
+    if (data != null){
+      setState(() {
+        updateLists(data);
+      });
     }
+  }
+  void updateLists(dynamic data){
+    var tutors = data["tutors"]["rows"];
+    var favoriteTutor = data["favoriteTutor"];
+    for(int i = 0; i < Const.perPage; i++){
+      tutorList.add(Tutor.fromJson(tutors[i]));
+    }
+
+    try{
+      for(int i = 0;; i++){
+        favoriteTutorList.add(Tutor.fromJson(favoriteTutor[i]));
+      }
+
+    }catch(e){}
   }
 
 
   @override
+  void initState() {
+    super.initState();
+    getTutor();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // return Container(
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
@@ -187,7 +212,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                         TextFormField(
                           keyboardType: TextInputType.text,
                           autofocus: false,
-                          initialValue: '',
+                          controller: _nameController,
                           decoration: InputDecoration(
                             hintText: 'Enter tutor name ...',
                             contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -242,7 +267,36 @@ class _TeacherListPage extends State<TeacherListPage> {
                               )
                           ),
                         ),
+                        SizedBox(height: ConstVar.minspace),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
 
+                            ElevatedButton(
+
+                              onPressed: () async{
+                                final data = await searchTeacher(context, _nameController.text, [],[]);
+
+                                setState((){
+                                  updateLists(data);
+                                });
+                              },
+                              child: const Text(
+                                'Search',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    // fontWeight: FontWeight.bold,
+                                    fontSize: 20
+                                ),
+                              ),
+                              style: ButtonStyle(
+                                // backgroundColor: Colors.blue,
+                                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+                              ),
+                            ),
+
+                          ],
+                        ),
                         SizedBox(height: ConstVar.minspace),
                         Text(
                           "Select availiable tutoring time:",
@@ -393,7 +447,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                         SizedBox(height: ConstVar.minspace),
 
                         Wrap(
-                          runSpacing: 0,
+                          runSpacing: 5,
                           spacing: 5,
 
                           children: specialtiesChoiceChips.map((value) => ChoiceChip(
@@ -414,7 +468,15 @@ class _TeacherListPage extends State<TeacherListPage> {
                         SizedBox(height: ConstVar.mediumspace),
                         Row(
                           children: [
-                            ElevatedButton(onPressed: null,
+                            ElevatedButton(
+                              onPressed: (){
+                                setState(() {
+                                  _nameController.text = "";
+                                  _dController.text = "";
+                                  _tController.text = "";
+
+                                });
+                              },
                                 child: Text(
                                   "Reset Filters",
                                   style: TextStyle(
@@ -506,7 +568,14 @@ class _TeacherListPage extends State<TeacherListPage> {
   }
   List<Widget> getTutorList(){
     List<Widget> list = [];
-    for(var i = 0; i < teacherList.length; i++){
+    for(var i = 0; i < tutorList.length; i++){
+      List<String> specialtyList = tutorList[i].specialties.toString().split(",");
+      String alias = "";
+      List<String> nameSplit = tutorList[i].name.toString().split(" ");
+      for(int i = 0; i < nameSplit.length && i < 2; i++){
+        alias = alias + nameSplit[i][0];
+      }
+
       list.add(
           Card(
             borderOnForeground: true,
@@ -528,9 +597,22 @@ class _TeacherListPage extends State<TeacherListPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(
-                          child: CircleAvatar(
-                            backgroundImage: AssetImage('assets/icon/avatar.jpg'),
-                            maxRadius: 30,
+                          child: tutorList[i].avatar != null?
+                            CircleAvatar(
+                              // backgroundImage: ,
+                              // backgroundImage: NetworkImage(tutorList[i].avatar.toString()),
+                              backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
+                              // maxRadius: 30,
+                            ):
+                          CircleAvatar(
+                            backgroundColor: Colors.blue.shade200,
+                            child: Text(
+                              alias,
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(width: 10,),
@@ -540,7 +622,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                teacherList[i].name,
+                                tutorList[i].name.toString(),
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -557,7 +639,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                     padding: EdgeInsets.all(5),
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      teacherList[i].natioonality,
+                                      tutorList[i].country.toString(),
                                       style: TextStyle(
                                           fontSize: 14
                                       ),
@@ -567,14 +649,15 @@ class _TeacherListPage extends State<TeacherListPage> {
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Icon>[
-                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                  Icon(Icons.star, color: Colors.yellow, size: 15,),
-
-                                ],
+                                children: getRating(tutorList[i].rating),
+                                // children: <Icon>[
+                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
+                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
+                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
+                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
+                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
+                                //
+                                // ],
                               )
                             ],
                           ),
@@ -609,11 +692,12 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                   Container(
                     child: Wrap(
-                      runSpacing: 0,
+                      runSpacing: 5,
 
                       spacing: 5,
-                      children: SpecialtiesChoiceChips.getSpecialties(teacherList[i].specialtyList, true).map((value) => ChoiceChip(
+                      children: SpecialtiesChoiceChips.getSpecialties(specialtyList, true).map((value) => ChoiceChip(
                         label: Text(value.label,),
+
                         selected: value.isSelected,
                         selectedColor: Colors.blue.shade100,
                         focusNode: _tgFocus,
@@ -628,7 +712,7 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                   Container(
                     child: Text(
-                      teacherList[i].description,
+                      tutorList[i].bio.toString(),
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -665,7 +749,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                           ),
                         ),
                         onPressed: (){
-                          Navigator.pushNamed(context, '/tutor/detail');
+                          Navigator.pushNamed(context, '/tutor/detail', arguments: tutorList[i].id);
                         },
 
                       ),
@@ -679,6 +763,29 @@ class _TeacherListPage extends State<TeacherListPage> {
       );
     }
     return list;
+  }
+
+  List<Widget> getRating(double? rating){
+    if (rating == null){
+      return [Text(
+        "No reviews yet",
+        style: TextStyle(
+          color: Colors.grey.shade400,
+          fontSize: 15,
+          fontStyle: FontStyle.italic,
+        ),
+      )];
+    }
+    List<Icon> icons = [];
+    for (int i = 1; i <= 5; i++){
+      if (rating >= i){
+        icons.add(Icon(Icons.star, color: Colors.yellow, size: 15,));
+      }
+      else{
+        icons.add(Icon(Icons.star_border, color: Colors.grey, size: 15,));
+      }
+    }
+    return icons;
   }
 
 }

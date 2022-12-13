@@ -6,24 +6,24 @@ part 'course.g.dart';
 @JsonSerializable()
 class Course {
 
-  String id;
-  String name;
-  String description;
-  String imageUrl;
-  String level;
-  String reason;
-  String purpose;
-  String other_details;
-  int default_price;
-  int course_price;
-  String courseType;
-  String sectionType;
-  bool visible;
-  String displayOrder;
-  DateTime createdAt;
-  DateTime updatedAt;
-  List<Topic> topics;
-  List<Category> categories;
+  String? id;
+  String? name;
+  String? description;
+  String? imageUrl;
+  String? level;
+  String? reason;
+  String? purpose;
+  String? other_details;
+  int? default_price;
+  int? course_price;
+  String? courseType;
+  String? sectionType;
+  bool? visible;
+  String? displayOrder;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  List<Topic>? topics;
+  List<Category>? categories;
 
   factory Course.fromJson(Map<String, dynamic> json) => _$CourseFromJson(json);
 

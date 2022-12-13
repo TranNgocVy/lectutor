@@ -4,31 +4,31 @@ part 'tutorInfo.g.dart';
 @JsonSerializable()
 class TutorInfo {
 
-  String level;
-  String email;
-  String google;
-  String facebook;
-  String apple;
-  String avatar;
-  String name;
-  String country;
-  String phone;
-  String language;
-  String birthday;
-  bool requestPassword;
-  bool isActivated;
-  String requireNote;
-  int timezone;
-  String phoneAuth;
-  bool isPhoneAuthActivated;
-  String studySchedule;
-  bool canSendMessage;
-  bool isPublicRecord;
-  String caredByStaffId;
-  DateTime createdAt;
-  DateTime updatedAt;
-  DateTime deletedAt;
-  String studentGroupId;
+  String? level;
+  String? email;
+  String? google;
+  String? facebook;
+  String? apple;
+  String? avatar;
+  String? name;
+  String? country;
+  String? phone;
+  String? language;
+  String? birthday;
+  bool? requestPassword;
+  bool? isActivated;
+  String? requireNote;
+  int? timezone;
+  String? phoneAuth;
+  bool? isPhoneAuthActivated;
+  String? studySchedule;
+  bool? canSendMessage;
+  bool? isPublicRecord;
+  String? caredByStaffId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  DateTime? deletedAt;
+  String? studentGroupId;
 
   factory TutorInfo.fromJson(Map<String, dynamic> json) => _$TutorInfoFromJson(json);
 

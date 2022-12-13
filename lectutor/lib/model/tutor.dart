@@ -5,49 +5,50 @@ part 'tutor.g.dart';
 @JsonSerializable()
 class Tutor {
 
-  String level;
-  String email;
-  String google;
-  String facebook;
-  String apple;
-  String avatar;
-  String name;
-  String country;
-  String phone;
-  String language;
-  String birthday;
-  bool requestPassword;
-  bool isActivated;
-  String requireNote;
-  int timezone;
-  String phoneAuth;
-  bool isPhoneAuthActivated;
-  String studySchedule;
-  bool canSendMessage;
-  bool isPublicRecord;
-  String caredByStaffId;
-  DateTime createdAt;
-  DateTime updatedAt;
-  DateTime deletedAt;
-  String studentGroupId;
-  List<FeedBack> feedbacks;
-  String id;
-  String userId;
-  String video;
-  String bio;
-  String education;
-  String experience;
-  String profession;
-  String accent;
-  String targetStudent;
-  String interests;
-  String languages;
-  String specialties;
-  String resume;
-  double rating;
-  String isNative;
-  int price;
-  bool isOnline;
+  String? level;
+  String? email;
+  String? google;
+  String? facebook;
+  String? apple;
+  String? avatar;
+  String? name;
+  String? country;
+  String? phone;
+  String? language;
+  String? birthday;
+  bool? requestPassword;
+  bool? isActivated;
+  bool? isPhoneActivated;
+  String? requireNote;
+  int? timezone;
+  String? phoneAuth;
+  bool? isPhoneAuthActivated;
+  String? studySchedule;
+  bool? canSendMessage;
+  bool? isPublicRecord;
+  String? caredByStaffId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  DateTime? deletedAt;
+  String? studentGroupId;
+  List<FeedBack>? feedbacks;
+  String? id;
+  String? userId;
+  String? video;
+  String? bio;
+  String? education;
+  String? experience;
+  String? profession;
+  String? accent;
+  String? targetStudent;
+  String? interests;
+  String? languages;
+  String? specialties;
+  String? resume;
+  double? rating;
+  String? isNative;
+  int? price;
+  bool? isOnline;
 
   factory Tutor.fromJson(Map<String, dynamic> json) => _$TutorFromJson(json);
 
@@ -67,6 +68,7 @@ class Tutor {
       this.birthday,
       this.requestPassword,
       this.isActivated,
+      this.isPhoneActivated,
       this.requireNote,
       this.timezone,
       this.phoneAuth,
