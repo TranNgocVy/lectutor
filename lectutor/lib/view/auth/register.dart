@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:lectutor/handle/auth.dart';
 import '../../model/auth.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
@@ -29,18 +30,18 @@ class _RegisterPageState extends State<RegisterPage> {
   bool isVisiblePassword = false;
   bool isValidAuth = true;
 
-  Future <void> register(Auth auth) async{
-    var dio = Dio();
-    try{
-      var response = await dio.post(ConstVar.ULR + 'auth/register', data: auth.toJson());
-
-      if(response.statusCode == 200){
-        Navigator.pushNamed(context, '/tutor');
-      }
-    }catch(e){
-      isValidAuth = false;
-    }
-  }
+  // Future <void> register(Auth auth) async{
+  //   var dio = Dio();
+  //   try{
+  //     var response = await dio.post(ConstVar.ULR + 'auth/register', data: auth.toJson());
+  //
+  //     if(response.statusCode == 200){
+  //       Navigator.pushNamed(context, '/tutor');
+  //     }
+  //   }catch(e){
+  //     isValidAuth = false;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -126,8 +127,56 @@ class _RegisterPageState extends State<RegisterPage> {
             SizedBox(height: ConstVar.mediumspace),
 
             ElevatedButton(
-              onPressed: (){
-                Navigator.pushNamed(context, "/");
+              onPressed: ()async {
+                var data = await register(Auth(emailController.text, passwordController.text));
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    title: Container(
+                      padding: EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.grey.shade200, width: 2)
+                          )
+                      ),
+                      child: Row(
+                        children: [
+                          data != null ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
+                          SizedBox(width: ConstVar.mediumspace,),
+                          Text('Notification'),
+                        ],
+                      ),
+                    ),
+                    content: Text(data != null?'You have successfully registered an account. Please await admin to active your account':"You have failed to register for an account. Try again"),
+                    actions: <Widget>[
+                      TextButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(30,10,30,10)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                // side: BorderSide(color: Colors.red)
+                              )
+                          ),
+                          backgroundColor:MaterialStateProperty.all(Colors.blue),
+                        ),
+
+                        onPressed: () {
+                          Navigator.pop(context);
+                          if (data != null){
+                            Navigator.pushNamed(context, "/");
+                          }
+                        },
+                        child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                      ),
+                    ],
+                  ),
+                );
+
               },
               child: const Text(
                 'SIGN UP',

@@ -18,3 +18,20 @@ Future <dynamic> login(Auth auth) async{
   }
   return false;
 }
+
+Future <dynamic> register(Auth auth) async{
+  var dio = Dio();
+  try{
+    var response = await dio.post(ConstVar.ULR + 'auth/register', data: {
+      "email": auth.email,
+      "password": auth.password,
+      "source": null
+    });
+    if(response.statusCode == 201){
+      return response.data;
+    }
+  }catch(e){
+    print(e);
+  }
+  return null;
+}
