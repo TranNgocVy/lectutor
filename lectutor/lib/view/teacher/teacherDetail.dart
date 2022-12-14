@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../config/const.dart';
 import '../../model/courses.dart';
+import '../../model/feedBack.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
@@ -60,6 +61,9 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     // getTutorDetail(widget.id);
     getScedule(widget.tutorDetail.User.id);
     print(schedules.length);
+    print(widget.tutorDetail.feedlist.length);
+    print("----------------------");
+
     initializePlayer();
   }
 
@@ -371,11 +375,72 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               ),
               Column(
                 children: [
-                  Icon(
-                    Icons.star_border,
-                    color: Colors.blue,
-                    size: 25,
-                  ),
+                  IconButton(
+                    onPressed: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(30.0),
+                                topLeft: Radius.circular(30.0),
+                              ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Container(
+                                      // height: MediaQuery.of(context).size.height,
+                                      width: MediaQuery.of(context).size.width - 20,
+
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.grey,
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            "Others review",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 25,
+                                            ),),
+                                          IconButton(
+                                            icon: Icon(Icons.cancel, color: Colors.red,),
+                                            onPressed: () => Navigator.pop(context),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Expanded(
+                                    child: ListView(
+                                        children: getReviewList(widget.tutorDetail.feedlist)
+                                    )),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                      icon: Icon(
+                        Icons.star_border,
+                        color: Colors.blue,
+                        size: 25,
+                      ),),
                   SizedBox(height: ConstVar.minspace),
                   Text(
                     "Review",
@@ -915,9 +980,6 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   //   );
   // }
   List<TableRow> getTableRow(DateTime start, List<Schedule> schedules, String userId){
-    print(start);
-    print(schedules.length);
-    print(userId);
 
     List<TableRow> list = [];
     list.add(TableRow(
@@ -925,13 +987,11 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     ),);
     Map<String, List<String>> map = {};
 
-    print("Toi map");
     for(int i = 0 ; i < schedules.length; i++){
       for (int j = 0; j < schedules[i].scheduleDetails.length; j++){
         DateTime startTime = Const.time.add(Duration(milliseconds: schedules[i].scheduleDetails[j].startPeriodTimestamp));
-        print(startTime);
         int difDay = Pkg.diffDay(start, startTime);
-        if (startTime.isAfter(start) && diffDay(start, startTime) < 7){
+        if (startTime.isAfter(start) && Pkg.diffDay(start, startTime) < 7){
           String key = "${schedules[i].scheduleDetails[j].startPeriod} - ${schedules[i].scheduleDetails[j].endPeriod}";
           if (schedules[i].scheduleDetails[j].isBooked == false){
             if (!map.containsKey(key)){
@@ -958,7 +1018,6 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     }
     map.forEach((key, value) {
       List<Widget> row = [];
-      print("${key}: ${value}");
       row.add(getBookCell(key));
       for (var i = 0; i < value.length; i++){
         row.add(getBookCell(value[i]));
@@ -981,10 +1040,6 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           children: row,
         ));
       }
-      print("Khpong cod gì ti");
-    }
-    else{
-      print("co giá trị");
     }
     return list;
   }
@@ -1022,5 +1077,176 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     return list;
 
   }
+  
+  List<Widget> getReviewList(List<FeedBack> feedbackList){
+    List<Widget> list = [];
+    for(int i = 0; i < feedbackList.length; i++){
+      list.add(Container(
+        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            CircleAvatar(
+              // backgroundImage: ,
+              // backgroundImage: NetworkImage((tutorDetail?.User?.avatar).toString()),
+              backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
+              // maxRadius: 50,
+            ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left: 5,top: 5),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            feedbackList[i].firstInfo!.name.toString(),
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black26
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            Pkg.diffDay(feedbackList[i].createdAt!, DateTime.now()) ==  0 ?
+                              "Today" :
+                              Pkg.diffDay(feedbackList[i].createdAt!, DateTime.now()) <= 31 ?
+                                "${Pkg.diffDay(feedbackList[i].createdAt!, DateTime.now())} days ago":
+                                  Pkg.diffMonth(feedbackList[i].createdAt!, DateTime.now()) < 12 ?
+                                    "${Pkg.diffMonth(feedbackList[i].createdAt!, DateTime.now())} months ago":
+                                    "${Pkg.diffYear(feedbackList[i].createdAt!, DateTime.now())} year(s) ago",
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey
+                            ),
+                          ),
+                        ),
+
+                      ],
+                      mainAxisSize: MainAxisSize.min,
+                    ),
+                    SizedBox(height: ConstVar.minspace),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: getRated(feedbackList[i].rating!),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            feedbackList[i].content.toString(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
+                          ),),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          ],
+        ),
+      ));
+    }
+    return list;
+  }
+
+  Container getReviewItem(Icon icon, String name, String time, int rated, String review){
+    Container container = Container(
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          icon,
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.only(left: 5,top: 5),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          name,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black26
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          time,
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey
+                          ),
+                        ),
+                      ),
+
+                    ],
+                    mainAxisSize: MainAxisSize.min,
+                  ),
+                  SizedBox(height: ConstVar.minspace),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: getRated(rated),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          review,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+        ],
+      ),
+    );
+
+    return container;
+  }
+
+  List<Widget> getRated(int rated){
+    List<Widget> icon = [];
+    for (var i = 0; i < rated && i < 5; i++){
+      icon.add(Icon(Icons.star, color: Colors.yellow, size: 20,));
+    }
+    for (var i = rated; i < 5; i++){
+      icon.add(Icon(Icons.star, color: Colors.grey, size: 20,));
+    }
+
+    return icon;
+  }
+
+
 
 }

@@ -43,4 +43,5 @@ Map<String, dynamic> _$TutorDetailToJson(TutorDetail instance) =>
       'isFavorite': instance.isFavorite,
       'avgRating': instance.avgRating,
       'totalFeedback': instance.totalFeedback,
+      'feedlist': instance.feedlist,
     };

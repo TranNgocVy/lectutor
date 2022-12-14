@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lectutor/model/tutorUser.dart';
+
+import 'feedBack.dart';
 part 'tutorDetail.g.dart';
 
 @JsonSerializable()
@@ -21,7 +23,7 @@ class TutorDetail {
   bool? isFavorite;
   double? avgRating;
   int? totalFeedback;
-
+  List<FeedBack> feedlist =[];
   factory TutorDetail.fromJson(Map<String, dynamic> json) => _$TutorDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$TutorDetailToJson(this);

@@ -601,23 +601,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                       if (data != null){
                         tutorDetail = TutorDetail.fromJson(data);
                       }
-
-                      // print("1111111111111111111111111111111111111111\n");
-                      // print(tutorDetail.bio.toString());
-                      // print("\n22222222222222222222222222222222222222222\n");
-                      //
-                      // data = await getScheduleByTutorId(context, );
-                      // if (data!=null){
-                      //     try{
-                      //       for(int i = 0;; i++){
-                      //         schedules.add(Schedule.fromJson(data[i]));
-                      //       }
-                      //
-                      //     }catch(e){}
-                      // }
-                      // print("33333333333333333333333333333333333333\n");
-                      // print(schedules.length);
-                      // print("\n44444444444444444444444444444444444\n");
+                      tutorDetail.feedlist = tutorList[i].feedbacks!;
 
                       Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
 
@@ -778,8 +762,17 @@ class _TeacherListPage extends State<TeacherListPage> {
                             fontSize: 13,
                           ),
                         ),
-                        onPressed: (){
-                          Navigator.pushNamed(context, '/tutor/detail', arguments: tutorList[i].userId);
+                        onPressed: ()async{
+                          late TutorDetail tutorDetail;
+                          List<Schedule> schedules = [];
+
+                          var data = await  getTeacherDetail(context, tutorList[i].userId.toString());
+                          if (data != null){
+                            tutorDetail = TutorDetail.fromJson(data);
+                          }
+                          tutorDetail.feedlist = tutorList[i].feedbacks!;
+
+                          Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
                         },
 
                       ),

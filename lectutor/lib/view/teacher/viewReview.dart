@@ -66,26 +66,7 @@ class _ReviewPage extends State<ReviewPage> {
                         ),
                       ),
 
-                      // Container(
-                      //   color: Colors.blue,
-                      //   padding: EdgeInsets.only(bottom: 20),
-                      //   // decoration: BoxDecoration(
-                      //   //   border: Border(
-                      //   //     bottom: BorderSide(
-                      //   //       color: Colors.grey,
-                      //   //       width: 1.0,
-                      //   //     ),
-                      //   //   ),
-                      //   // ),
-                      //   child: Row(
-                      //     mainAxisSize: MainAxisSize.max,
-                      //     mainAxisAlignment: MainAxisAlignment.center,
-                      //     children: <Widget>[
-                      //       Icon(Icons.close, color: Colors.grey,size: 25,)
-                      //     ],
-                      //   )
-                      // ),
-                      
+
 
                     ],
                   ),

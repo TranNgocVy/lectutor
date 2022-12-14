@@ -53,6 +53,20 @@ class Pkg {
 
     return tempEnd.difference(tempStart).inDays;
   }
+  static int diffMonth(DateTime start, DateTime end){
+    DateTime tempStart = DateTime(start.year, start.month);
+    DateTime tempEnd = DateTime(end.year, end.month);
+
+    return (tempEnd.difference(tempStart).inDays / 30).toInt();
+  }
+
+  static int diffYear(DateTime start, DateTime end){
+    DateTime tempStart = DateTime(start.year);
+    DateTime tempEnd = DateTime(end.year);
+
+    return (tempEnd.difference(tempStart).inDays / 365).toInt();
+  }
+
 
 
 }
