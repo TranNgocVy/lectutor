@@ -28,20 +28,8 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isVisiblePassword = false;
-  bool isValidAuth = true;
-
-  // Future <void> register(Auth auth) async{
-  //   var dio = Dio();
-  //   try{
-  //     var response = await dio.post(ConstVar.ULR + 'auth/register', data: auth.toJson());
-  //
-  //     if(response.statusCode == 200){
-  //       Navigator.pushNamed(context, '/tutor');
-  //     }
-  //   }catch(e){
-  //     isValidAuth = false;
-  //   }
-  // }
+  bool isValid = true;
+  String error = "";
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +74,11 @@ class _RegisterPageState extends State<RegisterPage> {
               keyboardType: TextInputType.emailAddress,
               autofocus: false,
               controller: emailController,
+              onTap: () {
+                setState(() {
+                  isValid = true;
+                });
+              },
               decoration: InputDecoration(
                 hintText: 'Enter your email...',
                 contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -109,6 +102,11 @@ class _RegisterPageState extends State<RegisterPage> {
               autofocus: false,
               obscureText: !isVisiblePassword,
               controller: passwordController,
+              onTap: () {
+                setState(() {
+                  isValid = true;
+                });
+              },
               decoration: InputDecoration(
                 hintText: 'Enter your password...',
                 contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -125,57 +123,88 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
 
             SizedBox(height: ConstVar.mediumspace),
+            if(!isValid)
+              Container(
+                padding: EdgeInsets.fromLTRB(0,12, 0,0),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
+                    SizedBox(width: ConstVar.minspace,),
+                    Text(
+                      error,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.red,
+                      ),
+                    )
+                  ],
+
+                ),
+              ),
+            SizedBox(height: ConstVar.mediumspace),
 
             ElevatedButton(
               onPressed: ()async {
-                var data = await register(Auth(emailController.text, passwordController.text));
-                showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    title: Container(
-                      padding: EdgeInsets.only(bottom: 5),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Colors.grey.shade200, width: 2)
-                          )
+                if(emailController.text == "" || emailController.text == ""){
+                  setState(() {
+                    isValid = false;
+                    error = "Please input all fields";
+                  });
+                }
+                else{
+                  var data = await register(Auth(emailController.text, passwordController.text));
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      child: Row(
-                        children: [
-                          data != null ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
-                          SizedBox(width: ConstVar.mediumspace,),
-                          Text('Notification'),
-                        ],
-                      ),
-                    ),
-                    content: Text(data != null?'You have successfully registered an account. Please await admin to active your account':"You have failed to register for an account. Try again"),
-                    actions: <Widget>[
-                      TextButton(
-                        style: ButtonStyle(
-                          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(30,10,30,10)),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                // side: BorderSide(color: Colors.red)
-                              )
-                          ),
-                          backgroundColor:MaterialStateProperty.all(Colors.blue),
+                      title: Container(
+                        padding: EdgeInsets.only(bottom: 5),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(color: Colors.grey.shade200, width: 2)
+                            )
                         ),
-
-                        onPressed: () {
-                          Navigator.pop(context);
-                          if (data != null){
-                            Navigator.pushNamed(context, "/");
-                          }
-                        },
-                        child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                        child: Row(
+                          children: [
+                            data != null ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
+                            SizedBox(width: ConstVar.mediumspace,),
+                            Text('Notification'),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                );
+                      content: Text(data != null?'You have successfully registered an account. Please await admin to active your account':"You have failed to register for an account. Try again"),
+                      actions: <Widget>[
+                        TextButton(
+                          style: ButtonStyle(
+                            padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(30,10,30,10)),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  // side: BorderSide(color: Colors.red)
+                                )
+                            ),
+                            backgroundColor:MaterialStateProperty.all(Colors.blue),
+                          ),
+
+                          onPressed: () {
+                            Navigator.pop(context);
+                            if (data != null){
+                              Navigator.pushNamed(context, "/");
+                            }
+                          },
+                          child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
 
               },
               child: const Text(

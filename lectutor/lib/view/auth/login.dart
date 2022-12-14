@@ -36,6 +36,7 @@ class _LogInPageState extends State<LogInPage> {
   TextEditingController passwordController = TextEditingController();
   bool isVisiblePassword = false;
   bool isValid = true;
+  String error = "";
 
 
 
@@ -86,6 +87,11 @@ class _LogInPageState extends State<LogInPage> {
                 autofocus: false,
                 // initialValue: '',
                 controller: emailController,
+                onTap: () {
+                  setState(() {
+                    isValid = true;
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: 'Enter your email...',
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -109,6 +115,11 @@ class _LogInPageState extends State<LogInPage> {
                 autofocus: false,
                 controller: passwordController,
                 obscureText: !isVisiblePassword,
+                onTap: () {
+                  setState(() {
+                    isValid = true;
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: 'Enter your password...',
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -135,8 +146,8 @@ class _LogInPageState extends State<LogInPage> {
                         color: Colors.red,
                       ),
                       SizedBox(width: ConstVar.minspace,),
-                      const Text(
-                        "Log in failed! Incorrect email or password.",
+                      Text(
+                        error,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.red,
@@ -164,30 +175,41 @@ class _LogInPageState extends State<LogInPage> {
 
               ElevatedButton(
                 onPressed: () async{
-                  Auth auth = new Auth(emailController.text, passwordController.text);
-                  final data = await login(auth);
-
-                  setState((){
-                    if (data != false) {
-                      isValid = true;
-
-                      // for (final String key in data["user"].keys) {
-                      //   if (data["user"][key] is Null){
-                      //     data["user"][key] = "";
-                      //   }
-                      // }
-                      User user = User.fromJson(data["user"]);
-                      Tokens tokens = Tokens.fromJson(data["tokens"]);
-                      context.read<User>().update(user);
-                      context.read<Tokens>().update(tokens);
-                      print(tokens.access.token);
-
-                      Navigator.pushNamed(context, '/tutor');
-                    }
-                    else {
+                  if(emailController.text == "" || passwordController.text == ""){
+                    setState(() {
                       isValid = false;
-                    }
-                  });
+                      error = "Please input all fields";
+                    });
+                  }
+                  else{
+                    Auth auth = new Auth(emailController.text, passwordController.text);
+                    final data = await login(auth);
+
+                    setState((){
+                      if (data != false) {
+                        isValid = true;
+
+                        // for (final String key in data["user"].keys) {
+                        //   if (data["user"][key] is Null){
+                        //     data["user"][key] = "";
+                        //   }
+                        // }
+                        User user = User.fromJson(data["user"]);
+                        Tokens tokens = Tokens.fromJson(data["tokens"]);
+                        context.read<User>().update(user);
+                        context.read<Tokens>().update(tokens);
+                        print(tokens.access.token);
+
+                        Navigator.pushNamed(context, '/tutor');
+                      }
+                      else {
+                        isValid = false;
+                        error = "Log in failed! Incorrect email or password";
+                      }
+                    });
+                  }
+
+
                 },
                 child: const Text(
                   'LOG IN',

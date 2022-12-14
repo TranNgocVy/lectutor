@@ -35,3 +35,25 @@ Future <dynamic> register(Auth auth) async{
   }
   return null;
 }
+
+Future <dynamic> changePasword(String password, String newPassword, String accessToken) async{
+  var dio = Dio();
+  try{
+    print("11111111111111111111111111111111111111111111111");
+    print(accessToken);
+    print("222222222222222222222222222222222222222222");
+    dio.options.headers["Authorization"] = "Bearer ${accessToken}";
+    var response = await dio.post(ConstVar.ULR + 'auth/change-password', data: {
+      "password": password,
+      "newPassword": newPassword
+    });
+
+    if(response.statusCode == 200){
+      return true;
+    }
+    return response.statusMessage;
+  }catch(e){
+    print(e);
+  }
+  return false;
+}
