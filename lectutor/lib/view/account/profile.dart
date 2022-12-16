@@ -1,11 +1,15 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lectutor/handle/user.dart';
+import '../../config/const.dart';
+import '../../model/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
 class Profile extends StatelessWidget {
-  const Profile({super.key});
+  final User user;
+  const Profile({super.key, required this.user});
 
 
 
@@ -19,21 +23,33 @@ class Profile extends StatelessWidget {
     //       body: ProfilePage(),
     //     )
     // );
-    return TemplatePage.getHeader(context, ProfilePage());
+    return TemplatePage.getHeader(context, ProfilePage(user: user,));
 
   }
 }
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final User user;
+  const ProfilePage({super.key, required this.user});
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _dController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+  final TextEditingController learnscheduleController = TextEditingController();
+
+  String err = "";
+  bool isValid = true;
+  List<String> topic = [];
+
+  late User user;
+
   final FocusNode _dFocus = FocusNode();
   DateTime selectedDate = DateTime.now();
+
   _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -44,6 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (picked != null && picked != selectedDate) {
       selectedDate = picked;
       setState(() {
+        user.birthday = "${selectedDate.toLocal()}".split(' ')[0];
         _dController.text = "${selectedDate.toLocal()}".split(' ')[0];
         _dFocus.requestFocus();
       });
@@ -60,7 +77,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   final FocusNode _ntFocus = FocusNode();
-  String level = "Pre A1 (Beginner)";
 
   List<DropdownMenuItem<String>> get dropdownItems{
     List<DropdownMenuItem<String>> menuItems = [
@@ -71,6 +87,22 @@ class _ProfilePageState extends State<ProfilePage> {
     ];
     return menuItems;
   }
+
+  @override
+  void initState() {
+    super.initState();
+    user = widget.user;
+  }
+  //
+  // void getUser()async{
+  //   var data = await getUserInfo(Const.token);
+  //   if (data != null){
+  //     setState(() {
+  //       user = User.fromJson(data);
+  //       print(user!.email);
+  //     });
+  //   }
+  // }
 
 
   @override
@@ -95,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Stack(
                         children: <Widget>[
                           CircleAvatar(
-                            backgroundImage: AssetImage('assets/icon/avatar.jpg'),
+                            backgroundImage: NetworkImage(user!.avatar.toString()),
                             maxRadius: 40,
                           ),
                           Positioned(
@@ -131,14 +163,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text(
-                          "Name of lettutor",
+                          user.name,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "Acount ID: 111111111",
+                          "Account ID: ${user!.id}",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey,
@@ -195,9 +227,19 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: TextFormField(
                         keyboardType: TextInputType.text,
                         autofocus: false,
-                        initialValue: '',
+                        onTap: (){
+                          setState(() {
+                            err = "";
+                            isValid = true;
+                          });
+                        },
+                        controller: nameController..text = user.name,
+                        onChanged: (String? val){
+                          setState(() {
+                            user.name = val!;
+                          });
+                        },
                         decoration: InputDecoration(
-                          hintText: 'Name of lectotur',
                           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                         ),
@@ -222,9 +264,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         keyboardType: TextInputType.emailAddress,
                         autofocus: false,
                         enabled: false,
-                        initialValue: '',
+                        initialValue: '${user!.email}',
                         decoration: InputDecoration(
-                          hintText: 'Email address of lectotur',
                           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                         ),
@@ -262,9 +303,19 @@ class _ProfilePageState extends State<ProfilePage> {
                       flex :2,
                       child: TextFormField(
                         autofocus: false,
-                        initialValue: '',
+                        controller: countryController..text = "${user.country}",
+                        onTap: (){
+                          setState(() {
+                            err = "";
+                            isValid = true;
+                          });
+                        },
+                        onChanged: (String? val){
+                          setState(() {
+                            user.country = val!;
+                          });
+                        },
                         decoration: InputDecoration(
-                          hintText: 'Nationality of lettutor',
                           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                           suffixIcon: IconButton(
@@ -304,7 +355,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: TextFormField(
                         keyboardType: TextInputType.text,
                         autofocus: false,
-                        initialValue: '',
+                        initialValue: '${user.phone}',
                         enabled: false,
                         decoration: InputDecoration(
                           hintText: 'Phone number of lectotur',
@@ -344,9 +395,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         margin: EdgeInsets.only(bottom: 10),
                         child: TextFormField(
                           keyboardType: TextInputType.text,
+
                           // initialValue: "2001-04-04",
                           focusNode: _dFocus,
-                          controller: _dController..text="2001-04-04",
+                          controller: _dController..text="${user.birthday}",
                           autovalidateMode: AutovalidateMode.always,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 0),
@@ -367,7 +419,13 @@ class _ProfilePageState extends State<ProfilePage> {
                             Icon(Icons.calendar_month_outlined),
                           ),
                           readOnly: true,
-                          onTap: () => _selectDate(context),
+                          onTap: (){
+                            setState(() {
+                              err = "";
+                              isValid = true;
+                            });
+                            _selectDate(context);
+                          }
                         ),
                       ),
                       // child: TextFormField(
@@ -408,13 +466,24 @@ class _ProfilePageState extends State<ProfilePage> {
                           filled: true,
                           fillColor: Colors.white,
                         ),
-                        dropdownColor: Colors.white,
-                        value: level,
-                        onChanged: (String? newValue) {
+                        onTap: (){
                           setState(() {
-                            level = newValue!;
+                            err = "";
+                            isValid = true;
                           });
                         },
+                        dropdownColor: Colors.white,
+                        value: ConstVar.levelMap[user.level.toString()],
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            ConstVar.levelMap.forEach((key, value) {
+                              if(value == newValue!){
+                                user.level = key;
+                              }
+                            });
+                          });
+                        },
+
                         items: (ConstVar.levelList).map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                               value: value,
@@ -450,7 +519,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               items: ConstVar.type,
                               popupProps: PopupPropsMultiSelection.menu(
                                 showSelectedItems: true,
-                                showSearchBox: true,
+                                // showSearchBox: true,
                               ),
                               clearButtonProps: ClearButtonProps(
                                 isVisible: false,
@@ -475,9 +544,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                               ),
-                              selectedItems: ['Business English', 'TOEIC'],
+                              selectedItems: getLearnTopicList(user),
                               onChanged: (val) {
+                                topic.clear();
+                                topic.addAll(val);
                                 setState(() {
+                                  err = "";
+                                  isValid = true;
                                   _ntFocus.requestFocus();
                                 });
                               },
@@ -506,7 +579,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         autofocus: false,
                         minLines: 3,
                         maxLines: null,
-                        initialValue: '',
+                        onTap: (){
+                          setState(() {
+                            isValid = true;
+                            err = "";
+                          });
+                        },
+                        onChanged: (String? val){
+                          setState(() {
+                            user.studySchedule = val;
+                          });
+                        },
+                        controller: learnscheduleController..text = "${user.studySchedule}",
                         decoration: InputDecoration(
                           hintText: "Note the time of the week you want to study on Lettutor",
                           hintMaxLines: 3,
@@ -520,6 +604,28 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
                 ),
+                SizedBox(height: ConstVar.minspace),
+                if(!isValid)
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0,12, 0,0),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                        SizedBox(width: ConstVar.minspace,),
+                        Text(
+                          err,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.red,
+                          ),
+                        )
+                      ],
+
+                    ),
+                  ),
 
                 SizedBox(height: ConstVar.mediumspace),
 
@@ -528,7 +634,80 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     ElevatedButton(
-                      onPressed: null,
+                      onPressed: ()async{
+                        if (nameController.text == "" || countryController.text == "" || _dController.text == "" || topic.length == 0){
+                          setState(() {
+                            print("Co vo day a");
+                            isValid = false;
+                            err = "Please enter all field has *";
+                          });
+                        }else{
+                          List<String> topicIdList = [];
+                          List<String> testIdList = [];
+                          for(int i = 0; i < ConstVar.topicList.length; i++){
+                            if (topic.contains(ConstVar.topicList[i].name)){
+                              topicIdList.add("${ConstVar.topicList[i].id}");
+                            }
+                          }
+                          for(int i = 0; i < ConstVar.testPreparationList.length; i++){
+                            if (topic.contains(ConstVar.testPreparationList[i].name)){
+                              testIdList.add("${ConstVar.testPreparationList[i].id}");
+                            }
+                          }
+
+                          var data = await updateProfile(Const.token, nameController.text, countryController.text, user.phone!, _dController.text, user.level!, topicIdList,testIdList, learnscheduleController.text);
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              title: Container(
+                                padding: EdgeInsets.only(bottom: 5),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(color: Colors.grey.shade200, width: 2)
+                                    )
+                                ),
+                                child: Row(
+                                  children: [
+                                    data != null ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
+                                    SizedBox(width: ConstVar.mediumspace,),
+                                    Text('Notification'),
+                                  ],
+                                ),
+                              ),
+                              content: Text(data != null?'Edit profile successful':"Edit profile failed. Try again"),
+                              actions: <Widget>[
+                                TextButton(
+                                  style: ButtonStyle(
+                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(30,10,30,10)),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          // side: BorderSide(color: Colors.red)
+                                        )
+                                    ),
+                                    backgroundColor:MaterialStateProperty.all(Colors.blue),
+                                  ),
+
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (data != null){
+                            User newUser = User.fromJson(data);
+                            setState(() {
+                              user = newUser;
+                            });
+                          }
+                        }
+                      },
                       child: const Text(
                         'Save changes',
                         style: TextStyle(
@@ -599,6 +778,18 @@ class _ProfilePageState extends State<ProfilePage> {
           )
       );
     }
+
+  }
+
+  List<String> getLearnTopicList(User _user){
+    List<String> list = [];
+    for(int i = 0; i < _user.learnTopics!.length; i++ ){
+      list.add(_user.learnTopics![i].name.toString());
+    }
+    for(int i = 0; i < _user.testPreparations!.length; i++ ){
+      list.add(_user.testPreparations![i].name.toString());
+    }
+    return list;
 
   }
 }

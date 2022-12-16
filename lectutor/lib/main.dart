@@ -51,7 +51,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LogIn(),
         '/register': (context) => Register(),
-        '/account': (context) => Profile(),
         '/forgetpassword': (context) => ForgetPassword(),
         "/account/changepassword": (context) => ChangePassword(),
         '/menu': (context) =>Menu(),
@@ -72,13 +71,7 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: (settings) {
         // If you push the PassArguments route
         if (settings.name == '/tutor/detail') {
-          // Cast the arguments to the correct
-          // type: ScreenArguments.
           final args = settings.arguments as TutorDetail;
-
-          // Then, extract the required data from
-          // the arguments and pass the data to the
-          // correct screen.
           return MaterialPageRoute(
             builder: (context) {
               return TeacherDetail(
@@ -86,6 +79,18 @@ class MyApp extends StatelessWidget {
               );
             },
           );
+        }
+        else {
+          if(settings.name == "/account"){
+            final args = settings.arguments as User;
+            return MaterialPageRoute(
+              builder: (context) {
+                return Profile(
+                  user: args,
+                );
+              },
+            );
+          }
         }
         // The code only supports
         // PassArgumentsScreen.routeName right now.

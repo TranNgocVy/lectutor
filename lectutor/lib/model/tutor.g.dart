@@ -56,7 +56,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor(
       json['specialties'] as String?,
       json['resume'] as String?,
       (json['rating'] as num?)?.toDouble(),
-      json['isNative'] as String?,
+      json['isNative'] as bool?,
       json['price'] as int?,
       json['isOnline'] as bool?,
     );

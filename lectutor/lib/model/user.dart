@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/learnTopic.dart';
 import 'package:lectutor/model/testPreparation.dart';
+import 'package:lectutor/model/tutor.dart';
+import 'package:lectutor/model/tutorInfo.dart';
 import 'package:lectutor/model/walletInfo.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -42,6 +44,7 @@ class User with ChangeNotifier, DiagnosticableTreeMixin{
   String? language;
   String? birthday;
   bool? isActivated;
+  Tutor? tutorInfo;
   WalletInfo? walletInfo;
   List<Course>? courses;
   String? requireNote;
@@ -49,10 +52,14 @@ class User with ChangeNotifier, DiagnosticableTreeMixin{
   List<LearnTopic>? learnTopics;
 
   List<TestPreparation>? testPreparations;
-  // bool isPhoneActivivated;
+  bool? isPhoneActivivated;
   int? timezone;
+
   String? studySchedule;
   bool? canSendMessage;
+  String? studentGroup;
+  String? studentInfo;
+  double? avgRating;
 
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

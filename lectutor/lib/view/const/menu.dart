@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/view/const/page.dart';
 import 'package:provider/provider.dart';
+import '../../config/const.dart';
+import '../../handle/user.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
 
@@ -31,9 +33,15 @@ class _MenuPage extends State<MenuPage> {
       child: ListView(
         children: [
           GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, "/account");
+            onTap: () async {
+
+              var data = await getUserInfo(Const.token);
+              if (data != null){
+                Navigator.pop(context);
+                User user = User.fromJson(data);
+                print(user.name);
+                Navigator.pushNamed(context, "/account", arguments: user);
+              }
             },
             child: Container(
               padding: EdgeInsets.all(10),

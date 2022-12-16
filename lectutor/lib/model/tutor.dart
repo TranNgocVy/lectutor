@@ -46,7 +46,7 @@ class Tutor {
   String? specialties;
   String? resume;
   double? rating;
-  String? isNative;
+  bool? isNative;
   int? price;
   bool? isOnline;
 

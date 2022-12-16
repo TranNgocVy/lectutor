@@ -34,7 +34,14 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       json['timezone'] as int?,
       json['studySchedule'] as String?,
       json['canSendMessage'] as bool?,
-    );
+    )
+      ..tutorInfo = json['tutorInfo'] == null
+          ? null
+          : Tutor.fromJson(json['tutorInfo'] as Map<String, dynamic>)
+      ..isPhoneActivivated = json['isPhoneActivivated'] as bool?
+      ..studentGroup = json['studentGroup'] as String?
+      ..studentInfo = json['studentInfo'] as String?
+      ..avgRating = (json['avgRating'] as num?)?.toDouble();
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'id': instance.id,
@@ -47,13 +54,18 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'language': instance.language,
       'birthday': instance.birthday,
       'isActivated': instance.isActivated,
+      'tutorInfo': instance.tutorInfo,
       'walletInfo': instance.walletInfo,
       'courses': instance.courses,
       'requireNote': instance.requireNote,
       'level': instance.level,
       'learnTopics': instance.learnTopics,
       'testPreparations': instance.testPreparations,
+      'isPhoneActivivated': instance.isPhoneActivivated,
       'timezone': instance.timezone,
       'studySchedule': instance.studySchedule,
       'canSendMessage': instance.canSendMessage,
+      'studentGroup': instance.studentGroup,
+      'studentInfo': instance.studentInfo,
+      'avgRating': instance.avgRating,
     };

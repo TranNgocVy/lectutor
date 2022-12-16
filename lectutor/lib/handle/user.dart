@@ -1,19 +1,19 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/gestures.dart';
 import 'package:lectutor/model/bookingInfo.dart';
+import 'package:lectutor/model/user.dart';
 
 import '../config/const.dart';
 import '../view/const/constVar.dart';
 
 Future<int> getLearningTimeTotal(String token) async {
   int a = DateTime.now().millisecondsSinceEpoch;
-  print(a);
   var dio = Dio();
   try{
     dio.options.headers["Authorization"] = "Bearer ${token}";
     final response = await dio.get(ConstVar.ULR + "call/total");
 
     if (response.statusCode == 200) {
-      print(response.data);
       return response.data["total"];
     }
 
@@ -53,4 +53,52 @@ Future<List<BookingInfo>> getLession(String token) async {
   }
 
   return [];
+}
+
+Future<dynamic> getUserInfo(String token) async {
+  var dio = Dio();
+  try{
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+    final response = await dio.get(ConstVar.ULR + "user/info");
+
+    if (response.statusCode == 200) {
+      return response.data["user"];
+    }
+  }catch(e){
+    print(e);
+  }
+  return null;
+}
+
+Future<dynamic> updateProfile (String token, String name, String country, String phone, String birthday, String level, List<String> learnTopics, List<String>testPreparations, String studySchedule ) async{
+  var dio = Dio();
+  print("name: " + name);
+  print("birthdaay: " + birthday);
+  print("country: " + country);
+  print("phone: " + phone);
+  print("level: " + level);
+  print("topic: " + learnTopics.toString());
+  print("test: " + testPreparations.toString());
+  try{
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+    final response = await dio.put(ConstVar.ULR + "user/info", data: {
+      "name": name,
+      "country": country,
+      "phone": phone,
+      "birthday": birthday,
+      "level": level,
+      "learnTopics": learnTopics,
+      "testPreparations": testPreparations,
+      "studySchedule": studySchedule
+
+    }
+    );
+
+    if (response.statusCode == 200) {
+      return response.data["user"];
+    }
+  }catch(e){
+    print(e);
+  }
+  return null;
 }
