@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/view/const/page.dart';
 import 'package:provider/provider.dart';
 import '../../config/const.dart';
+import '../../handle/schedule.dart';
 import '../../handle/user.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
@@ -179,9 +181,11 @@ class _MenuPage extends State<MenuPage> {
             ),
           ),
           GestureDetector(
-            onTap: () {
+            onTap: () async{
+              List<BookingInfo> bookingList = await getStudentBookedClass(Const.token, 1);
+              print("History length ${bookingList.length}");
               Navigator.pop(context);
-              Navigator.pushNamed(context, "/schedule/history");
+              Navigator.pushNamed(context, "/schedule/history", arguments: bookingList);
             },
             child: Container(
               padding: EdgeInsets.all(10),

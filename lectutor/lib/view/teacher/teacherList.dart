@@ -185,7 +185,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                             RichText(
                               textAlign: TextAlign.center,
                               text: TextSpan(
-                                  text: getNextLessionInfo(nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp, nextbookingList[0].scheduleDetailInfo!.endPeriodTimestamp),
+                                  text: " ${Pkg.getDate(nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp)} ${Pkg.getDurationLession(nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp, nextbookingList[0].scheduleDetailInfo!.endPeriodTimestamp)}",
                                   style: TextStyle(color: Colors.white, fontSize: 14),
                                   // children: <TextSpan>[
                                   //   TextSpan(text: ' (start in 65:65:51)',
@@ -862,14 +862,7 @@ class _TeacherListPage extends State<TeacherListPage> {
     return -1;
   }
 
-  String getNextLessionInfo (int startTimestamp, int endTimestamp){
-    DateTime startDateTime = Const.time.add(Duration(milliseconds: startTimestamp));
-    DateTime endDateTime = Const.time.add(Duration(milliseconds: endTimestamp));
-    String dayInWeek = Const.weekday[startDateTime.weekday - 1];
-    String month = Const.months[startDateTime.month - 1];
 
-    return "${dayInWeek}, ${startDateTime.day} ${month} ${startDateTime.year} ${startDateTime.hour < 10 ? "0${startDateTime.hour}": startDateTime.hour}:${startDateTime.minute} - ${endDateTime.hour < 10 ? "0${endDateTime.hour }": endDateTime.hour }:${endDateTime.minute}";
-  }
   // String getWaitTime(BookingInfo lession){
   //   String second =
   //

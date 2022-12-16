@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/model/token.dart';
 import 'package:lectutor/model/tokens.dart';
 import 'package:lectutor/model/tutorDetail.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
 
         '/tutor/detail/bookclass': (context) => BookAClass(),
         '/schedule': (context) => ScheduleList(),
-        '/schedule/history': (context) => ScheduleHistory(),
+        // '/schedule/history': (context) => ScheduleHistory(),
         '/course': (context) => CourseList(),
         '/course/detail': (context) => CourseDetail(),
         '/course/detail/topic':(context) => TopicDetail(),
@@ -90,6 +91,18 @@ class MyApp extends StatelessWidget {
                 );
               },
             );
+          }
+          else {
+            if(settings.name == "/schedule/history"){
+              final args = settings.arguments as List<BookingInfo>;
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ScheduleHistory(
+                    bookingList: args,
+                  );
+                },
+              );
+            }
           }
         }
         // The code only supports

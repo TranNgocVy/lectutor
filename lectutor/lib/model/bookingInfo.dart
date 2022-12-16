@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lectutor/model/scheduleDetailInfo.dart';
+
+import 'feedBack.dart';
 part 'bookingInfo.g.dart';
 
 @JsonSerializable()
@@ -25,6 +27,10 @@ class BookingInfo {
   String? calendarId;
   bool? isDeleted;
   ScheduleDetailInfo? scheduleDetailInfo;
+  String? classReview;
+  bool? showRecordUrl;
+  List<FeedBack> feedbacks;
+
 
   factory BookingInfo.fromJson(Map<String, dynamic> json) => _$BookingInfoFromJson(json);
 
@@ -49,6 +55,8 @@ class BookingInfo {
       this.cancelNote,
       this.calendarId,
       this.isDeleted,
-      this.scheduleDetailInfo
-      );
+      this.scheduleDetailInfo,
+      this.classReview,
+      this.showRecordUrl,
+      this.feedbacks);
 }

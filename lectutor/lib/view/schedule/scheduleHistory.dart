@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/schedule.dart';
+import '../../config/pkg.dart';
+import '../../model/feedBack.dart';
 import '../../model/teacher.dart';
 import '../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -11,23 +14,33 @@ import '../const/page.dart';
 
 
 class ScheduleHistory extends StatelessWidget {
-  const ScheduleHistory({super.key});
+  final List<BookingInfo> bookingList;
+  const ScheduleHistory({super.key, required this.bookingList});
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, ScheduleHistoryPage());
+    return TemplatePage.getHeader(context, ScheduleHistoryPage(bookingList: bookingList));
 
   }
 }
 
 class ScheduleHistoryPage extends StatefulWidget {
-  const ScheduleHistoryPage({super.key});
+  final List<BookingInfo> bookingList;
+  const ScheduleHistoryPage({super.key, required this.bookingList});
   @override
   State<ScheduleHistoryPage> createState() => _ScheduleHistoryPage();
 
 }
 
 class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
+  late List<BookingInfo> bookingList;
+
+  @override
+  void initState() {
+    super.initState();
+    bookingList = widget.bookingList;
+    print(bookingList.length);
+  }
 
 
   @override
@@ -119,8 +132,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
 
               Column(
                 children:
-                getScheduleList([],
-                    []),
+                getScheduleList(bookingList),
               )
             ]
         )
@@ -130,9 +142,9 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
 
   }
 
-  List<Widget> getScheduleList(List<Schedule> scheduleList, List<Teacher> teacherList){
+  List<Widget> getScheduleList(List<BookingInfo> scheduleList){
     List<Widget> list = [];
-    for (var i = 0; i < scheduleList.length; i++){
+    for (var i = 0; i < scheduleList.length ; i++){
       list.add(SizedBox(height: 10,));
       list.add( Card(
         child: Container(
@@ -147,7 +159,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                   children: <Widget>[
                     Text(
                       //Todo
-                      "",
+                      "${Pkg.getDate(scheduleList[i].scheduleDetailInfo!.startPeriodTimestamp)}",
                       // scheduleList[i].day,
                       style: TextStyle(
                         fontSize: 25,
@@ -156,7 +168,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                     ),
                     SizedBox(height: 2,),
                     Text(
-                      "Khoảng thời gian",
+                      "${Pkg.getDayPast(scheduleList[i].scheduleDetailInfo!.startPeriodTimestamp)}",
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 16,
@@ -176,11 +188,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Icon(
-                      Icons.account_circle_outlined,
-                      size: 80,
-                      color: Colors.blue,
-                    ),
+                    Pkg.setAvatar(scheduleList[i].scheduleDetailInfo!.scheduleInfo.tutorInfo.avatar, scheduleList[i].scheduleDetailInfo!.scheduleInfo.tutorInfo.name),
 
                     Expanded(
                       child: Container(
@@ -193,7 +201,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                               children: <Widget>[
                                 Expanded(
                                   child: Text(
-                                    teacherList[i].name,
+                                    "${scheduleList[i].scheduleDetailInfo!.scheduleInfo.tutorInfo.name}",
                                     style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
@@ -212,7 +220,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                                 SizedBox(width: 5,),
                                 Expanded(
                                   child: Text(
-                                    teacherList[i].natioonality,
+                                    "${scheduleList[i].scheduleDetailInfo!.scheduleInfo.tutorInfo.country}",
                                     style: TextStyle(
                                       fontSize: 18,
                                       color: Colors.black87,
@@ -256,73 +264,74 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
 
               SizedBox(height: ConstVar.mediumspace,),
 
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-
-                  children: <Widget>[
-                    Text(
-                      "Learned Books",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 18,
-                      ),
-                    ),
-                    SizedBox(height: 1,),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      color: Colors.white,
-                      child: Expanded(
-                        child: Text(
-                          "Book list of this lesson in this day, you can read",
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              // Container(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //
+              //     children: <Widget>[
+              //       Text(
+              //         "Learned Books",
+              //         textAlign: TextAlign.left,
+              //         style: TextStyle(
+              //           color: Colors.black87,
+              //           fontSize: 18,
+              //         ),
+              //       ),
+              //       SizedBox(height: 1,),
+              //       Container(
+              //         padding: EdgeInsets.all(10),
+              //         color: Colors.white,
+              //         child: Expanded(
+              //           child: Text(
+              //             "Book list of this lesson in this day, you can read",
+              //             style: TextStyle(
+              //               fontSize: 18,
+              //             ),
+              //           ),
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
               SizedBox(height: ConstVar.minspace,),
 
               Container(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(10),
                 color: Colors.white,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Row(
-
                       children: <Widget>[
                         Expanded(child: Text(
-                          //Todo
-                          "",
-                          // "Lesson time: " + scheduleList[i].start + " - " + scheduleList[i].end,
+                          "Lesson time: ${Pkg.getDurationLession(scheduleList[i].scheduleDetailInfo!.startPeriodTimestamp, scheduleList[i].scheduleDetailInfo!.endPeriodTimestamp)}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20,
                           ),
                         )),
+
+                        SizedBox(height: 2,),
+                        if(scheduleList[i].showRecordUrl != null && scheduleList[i]!.showRecordUrl == true)
+                          ElevatedButton.icon(
+                            style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+                            ),
+                            icon: Icon(Icons.video_library, size: 20,color: Colors.white),
+                            label: Text(
+                              'Record',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                            onPressed: null,
+                          ),
                       ],
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
                     ),
-                    SizedBox(height: 2,),
-                    ElevatedButton.icon(
-                      style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-                      ),
-                      icon: Icon(Icons.video_library, size: 20,color: Colors.white),
-                      label: Text(
-                        'Record',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                      onPressed: null,
-                    ),
+
+
 
                   ],
                 ),
@@ -340,7 +349,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "No request for lesson",
+                              scheduleList[i].studentRequest != null && scheduleList[i].studentRequest!.isNotEmpty ? "Request for lesson" : "No request for lesson",
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.black87,
@@ -350,6 +359,18 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                         ],
                       ),
                     ),
+                    if (scheduleList[i].studentRequest != null && scheduleList[i].studentRequest!.isNotEmpty )
+                      Container(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: Text(
+                          "${scheduleList[i].studentRequest}",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black54,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
                     Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -374,32 +395,9 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                     ),
                     Container(
                       padding: EdgeInsets.all(20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          TextButton(
-                            onPressed: null,
-                            child: Text(
-                              "Add a Rating",
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: null,
-                            child: Text(
-                              "Report",
-                              textAlign: TextAlign.end,
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: Column(
+                        children: getRatingList(scheduleList[i].feedbacks)
+
                       ),
                     ),
                   ],
@@ -415,6 +413,100 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
       ));
     }
     return list;
+  }
+
+  List<Widget> getRatingList(List<FeedBack> feedbackList){
+    List<Widget> list = [];
+    if(feedbackList.length == 0){
+      list.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          TextButton(
+            onPressed: null,
+            child: Text(
+              "Add a Rating",
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: null,
+            child: Text(
+              "Report",
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ],
+      ));
+    }
+    else{
+      for(int i =0 ;i< feedbackList.length; i++){
+        list.add(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text("Rating", style: TextStyle(fontSize: 18,
+                      color: Colors.black87,),),
+                    SizedBox(width: 5,),
+                    Row(
+                      children: Pkg.getRating(feedbackList[i].rating!),
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: null,
+                      child: Text(
+                        "Report",
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: null,
+                      child: Text(
+                        "Report",
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+
+              ],
+            )
+        );
+
+      }
+    }
+    return list;
+  }
+
+  String getDayPast(BookingInfo booking){
+    return "";
+  }
+  String getDate(BookingInfo booking){
+    return "";
+  }
+  String getSession(BookingInfo booking){
+    return "";
   }
 
 }

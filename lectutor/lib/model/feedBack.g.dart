@@ -11,7 +11,7 @@ FeedBack _$FeedBackFromJson(Map<String, dynamic> json) => FeedBack(
       json['bookingId'] as String?,
       json['firstId'] as String?,
       json['secondId'] as String?,
-      json['rating'] as int?,
+      (json['rating'] as num?)?.toDouble(),
       json['content'] as String?,
       json['createdAt'] == null
           ? null

@@ -200,24 +200,25 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.only(top: 5),
-                child: widget.tutorDetail.User?.avatar != null?
-                CircleAvatar(
-                  // backgroundImage: ,
-                  // backgroundImage: NetworkImage((tutorDetail?.User?.avatar).toString()),
-                  backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
-                  maxRadius: 50,
-                ):
-                CircleAvatar(
-                  backgroundColor: Colors.blue.shade200,
-                  maxRadius: 50,
-                  child: Text(
-                    alias,
-                    style: TextStyle(
-                        fontSize: 45,
-                        color: Colors.white
-                    ),
-                  ),
-                ),
+                child: Pkg.setAvatar(widget.tutorDetail?.User?.avatar,widget.tutorDetail?.User?.name )
+                // widget.tutorDetail.User?.avatar != null?
+                // CircleAvatar(
+                //   // backgroundImage: ,
+                //   // backgroundImage: NetworkImage((tutorDetail?.User?.avatar).toString()),
+                //   backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
+                //   maxRadius: 50,
+                // ):
+                // CircleAvatar(
+                //   backgroundColor: Colors.blue.shade200,
+                //   maxRadius: 50,
+                //   child: Text(
+                //     alias,
+                //     style: TextStyle(
+                //         fontSize: 45,
+                //         color: Colors.white
+                //     ),
+                //   ),
+                // ),
               ),
               // CircleAvatar(
               //   backgroundImage: AssetImage('assets/icon/avatar.jpg'),
@@ -1143,7 +1144,9 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                     SizedBox(height: ConstVar.minspace),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: getRated(feedbackList[i].rating!),
+                      // children: getRated(feedbackList[i].rating!),
+                      children: Pkg.getRating(feedbackList[i].rating!),
+
                     ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
