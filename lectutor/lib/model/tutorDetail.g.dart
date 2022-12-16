@@ -23,7 +23,9 @@ TutorDetail _$TutorDetailFromJson(Map<String, dynamic> json) => TutorDetail(
       json['isFavorite'] as bool?,
       (json['avgRating'] as num?)?.toDouble(),
       json['totalFeedback'] as int?,
-    );
+    )..feedlist = (json['feedlist'] as List<dynamic>)
+        .map((e) => FeedBack.fromJson(e as Map<String, dynamic>))
+        .toList();
 
 Map<String, dynamic> _$TutorDetailToJson(TutorDetail instance) =>
     <String, dynamic>{

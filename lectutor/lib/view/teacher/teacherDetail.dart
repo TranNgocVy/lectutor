@@ -53,16 +53,13 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   int? bufferDelay;
   // TutorDetail tutorDetail = widget.teacherDetail;
   List<Schedule> schedules = [];
-  DateTime date = DateTime.now();
+  DateTime date = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day);
 
   @override
   void initState() {
     super.initState();
     // getTutorDetail(widget.id);
     getScedule(widget.tutorDetail.User.id);
-    print(schedules.length);
-    print(widget.tutorDetail.feedlist.length);
-    print("----------------------");
 
     initializePlayer();
   }
@@ -686,7 +683,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               ElevatedButton(
                 onPressed: (){
                   setState(() {
-                    date = DateTime.now();
+                    date = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day);
                   });
                 },
                 child: const Text(
@@ -990,17 +987,23 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
       children: getDayHeader(start),
     ),);
     Map<String, List<String>> map = {};
+    print("So luong  lopw hocj ${schedules.length}");
+    print("Cos sanwx ban dau: ${list.length}");
 
-    for(int i = 0 ; i < schedules.length; i++){
+    for(int i = 0; i < Const.defualtTimeRange.length; i++){
+      map[Const.defualtTimeRange[i]] = ["", "", "", "", "", "", ""];
+    }
+
+    // for(int i = 0 ; i < schedules.length; i++){
+    for(int i = 0 ; i < schedules.length && i < 1; i++){
+      print(schedules[i].startTimestamp);
+      print(DateTime.now().millisecondsSinceEpoch);
       for (int j = 0; j < schedules[i].scheduleDetails.length; j++){
         DateTime startTime = Const.time.add(Duration(milliseconds: schedules[i].scheduleDetails[j].startPeriodTimestamp));
         int difDay = Pkg.diffDay(start, startTime);
         if (startTime.isAfter(start) && Pkg.diffDay(start, startTime) < 7){
           String key = "${schedules[i].scheduleDetails[j].startPeriod} - ${schedules[i].scheduleDetails[j].endPeriod}";
           if (schedules[i].scheduleDetails[j].isBooked == false){
-            if (!map.containsKey(key)){
-              map[key] = ["", "", "", "", "", "", ""];
-            }
             map[key]![difDay] = "Book";
           }else{
             for (int k = 0; k < schedules[i].scheduleDetails[j].bookingInfo.length; k ++){
@@ -1021,12 +1024,11 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
       }
     }
     map.forEach((key, value) {
+      print("${key} - ${value}");
       List<Widget> row = [];
       row.add(getBookCell(key));
       for (var i = 0; i < value.length; i++){
         row.add(getBookCell(value[i]));
-
-
       }
       list.add(TableRow(
         children: row,
@@ -1045,6 +1047,8 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
         ));
       }
     }
+
+    print("Cos sanwx: ${list.length}");
     return list;
   }
 

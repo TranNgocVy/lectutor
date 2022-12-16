@@ -3,7 +3,7 @@ part 'tutorInfo.g.dart';
 
 @JsonSerializable()
 class TutorInfo {
-
+  String? id;
   String? level;
   String? email;
   String? google;

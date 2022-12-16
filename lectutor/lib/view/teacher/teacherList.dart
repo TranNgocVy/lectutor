@@ -3,9 +3,13 @@ import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/countdown.dart';
+import 'package:flutter_countdown_timer/countdown_controller.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/handle/teacher.dart';
+import 'package:lectutor/handle/user.dart';
+import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/model/teacher.dart';
 import 'package:lectutor/model/tutorDetail.dart';
 import 'package:lectutor/model/user.dart';
@@ -52,6 +56,7 @@ class _TeacherListPage extends State<TeacherListPage> {
   final TextEditingController _tController = TextEditingController();
   final FocusNode _tFocus = FocusNode();
   final FocusNode _tgFocus = FocusNode();
+  late CountdownController countdownController;
 
   List<ChoiceChipData> specialtiesChoiceChips = SpecialtiesChoiceChips.getSpecialties(ConstVar.type, false);
 
@@ -84,12 +89,12 @@ class _TeacherListPage extends State<TeacherListPage> {
     }
   }
 
-  // List<Teacher> teacherList = [Teacher(1, "Keengan", "France", "Description about him",[], [], ["English for kids", "English for Business", "Conversational", "STARTERS",]),
-  //   Teacher(1, "Keengan", "France", "Description about him", [], [], ["Conversational", "STARTERS", "MOVERS", "FLYERS", "KET", "PET",])];
-  // List<int> favoriteIdList = [0];
-
   List<Tutor>  tutorList = [];
   List<Tutor>  favoriteTutorList = [];
+  List<BookingInfo> nextbookingList = [];
+
+  int totalTime = 0;
+
   void getTutor() async{
     var data = await getTeacherList(context);
     if (data != null){
@@ -97,6 +102,33 @@ class _TeacherListPage extends State<TeacherListPage> {
         updateLists(data);
       });
     }
+  }
+  void getNextBookingList() async{
+    var list = await getLession(Const.token);
+    if (list != []){
+      setState(() {
+        nextbookingList = list;
+        print(nextbookingList.length);
+
+        if (nextbookingList.length > 0 ){
+          print(nextbookingList[0].scheduleDetailInfo?.scheduleInfo.date);
+          print(nextbookingList[0].scheduleDetailInfo?.scheduleInfo.startTime);
+          print(nextbookingList[0].scheduleDetailInfo?.scheduleInfo.endTime);
+          int now = DateTime.now().millisecondsSinceEpoch;
+          countdownController = CountdownController(duration: Duration(milliseconds: nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp - now));
+          countdownController.start();
+        }
+        else{
+          countdownController = CountdownController(duration: Duration(seconds: 0));
+        }
+      });
+    }
+  }
+  void getTotalTime() async{
+    var total = await getLearningTimeTotal(Const.token);
+    setState(() {
+      totalTime = total;
+    });
   }
   void updateLists(dynamic data){
     var tutors = data["tutors"]["rows"];
@@ -117,11 +149,15 @@ class _TeacherListPage extends State<TeacherListPage> {
   @override
   void initState() {
     super.initState();
+    getTotalTime();
+    getNextBookingList();
+
     getTutor();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
@@ -134,8 +170,8 @@ class _TeacherListPage extends State<TeacherListPage> {
                 children: <Column>[
                   Column(
                     children: <Widget>[
-                      const Text(
-                        "Upconming lesson",
+                      Text(
+                        nextbookingList.length != 0 ? "Upconming lesson" : "You have no upcoming lesson.",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 30,
@@ -143,44 +179,57 @@ class _TeacherListPage extends State<TeacherListPage> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: ConstVar.mediumspace),
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                            text: 'Fri, 30 Sep 22 18:30 - 18:55',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                            children: <TextSpan>[
-                              TextSpan(text: ' (start in 65:65:51)',
-                                style: TextStyle(color: Colors.yellow, fontSize: 12),
-                                // recognizer: TapGestureRecognizer()
-                                //   ..onTap = () {}
-                              )
-                            ]
-                        ),
-                        // loginButton,
-                        // forgotLabel
-                      ),
-                      SizedBox(height: ConstVar.minspace),
-                      ElevatedButton.icon(
-                        style: const ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                        ),
-                        // style: ElevatedButton.styleFrom(
-                        //   shape: RoundedRectangleBorder(borderRadius: );
-                        // ),
+                      if(nextbookingList.length != 0)
+                        Column(
+                          children: <Widget>[
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                  text: getNextLessionInfo(nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp, nextbookingList[0].scheduleDetailInfo!.endPeriodTimestamp),
+                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                  // children: <TextSpan>[
+                                  //   TextSpan(text: ' (start in 65:65:51)',
+                                  //     style: TextStyle(color: Colors.yellow, fontSize: 12),
+                                  //     // recognizer: TapGestureRecognizer()
+                                  //     //   ..onTap = () {}
+                                  //   )
+                                  // ]
+                              ),
+                              // loginButton,
+                              // forgotLabel
+                            ),
+                            Countdown(
+                                countdownController: countdownController,
+                                builder: (_, Duration time) {
+                                  return Text(
+                                    'Start in ${time.inHours < 10 ? "0${time.inHours}":time.inHours}:${time.inMinutes % 60 < 10 ? "0${time.inMinutes % 60}":time.inMinutes % 60}:${time.inSeconds % 60 < 10 ? "0${time.inSeconds % 60}" : time.inSeconds % 60}',
+                                    style: TextStyle(color: Colors.yellow, fontSize: 12),
+                                  );
+                                }),
+                            SizedBox(height: ConstVar.minspace),
+                            ElevatedButton.icon(
+                              style: const ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+                              ),
+                              // style: ElevatedButton.styleFrom(
+                              //   shape: RoundedRectangleBorder(borderRadius: );
+                              // ),
 
-                        icon: Icon(Icons.video_library, size: 20,color: Colors.blue,),
-                        label: Text(
-                          'Enter lesson room',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 13,
-                          ),
+                              icon: Icon(Icons.video_library, size: 20,color: Colors.blue,),
+                              label: Text(
+                                'Enter lesson room',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              onPressed: null,
+                            ),
+                          ],
                         ),
-                        onPressed: null,
-                      ),
                       SizedBox(height: ConstVar.minspace),
-                      const Text(
-                        "Total lesson is 1 hours 15 minutes",
+                      Text(
+                        totalTime < 60 ? "Total lesson time is ${totalTime} minutes" : "Total lesson time is ${totalTime ~/ 60} hours ${totalTime % 60} minutes",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -602,6 +651,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                         tutorDetail = TutorDetail.fromJson(data);
                       }
                       tutorDetail.feedlist = tutorList[i].feedbacks!;
+                      print(tutorDetail.User.id);
 
                       Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
 
@@ -785,6 +835,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                             tutorDetail = TutorDetail.fromJson(data);
                           }
                           tutorDetail.feedlist = tutorList[i].feedbacks!;
+                          print(tutorDetail.User.id);
 
                           Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
                         },
@@ -810,6 +861,21 @@ class _TeacherListPage extends State<TeacherListPage> {
     }
     return -1;
   }
+
+  String getNextLessionInfo (int startTimestamp, int endTimestamp){
+    DateTime startDateTime = Const.time.add(Duration(milliseconds: startTimestamp));
+    DateTime endDateTime = Const.time.add(Duration(milliseconds: endTimestamp));
+    String dayInWeek = Const.weekday[startDateTime.weekday - 1];
+    String month = Const.months[startDateTime.month - 1];
+
+    return "${dayInWeek}, ${startDateTime.day} ${month} ${startDateTime.year} ${startDateTime.hour < 10 ? "0${startDateTime.hour}": startDateTime.hour}:${startDateTime.minute} - ${endDateTime.hour < 10 ? "0${endDateTime.hour }": endDateTime.hour }:${endDateTime.minute}";
+  }
+  // String getWaitTime(BookingInfo lession){
+  //   String second =
+  //
+  //   return "(Start in ${}:${}:${})";
+  // }
+
 
 
 }

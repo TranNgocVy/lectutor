@@ -38,9 +38,10 @@ TutorInfo _$TutorInfoFromJson(Map<String, dynamic> json) => TutorInfo(
           ? null
           : DateTime.parse(json['deletedAt'] as String),
       json['studentGroupId'] as String?,
-    );
+    )..id = json['id'] as String?;
 
 Map<String, dynamic> _$TutorInfoToJson(TutorInfo instance) => <String, dynamic>{
+      'id': instance.id,
       'level': instance.level,
       'email': instance.email,
       'google': instance.google,
