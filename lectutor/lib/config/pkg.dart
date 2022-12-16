@@ -101,7 +101,7 @@ class Pkg {
     DateTime endDateTime = Const.time.add(Duration(milliseconds: endTimestamp));
 
 
-    return "${startDateTime.hour < 10 ? "0${startDateTime.hour}": startDateTime.hour}:${startDateTime.minute} - ${endDateTime.hour < 10 ? "0${endDateTime.hour }": endDateTime.hour }:${endDateTime.minute}";
+    return "${startDateTime.hour < 10 ? "0${startDateTime.hour}": startDateTime.hour}:${startDateTime.minute < 10 ? "0${startDateTime.minute}": startDateTime.minute} - ${endDateTime.hour < 10 ? "0${endDateTime.hour }": endDateTime.hour }:${endDateTime.minute < 10 ? "0${endDateTime.minute }": endDateTime.minute }";
   }
 
   static String getDate (int startTimestamp){

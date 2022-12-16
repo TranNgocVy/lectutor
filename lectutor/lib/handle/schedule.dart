@@ -45,3 +45,22 @@ Future<List<BookingInfo>> getStudentBookedClass(String token, int page) async {
   }
   return list;
 }
+
+Future<List<BookingInfo>> getUpcomingClass(String token, int page) async {
+  var dio = Dio();
+  final current = DateTime.now().millisecondsSinceEpoch;
+  List<BookingInfo> list = [];
+  try{
+    // dio.options.headers["Authorization"] = "Bearer ${context.watch<Tokens>().access.token}";
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+    var response = await dio.get(ConstVar.ULR + "booking/list/student?page=$page&perPage=${Const.perPage}&dateTimeGte=$current&orderBy=meeting&sortBy=asc");
+    if(response.statusCode == 200){
+      for(int i = 0;; i++){
+        list.add(BookingInfo.fromJson(response.data["data"]["rows"][i]));
+      }
+    }
+  }catch(e){
+    print(e);
+  }
+  return list;
+}

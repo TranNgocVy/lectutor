@@ -153,9 +153,10 @@ class _MenuPage extends State<MenuPage> {
             ),
           ),
           GestureDetector(
-            onTap: () {
+            onTap: () async{
+              List<BookingInfo> bookingList = await getUpcomingClass(Const.token, 1);
               Navigator.pop(context);
-              Navigator.pushNamed(context, "/schedule");
+              Navigator.pushNamed(context, "/schedule", arguments: bookingList);
             },
             child: Container(
               padding: EdgeInsets.all(10),
@@ -183,7 +184,6 @@ class _MenuPage extends State<MenuPage> {
           GestureDetector(
             onTap: () async{
               List<BookingInfo> bookingList = await getStudentBookedClass(Const.token, 1);
-              print("History length ${bookingList.length}");
               Navigator.pop(context);
               Navigator.pushNamed(context, "/schedule/history", arguments: bookingList);
             },

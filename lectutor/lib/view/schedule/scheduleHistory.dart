@@ -499,14 +499,4 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
     return list;
   }
 
-  String getDayPast(BookingInfo booking){
-    return "";
-  }
-  String getDate(BookingInfo booking){
-    return "";
-  }
-  String getSession(BookingInfo booking){
-    return "";
-  }
-
 }

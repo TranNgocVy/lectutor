@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/schedule.dart';
+import '../../config/pkg.dart';
+import '../../model/bookingInfo.dart';
 import '../../model/teacher.dart';
 import '../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -10,25 +12,33 @@ import '../const/page.dart';
 
 
 class ScheduleList extends StatelessWidget {
-  const ScheduleList({super.key});
+  final List<BookingInfo> bookingList;
+  const ScheduleList({super.key, required this.bookingList});
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, ScheduleListPage());
+    return TemplatePage.getHeader(context, ScheduleListPage(bookingList: bookingList));
 
   }
 }
 
 class ScheduleListPage extends StatefulWidget {
-  const ScheduleListPage({super.key});
+  final List<BookingInfo> bookingList;
+  const ScheduleListPage({super.key, required this.bookingList});
   @override
   State<ScheduleListPage> createState() => _ScheduleListPage();
 
 }
 
 class _ScheduleListPage extends State<ScheduleListPage> {
-
-
+  late List<BookingInfo> bookingList;
+  int index = 0;
+  @override
+  void initState() {
+    super.initState();
+    bookingList = widget.bookingList;
+    print(bookingList.length);
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -262,8 +272,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
 
               Column(
                 children:
-                getScheduleList([],
-                    []),
+                getScheduleList(bookingList),
               )
             ]
         )
@@ -273,9 +282,11 @@ class _ScheduleListPage extends State<ScheduleListPage> {
 
   }
 
-  List<Widget> getScheduleList(List<Schedule> scheduleList, List<Teacher> teacherList){
+  List<Widget> getScheduleList(List<BookingInfo> scheduleList){
     List<Widget> list = [];
-    for (var i = 0; i < scheduleList.length; i++){
+    for (index = 0; index < scheduleList.length; index++){
+      int tempIndex = index;
+      List<Widget> lessonList = getLesson(scheduleList);
       list.add(SizedBox(height: 10,));
       list.add( Card(
         child: Container(
@@ -289,9 +300,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      //Todo
-                      // scheduleList[i].day,
-                      "",
+                      "${Pkg.getDate(scheduleList[tempIndex].scheduleDetailInfo!.startPeriodTimestamp)}",
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
@@ -299,7 +308,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                     ),
                     SizedBox(height: 2,),
                     Text(
-                      "1 lesson",
+                      lessonList.length == 1 ?"1 lesson" : "${lessonList.length - 1} consecutive lessons",
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 16,
@@ -319,12 +328,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Icon(
-                      Icons.account_circle_outlined,
-                      size: 80,
-                      color: Colors.blue,
-                    ),
-
+                    Pkg.setAvatar(scheduleList[tempIndex].scheduleDetailInfo!.scheduleInfo.tutorInfo.avatar, scheduleList[tempIndex].scheduleDetailInfo!.scheduleInfo.tutorInfo.name),
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.only(left: 5,top: 5),
@@ -336,7 +340,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                               children: <Widget>[
                                 Expanded(
                                   child: Text(
-                                    teacherList[i].name,
+                                    "${scheduleList[tempIndex].scheduleDetailInfo!.scheduleInfo.tutorInfo.name}",
                                     style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
@@ -360,7 +364,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                                 SizedBox(width: 5,),
                                 Expanded(
                                   child: Text(
-                                    teacherList[i].natioonality,
+                                    "${scheduleList[tempIndex].scheduleDetailInfo!.scheduleInfo.tutorInfo.country}",
                                     style: TextStyle(
                                       fontSize: 18,
                                       color: Colors.black87,
@@ -409,39 +413,8 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                 color: Colors.white,
                 child: Column(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(child: Text(
-                          //ToDo
-                          "",// scheduleList[i].start + " - " + scheduleList[i].end,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        )),
-                        ElevatedButton.icon(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    side: BorderSide(color: Colors.red)
-                                )
-                            ),
-                          ),
-                          icon: Icon(Icons.cancel_presentation, size: 20,color: Colors.red),
-                          label: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 20,
-                            ),
-                          ),
-                          onPressed: null,
-                        ),
-
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
+                      children: lessonList,
                     ),
                     SizedBox(height: 2,),
 
@@ -486,7 +459,8 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                               maxLines: null,
                               minLines: 4,
                               autofocus: false,
-                              initialValue: '',
+                              enabled: false,
+                              initialValue: getRequests(scheduleList, tempIndex, index),
                               decoration: InputDecoration(
                                 hintMaxLines: 3,
                                 hintText: 'Currently there are no requests for this class. Please write down any requests for the teacher.',
@@ -567,6 +541,88 @@ class _ScheduleListPage extends State<ScheduleListPage> {
       ));
     }
     return list;
+  }
+
+  List<Widget> getLesson (List<BookingInfo> bookinglist){
+    List<Widget> list = [];
+    int endIndex = index;
+    for(endIndex;; endIndex++){
+      list.add(Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          children: <Widget>[
+            Expanded(child: Text(
+              //ToDo
+              "${Pkg.getDurationLession(bookinglist[endIndex].scheduleDetailInfo!.startPeriodTimestamp, bookinglist[endIndex].scheduleDetailInfo!.endPeriodTimestamp)}",
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            )),
+            ElevatedButton.icon(
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        side: BorderSide(color: Colors.red)
+                    )
+                ),
+              ),
+              icon: Icon(Icons.cancel_presentation, size: 20,color: Colors.red),
+              label: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 20,
+                ),
+              ),
+              onPressed: null,
+            ),
+
+          ],
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+      ));
+
+      if(endIndex + 1 >= bookingList.length ||
+          bookingList[endIndex].scheduleDetailInfo!.startPeriodTimestamp + 1800000 != bookingList[endIndex + 1].scheduleDetailInfo!.startPeriodTimestamp  ||
+          bookinglist[endIndex].scheduleDetailInfo!.scheduleInfo.tutorId != bookinglist[endIndex + 1].scheduleDetailInfo!.scheduleInfo.tutorId){
+        break;
+      }
+    }
+
+    if(list.length > 1) {
+      list.insertAll(0, [Container(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          children: <Widget>[
+            Expanded(child: Text(
+              //ToDo
+              "Lesson Time: ${Pkg.getDurationLession(bookinglist[index].scheduleDetailInfo!.startPeriodTimestamp, bookinglist[endIndex].scheduleDetailInfo!.endPeriodTimestamp)}",
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: 25,
+                color: Colors.black87,
+                fontWeight: FontWeight.bold
+              ),
+            )),
+          ],
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+      )]);
+    }
+    index = endIndex;
+    return list;
+  }
+  String getRequests(List<BookingInfo> bookingList, int start, int end){
+    String request = "";
+    for(int i = start; i<= end; i++){
+      if(bookingList[i].studentRequest != null && bookingList[i].studentRequest!.isNotEmpty){
+        request = request + "${bookingList[i].studentRequest}\n";
+      }
+    }
+    return request;
   }
 
 }

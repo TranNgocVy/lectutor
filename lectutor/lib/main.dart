@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         '/tutor': (context) => TeacherList(),
 
         '/tutor/detail/bookclass': (context) => BookAClass(),
-        '/schedule': (context) => ScheduleList(),
+        // '/schedule': (context) => ScheduleList(),
         // '/schedule/history': (context) => ScheduleHistory(),
         '/course': (context) => CourseList(),
         '/course/detail': (context) => CourseDetail(),
@@ -102,6 +102,18 @@ class MyApp extends StatelessWidget {
                   );
                 },
               );
+            }
+            else {
+              if(settings.name == "/schedule"){
+                final args = settings.arguments as List<BookingInfo>;
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return ScheduleList(
+                      bookingList: args,
+                    );
+                  },
+                );
+              }
             }
           }
         }
