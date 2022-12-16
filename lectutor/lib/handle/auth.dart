@@ -57,3 +57,20 @@ Future <dynamic> changePasword(String password, String newPassword, String acces
   }
   return false;
 }
+
+Future<bool> forgotPassword(String email) async {
+  var dio = Dio();
+  try{
+    final response = await dio.post(ConstVar.ULR + "user/forgotPassword", data:{"email": email});
+
+  if (response.statusCode == 200) {
+    return true;
+  }
+
+  }catch(e){
+    print(e);
+  }
+
+  return false;
+
+}

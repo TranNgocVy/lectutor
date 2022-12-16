@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../handle/auth.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
@@ -21,8 +22,9 @@ class ForgetPasswordPage extends StatefulWidget {
 }
 
 class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
-
-
+  TextEditingController emailController = TextEditingController();
+  String error = "";
+  bool isError = false;
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -68,19 +70,105 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
                   autofocus: false,
-                  initialValue: '',
+                  onTap: (){
+                    setState(() {
+                      isError = false;
+                      error = "";
+                    });
+                  },
+                  controller: emailController,
                   decoration: InputDecoration(
                     hintText: 'Enter your email...',
                     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                   ),
                 ),
+                SizedBox(height: ConstVar.minspace),
 
-                SizedBox(height: ConstVar.largespace),
+                if(isError)
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0,12, 0,0),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                        SizedBox(width: ConstVar.minspace,),
+                        Text(
+                          error,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.red,
+                          ),
+                        )
+                      ],
+
+                    ),
+                  ),
+
+
+
+
+                SizedBox(height: ConstVar.mediumspace),
 
                 ElevatedButton(
-                  onPressed: (){
-                    Navigator.pushNamed(context, '/');
+                  onPressed: ()async{
+                    if (emailController.text == ""){
+                      setState(() {
+                        isError = true;
+                        error = "Please enter your registered email";
+                      });
+                    }else{
+                      var isSuccess = await forgotPassword(emailController.text);
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          title: Container(
+                            padding: EdgeInsets.only(bottom: 5),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(color: Colors.grey.shade200, width: 2)
+                                )
+                            ),
+                            child: Row(
+                              children: [
+                                isSuccess == true ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
+                                SizedBox(width: ConstVar.mediumspace,),
+                                Text('Notification'),
+                              ],
+                            ),
+                          ),
+                          content: Text(isSuccess == true?'Please check to reset password.':"You have failed to reset password. Try again"),
+                          actions: <Widget>[
+                            TextButton(
+                              style: ButtonStyle(
+                                padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(30,10,30,10)),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      // side: BorderSide(color: Colors.red)
+                                    )
+                                ),
+                                backgroundColor:MaterialStateProperty.all(Colors.blue),
+                              ),
+
+                              onPressed: () {
+                                Navigator.pop(context);
+                                if (isSuccess == true){
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   },
                   child: const Text(
                     'Send reset link',

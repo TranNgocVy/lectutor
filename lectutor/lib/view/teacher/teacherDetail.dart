@@ -684,7 +684,11 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ElevatedButton(
-                onPressed: null,
+                onPressed: (){
+                  setState(() {
+                    date = DateTime.now();
+                  });
+                },
                 child: const Text(
                   'Today',
                   style: TextStyle(

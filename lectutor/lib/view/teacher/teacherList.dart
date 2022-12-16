@@ -84,9 +84,9 @@ class _TeacherListPage extends State<TeacherListPage> {
     }
   }
 
-  List<Teacher> teacherList = [Teacher(1, "Keengan", "France", "Description about him",[], [], ["English for kids", "English for Business", "Conversational", "STARTERS",]),
-    Teacher(1, "Keengan", "France", "Description about him", [], [], ["Conversational", "STARTERS", "MOVERS", "FLYERS", "KET", "PET",])];
-  List<int> favoriteIdList = [0];
+  // List<Teacher> teacherList = [Teacher(1, "Keengan", "France", "Description about him",[], [], ["English for kids", "English for Business", "Conversational", "STARTERS",]),
+  //   Teacher(1, "Keengan", "France", "Description about him", [], [], ["Conversational", "STARTERS", "MOVERS", "FLYERS", "KET", "PET",])];
+  // List<int> favoriteIdList = [0];
 
   List<Tutor>  tutorList = [];
   List<Tutor>  favoriteTutorList = [];
@@ -684,14 +684,28 @@ class _TeacherListPage extends State<TeacherListPage> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: <IconButton>[
                                   IconButton(
-                                    onPressed: (){
-                                      setState(() {
-                                        favoriteIdList.contains(i) ?  favoriteIdList.remove(i) : favoriteIdList.add(i);
-                                      });
+                                    onPressed: ()async {
+                                      int index = isContain(tutorList[i], favoriteTutorList);
+                                      if(index != -1){
+                                        var data = await addFavoriteTeacher(context, tutorList[i].userId.toString());
+                                        if (data == true){
+                                          setState(() {
+                                            favoriteTutorList.add(tutorList[i]);
+
+                                          });
+                                        }
+                                      }else{
+                                        setState(() {
+                                          favoriteTutorList.remove(index);
+                                        });
+                                      }
+
                                     },
-                                    icon: Icon(
-                                      favoriteIdList.contains(i) ? Icons.favorite: Icons.favorite_border,
-                                      color: favoriteIdList.contains(i) ? Colors.red: Colors.blue,
+                                    icon: isContain(tutorList[i], favoriteTutorList) != -1 ? Icon( Icons.favorite,
+                                      color:  Colors.red,
+                                      size: 30,
+                                    ) :  Icon( Icons.favorite_border,
+                                      color:  Colors.blue,
                                       size: 30,
                                     ),
                                   )
@@ -786,6 +800,15 @@ class _TeacherListPage extends State<TeacherListPage> {
       );
     }
     return list;
+  }
+
+  int isContain(Tutor tutor, List<Tutor> favoriteList){
+    for(int i = 0; i < favoriteList.length; i++){
+      if (tutor.userId == favoriteList[i].userId){
+        return i;
+      }
+    }
+    return -1;
   }
 
 

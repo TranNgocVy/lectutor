@@ -59,3 +59,19 @@ Future <dynamic> getTeacherDetail(BuildContext context, String id) async{
   }
   return null;
 }
+
+Future <dynamic> addFavoriteTeacher(BuildContext context, String id) async{
+  var dio = Dio();
+  try{
+    // dio.options.headers["Authorization"] = "Bearer ${context.watch<Tokens>().access.token}";
+    dio.options.headers["Authorization"] = "Bearer ${Const.token}";
+    var response = await dio.post(ConstVar.ULR + 'tutor/$id');
+
+    if(response.statusCode == 200){
+      return true;
+    }
+  }catch(e){
+    // print(e);
+  }
+  return false;
+}
