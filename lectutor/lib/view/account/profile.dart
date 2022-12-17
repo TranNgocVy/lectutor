@@ -170,9 +170,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         Text(
-                          "Account ID: ${user!.id}",
+                          "${user!.id}",
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             color: Colors.grey,
                           ),
                         ),

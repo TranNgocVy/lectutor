@@ -195,7 +195,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           onPressed: () {
                             Navigator.pop(context);
                             if (data != null){
-                              Navigator.pushNamed(context, "/");
+                              Navigator.popUntil(context,ModalRoute.withName('/'));
                             }
                           },
                           child: const Text('Ok', style: TextStyle(color: Colors.white),),

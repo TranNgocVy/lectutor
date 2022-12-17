@@ -171,7 +171,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                   Column(
                     children: <Widget>[
                       Text(
-                        nextbookingList.length != 0 ? "Upconming lesson" : "You have no upcoming lesson.",
+                        nextbookingList.length != 0 ? "Upconming lesson" : "No upcoming lesson.",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 30,
@@ -647,6 +647,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                       List<Schedule> schedules = [];
 
                       var data = await  getTeacherDetail(context, tutorList[i].userId.toString());
+                      print(data);
                       if (data != null){
                         tutorDetail = TutorDetail.fromJson(data);
                       }
@@ -664,8 +665,8 @@ class _TeacherListPage extends State<TeacherListPage> {
                           child: tutorList[i].avatar != null?
                             CircleAvatar(
                               // backgroundImage: ,
-                              // backgroundImage: NetworkImage(tutorList[i].avatar.toString()),
-                              backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
+                              backgroundImage: NetworkImage(tutorList[i].avatar.toString()),
+                              // backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
                               // maxRadius: 30,
                             ):
                           CircleAvatar(

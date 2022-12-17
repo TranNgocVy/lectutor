@@ -23,7 +23,7 @@ class TutorDetail {
   bool? isFavorite;
   double? avgRating;
   int? totalFeedback;
-  List<FeedBack> feedlist =[];
+  List<FeedBack>? feedlist;
   factory TutorDetail.fromJson(Map<String, dynamic> json) => _$TutorDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$TutorDetailToJson(this);

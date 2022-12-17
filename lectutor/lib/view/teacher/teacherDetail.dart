@@ -426,7 +426,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                                 ),
                                 Expanded(
                                     child: ListView(
-                                        children: getReviewList(widget.tutorDetail.feedlist)
+                                        children: getReviewList(widget.tutorDetail.feedlist!)
                                     )),
                               ],
                             ),
