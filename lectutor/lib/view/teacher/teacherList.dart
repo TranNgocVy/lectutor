@@ -879,6 +879,8 @@ class _TeacherListPage extends State<TeacherListPage> {
   }
 
   Widget getPage(int count){
+    int preId = 1;
+    // bool isContinuous = true;
     List<Widget> list = [];
     int temp = count;
     list.add(GestureDetector(
@@ -897,22 +899,36 @@ class _TeacherListPage extends State<TeacherListPage> {
       ),
     ));
     for(int i = 1; temp > 0; i++){
-      list.add(GestureDetector(
-        onTap: (){
-          if (i != selectId){
-            setState(() {
-              selectId = i;
-            });
-            getTutor(selectId);
+      if(i == 1 || i - 1 == (count - 1) ~/ Const.perPage || ( selectId - 2 < i && i < selectId + 2 )) {
+        list.add(GestureDetector(
+          onTap: (){
+            if (i != selectId){
+              setState(() {
+                selectId = i;
+              });
+              getTutor(selectId);
 
-          }
-        },
-        child: Container(
-          color: i == selectId ? Colors.blue.shade100: Colors.white,
-          padding: EdgeInsets.all(5),
-          child: Text("$i"),
-        ),
-      ));
+            }
+          },
+
+          child: Container(
+            color: i == selectId ? Colors.blue.shade100: Colors.white,
+            padding: EdgeInsets.all(5),
+            child: Text("$i"),
+          ),
+        ));
+
+        preId = i;
+      }
+      else{
+        if(preId + 1 == i){
+          list.add(Container(
+            padding: EdgeInsets.all(5),
+            child: Icon(Icons.more_horiz),
+          ));
+        }
+
+      }
 
       temp = temp - Const.perPage;
     }
@@ -936,10 +952,74 @@ class _TeacherListPage extends State<TeacherListPage> {
 
     return Center(
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: list,
       ),
     );
   }
+
+  // Widget getPage(int count){
+  //   List<Widget> list = [];
+  //   int temp = count;
+  //   list.add(GestureDetector(
+  //     onTap: (){
+  //       if (selectId > 1){
+  //         setState(() {
+  //           selectId = selectId - 1;
+  //         });
+  //         getTutor(selectId);
+  //
+  //       }
+  //     },
+  //     child: Container(
+  //       padding: EdgeInsets.all(5),
+  //       child: Icon(Icons.chevron_left_rounded),
+  //     ),
+  //   ));
+  //   for(int i = 1; temp > 0; i++){
+  //     list.add(GestureDetector(
+  //       onTap: (){
+  //         if (i != selectId){
+  //           setState(() {
+  //             selectId = i;
+  //           });
+  //           getTutor(selectId);
+  //
+  //         }
+  //       },
+  //       child: Container(
+  //         color: i == selectId ? Colors.blue.shade100: Colors.white,
+  //         padding: EdgeInsets.all(5),
+  //         child: Text("$i"),
+  //       ),
+  //     ));
+  //
+  //     temp = temp - Const.perPage;
+  //   }
+  //
+  //   list.add(GestureDetector(
+  //     onTap: (){
+  //       if (selectId <= (count - 1)~/ Const.perPage){
+  //
+  //         setState(() {
+  //           selectId = selectId + 1;
+  //         });
+  //         getTutor(selectId);
+  //
+  //       }
+  //     },
+  //     child: Container(
+  //       padding: EdgeInsets.all(5),
+  //       child: Icon(Icons.chevron_right_rounded),
+  //     ),
+  //   ));
+  //
+  //   return Center(
+  //     child: Row(
+  //       children: list,
+  //     ),
+  //   );
+  // }
 
 
 

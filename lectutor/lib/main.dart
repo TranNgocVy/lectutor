@@ -24,6 +24,7 @@ import 'package:lectutor/view/teacher/teacherList.dart';
 import 'package:lectutor/view/video/video.dart';
 import 'package:provider/provider.dart';
 
+import 'model/argument.dart';
 import 'model/walletInfo.dart';
 
 void main() {
@@ -94,22 +95,22 @@ class MyApp extends StatelessWidget {
           }
           else {
             if(settings.name == "/schedule/history"){
-              final args = settings.arguments as List<BookingInfo>;
+              final args = settings.arguments as ScheduleArg;
               return MaterialPageRoute(
                 builder: (context) {
                   return ScheduleHistory(
-                    bookingList: args,
+                    historyScheduleArg: args,
                   );
                 },
               );
             }
             else {
               if(settings.name == "/schedule"){
-                final args = settings.arguments as List<BookingInfo>;
+                final args = settings.arguments as ScheduleArg;
                 return MaterialPageRoute(
                   builder: (context) {
                     return ScheduleList(
-                      bookingList: args,
+                      scheduleArg: args,
                     );
                   },
                 );
@@ -172,13 +173,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class BookingLessonArg{
-  int balance;
-  int startTime;
-  int endTime;
-  String scheduleDetailIds;
 
-  BookingLessonArg(this.balance, this.startTime, this.endTime, this.scheduleDetailIds);
-}
 
 

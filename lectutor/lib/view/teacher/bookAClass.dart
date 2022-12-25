@@ -4,6 +4,7 @@ import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/main.dart';
 import '../../config/const.dart';
 import '../../config/pkg.dart';
+import '../../model/argument.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 

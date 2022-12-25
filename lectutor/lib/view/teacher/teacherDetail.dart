@@ -16,6 +16,7 @@ import 'package:lectutor/test.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../config/const.dart';
+import '../../model/argument.dart';
 import '../../model/courses.dart';
 import '../../model/feedBack.dart';
 import '../../model/user.dart';

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/config/const.dart';
 import 'package:lectutor/handle/schedule.dart';
+import 'package:lectutor/model/argument.dart';
 import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/schedule.dart';
 import '../../config/pkg.dart';
@@ -14,35 +15,36 @@ import '../const/page.dart';
 
 
 class ScheduleList extends StatelessWidget {
-  final List<BookingInfo> bookingList;
-  const ScheduleList({super.key, required this.bookingList});
+  final ScheduleArg scheduleArg;
+  const ScheduleList({super.key, required this.scheduleArg});
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, ScheduleListPage(bookingList: bookingList));
+    return TemplatePage.getHeader(context, ScheduleListPage(scheduleArg: scheduleArg));
 
   }
 }
 
 class ScheduleListPage extends StatefulWidget {
-  final List<BookingInfo> bookingList;
-  const ScheduleListPage({super.key, required this.bookingList});
+  final ScheduleArg scheduleArg;
+  const ScheduleListPage({super.key, required this.scheduleArg});
   @override
   State<ScheduleListPage> createState() => _ScheduleListPage();
 
 }
 
 class _ScheduleListPage extends State<ScheduleListPage> {
-  late List<BookingInfo> bookingList;
+  late ScheduleArg scheduleArg;
   int index = 0;
   // bool isValid = true;
   TextEditingController noteController = TextEditingController();
   String reason = "";
+
+  int selectId = 1;
   @override
   void initState() {
     super.initState();
-    bookingList = widget.bookingList;
-    print(bookingList.length);
+    scheduleArg = widget.scheduleArg;
   }
   @override
   Widget build(BuildContext context) {
@@ -277,8 +279,12 @@ class _ScheduleListPage extends State<ScheduleListPage> {
 
               Column(
                 children:
-                getScheduleList(bookingList),
-              )
+                getScheduleList(scheduleArg.bookingList),
+              ),
+              SizedBox(height: ConstVar.mediumspace,),
+
+              getPage(scheduleArg.count),
+
             ]
         )
     );
@@ -728,9 +734,9 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                                           print(result);
                                           Navigator.pop(context);
                                           if (result == true){
-                                            List<BookingInfo> newBookingList = await getUpcomingClass(Const.token, 1);
+                                            ScheduleArg newScheduleArg = await getUpcomingClass(Const.token, index);
                                             setState(() {
-                                              bookingList = newBookingList;
+                                              scheduleArg = newScheduleArg;
                                             });
                                           }
                                         }
@@ -754,8 +760,8 @@ class _ScheduleListPage extends State<ScheduleListPage> {
         ),
       ));
 
-      if(endIndex + 1 >= bookingList.length ||
-          bookingList[endIndex].scheduleDetailInfo!.startPeriodTimestamp + 1800000 != bookingList[endIndex + 1].scheduleDetailInfo!.startPeriodTimestamp  ||
+      if(endIndex + 1 >= scheduleArg.bookingList.length ||
+          scheduleArg.bookingList[endIndex].scheduleDetailInfo!.startPeriodTimestamp + 1800000 != scheduleArg.bookingList[endIndex + 1].scheduleDetailInfo!.startPeriodTimestamp  ||
           bookinglist[endIndex].scheduleDetailInfo!.scheduleInfo.tutorId != bookinglist[endIndex + 1].scheduleDetailInfo!.scheduleInfo.tutorId){
         break;
       }
@@ -799,5 +805,92 @@ class _ScheduleListPage extends State<ScheduleListPage> {
   //     isValid = _isValid;
   //   });
   // }
+
+
+  Widget getPage(int count){
+    int preId = 1;
+    // bool isContinuous = true;
+    List<Widget> list = [];
+    int temp = count;
+    list.add(GestureDetector(
+      onTap: ()async{
+        if (selectId > 1){
+          setState(() {
+            selectId = selectId - 1;
+          });
+          ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+          setState(() {
+            scheduleArg = newScheduleArg;
+          });
+
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: Icon(Icons.chevron_left_rounded),
+      ),
+    ));
+    for(int i = 1; temp > 0; i++){
+      if(i == 1 || i - 1 == (count - 1) ~/ Const.perPage || ( selectId - 2 < i && i < selectId + 2 )) {
+        list.add(GestureDetector(
+          onTap: ()async{
+            if (i != selectId){
+              setState(() {
+                selectId = i;
+              });
+              ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+              setState(() {
+                scheduleArg = newScheduleArg;
+              });
+            }
+          },
+          child: Container(
+            color: i == selectId ? Colors.blue.shade100: Colors.white,
+            padding: EdgeInsets.all(5),
+            child: Text("$i"),
+          ),
+        ));
+
+        preId = i;
+      }
+      else{
+        if(preId + 1 == i){
+          list.add(Container(
+            padding: EdgeInsets.all(5),
+            child: Icon(Icons.more_horiz),
+          ));
+        }
+
+      }
+
+      temp = temp - Const.perPage;
+    }
+
+    list.add(GestureDetector(
+      onTap: ()async{
+        if (selectId <= (count - 1)~/ Const.perPage){
+
+          setState(() {
+            selectId = selectId + 1;
+          });
+          ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+          setState(() {
+            scheduleArg = newScheduleArg;
+          });
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: Icon(Icons.chevron_right_rounded),
+      ),
+    ));
+
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: list,
+      ),
+    );
+  }
 
 }

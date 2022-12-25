@@ -1,8 +1,11 @@
 
 import 'package:flutter/material.dart';
+import 'package:lectutor/handle/schedule.dart';
+import 'package:lectutor/model/argument.dart';
 import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/schedule.dart';
+import '../../config/const.dart';
 import '../../config/pkg.dart';
 import '../../model/feedBack.dart';
 import '../../model/teacher.dart';
@@ -14,32 +17,32 @@ import '../const/page.dart';
 
 
 class ScheduleHistory extends StatelessWidget {
-  final List<BookingInfo> bookingList;
-  const ScheduleHistory({super.key, required this.bookingList});
+  final ScheduleArg historyScheduleArg;
+  const ScheduleHistory({super.key, required this.historyScheduleArg});
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, ScheduleHistoryPage(bookingList: bookingList));
+    return TemplatePage.getHeader(context, ScheduleHistoryPage(historyScheduleArg: historyScheduleArg));
 
   }
 }
 
 class ScheduleHistoryPage extends StatefulWidget {
-  final List<BookingInfo> bookingList;
-  const ScheduleHistoryPage({super.key, required this.bookingList});
+  final ScheduleArg historyScheduleArg;
+  const ScheduleHistoryPage({super.key, required this.historyScheduleArg});
   @override
   State<ScheduleHistoryPage> createState() => _ScheduleHistoryPage();
 
 }
 
 class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
-  late List<BookingInfo> bookingList;
+  late ScheduleArg historyBookingList;
+  int selectId = 1;
 
   @override
   void initState() {
     super.initState();
-    bookingList = widget.bookingList;
-    print(bookingList.length);
+    historyBookingList = widget.historyScheduleArg;
   }
 
 
@@ -132,8 +135,11 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
 
               Column(
                 children:
-                getScheduleList(bookingList),
-              )
+                getScheduleList(historyBookingList.bookingList),
+              ),
+              SizedBox(height: ConstVar.mediumspace,),
+
+              getPage(historyBookingList.count),
             ]
         )
     );
@@ -497,6 +503,92 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
       }
     }
     return list;
+  }
+
+  Widget getPage(int count){
+    int preId = 1;
+    // bool isContinuous = true;
+    List<Widget> list = [];
+    int temp = count;
+    list.add(GestureDetector(
+      onTap: ()async{
+        if (selectId > 1){
+          setState(() {
+            selectId = selectId - 1;
+          });
+          ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+          setState(() {
+            historyBookingList = newScheduleArg;
+          });
+
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: Icon(Icons.chevron_left_rounded),
+      ),
+    ));
+    for(int i = 1; temp > 0; i++){
+      if(i == 1 || i - 1 == (count - 1) ~/ Const.perPage || ( selectId - 2 < i && i < selectId + 2 )) {
+          list.add(GestureDetector(
+            onTap: ()async{
+              if (i != selectId){
+                setState(() {
+                  selectId = i;
+                });
+                ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+                setState(() {
+                  historyBookingList = newScheduleArg;
+                });
+              }
+            },
+            child: Container(
+              color: i == selectId ? Colors.blue.shade100: Colors.white,
+              padding: EdgeInsets.all(5),
+              child: Text("$i"),
+            ),
+          ));
+
+          preId = i;
+      }
+      else{
+        if(preId + 1 == i){
+          list.add(Container(
+            padding: EdgeInsets.all(5),
+            child: Icon(Icons.more_horiz),
+          ));
+        }
+
+      }
+
+      temp = temp - Const.perPage;
+    }
+
+    list.add(GestureDetector(
+      onTap: ()async{
+        if (selectId <= (count - 1)~/ Const.perPage){
+
+          setState(() {
+            selectId = selectId + 1;
+          });
+          ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+          setState(() {
+            historyBookingList = newScheduleArg;
+          });
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: Icon(Icons.chevron_right_rounded),
+      ),
+    ));
+
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: list,
+      ),
+    );
   }
 
 }

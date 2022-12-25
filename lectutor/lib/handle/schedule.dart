@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
+import 'package:lectutor/model/argument.dart';
 import 'package:lectutor/model/tokens.dart';
 import 'package:provider/provider.dart';
 import '../config/const.dart';
@@ -30,43 +31,45 @@ Future <dynamic> getScheduleByTutorId(BuildContext context, String id, int start
   return null;
 }
 
-Future<List<BookingInfo>> getStudentBookedClass(String token, int page) async {
+Future<ScheduleArg> getStudentBookedClass(String token, int page) async {
   var dio = Dio();
   final current = DateTime.now().millisecondsSinceEpoch;
-  List<BookingInfo> list = [];
+  ScheduleArg historyScheduleArg = ScheduleArg([], 0);
+
   try{
     // dio.options.headers["Authorization"] = "Bearer ${context.watch<Tokens>().access.token}";
     dio.options.headers["Authorization"] = "Bearer ${token}";
     var response = await dio.get(ConstVar.URL + 'booking/list/student?page=$page&perPage=${Const.perPage}&dateTimeLte=$current&orderBy=meeting&sortBy=desc');
     if(response.statusCode == 200){
+      historyScheduleArg.count = response.data["data"]["count"];
       for(int i = 0;; i++){
-        list.add(BookingInfo.fromJson(response.data["data"]["rows"][i]));
+        historyScheduleArg.bookingList.add(BookingInfo.fromJson(response.data["data"]["rows"][i]));
       }
     }
   }catch(e){
     print(e);
   }
-  return list;
+  return historyScheduleArg;
 }
 
-Future<List<BookingInfo>> getUpcomingClass(String token, int page) async {
+Future<ScheduleArg> getUpcomingClass(String token, int page) async {
   var dio = Dio();
   final current = DateTime.now().millisecondsSinceEpoch;
-  print(current);
-  List<BookingInfo> list = [];
+  ScheduleArg scheduleArg = ScheduleArg([], 0);
   try{
     // dio.options.headers["Authorization"] = "Bearer ${context.watch<Tokens>().access.token}";
     dio.options.headers["Authorization"] = "Bearer ${token}";
     var response = await dio.get(ConstVar.URL + "booking/list/student?page=$page&perPage=${Const.perPage}&dateTimeGte=$current&orderBy=meeting&sortBy=asc");
     if(response.statusCode == 200){
+      scheduleArg.count = response.data["data"]["count"];
       for(int i = 0;; i++){
-        list.add(BookingInfo.fromJson(response.data["data"]["rows"][i]));
+        scheduleArg.bookingList.add(BookingInfo.fromJson(response.data["data"]["rows"][i]));
       }
     }
   }catch(e){
     print(e);
   }
-  return list;
+  return scheduleArg;
 }
 
 Future<bool> bookingAClass(String token, String id, String note) async {

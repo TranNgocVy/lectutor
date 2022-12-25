@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lectutor/model/argument.dart';
 import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/view/const/page.dart';
 import 'package:provider/provider.dart';
@@ -154,9 +155,9 @@ class _MenuPage extends State<MenuPage> {
           ),
           GestureDetector(
             onTap: () async{
-              List<BookingInfo> bookingList = await getUpcomingClass(Const.token, 1);
+              ScheduleArg scheduleArg = await getUpcomingClass(Const.token, 1);
               Navigator.pop(context);
-              Navigator.pushNamed(context, "/schedule", arguments: bookingList);
+              Navigator.pushNamed(context, "/schedule", arguments: scheduleArg);
             },
             child: Container(
               padding: EdgeInsets.all(10),
@@ -183,9 +184,9 @@ class _MenuPage extends State<MenuPage> {
           ),
           GestureDetector(
             onTap: () async{
-              List<BookingInfo> bookingList = await getStudentBookedClass(Const.token, 1);
+              ScheduleArg historyscheduleArg = await getStudentBookedClass(Const.token, 1);
               Navigator.pop(context);
-              Navigator.pushNamed(context, "/schedule/history", arguments: bookingList);
+              Navigator.pushNamed(context, "/schedule/history", arguments: historyscheduleArg);
             },
             child: Container(
               padding: EdgeInsets.all(10),
