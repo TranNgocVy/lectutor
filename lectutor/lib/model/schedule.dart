@@ -14,7 +14,7 @@ class Schedule {
   int endTimestamp;
   DateTime? createdAt;
   bool? isBooked;
-  List<ScheduleDetail> scheduleDetails;
+  List<ScheduleDetail> scheduleDetails = [];
 
   factory Schedule.fromJson(Map<String, dynamic> json) => _$ScheduleFromJson(json);
 

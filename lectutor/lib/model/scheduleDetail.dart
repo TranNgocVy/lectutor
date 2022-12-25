@@ -8,15 +8,15 @@ part 'scheduleDetail.g.dart';
 class ScheduleDetail {
 
 
-  int startPeriodTimestamp;
-  int endPeriodTimestamp;
-  String id;
-  String scheduleId;
-  String startPeriod;
-  String endPeriod;
-  DateTime createdAt;
-  DateTime updatedAt;
-  List<BookingInfo> bookingInfo;
+  int? startPeriodTimestamp;
+  int? endPeriodTimestamp;
+  String? id;
+  String? scheduleId;
+  String? startPeriod;
+  String? endPeriod;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  List<BookingInfo> bookingInfo = [];
   bool? isBooked;
 
   factory ScheduleDetail.fromJson(Map<String, dynamic> json) => _$ScheduleDetailFromJson(json);

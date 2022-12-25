@@ -11,16 +11,16 @@ BookingInfo _$BookingInfoFromJson(Map<String, dynamic> json) => BookingInfo(
       json['updatedAtTimeStamp'] as int,
       json['id'] as String,
       json['userId'] as String,
-      json['scheduleDetailId'] as String,
-      json['tutorMeetingLink'] as String,
-      json['studentMeetingLink'] as String,
+      json['scheduleDetailId'] as String?,
+      json['tutorMeetingLink'] as String?,
+      json['studentMeetingLink'] as String?,
       json['studentRequest'] as String?,
       json['tutorReview'] as String?,
       (json['scoreByTutor'] as num?)?.toDouble(),
       json['createdAt'] as String?,
       json['updatedAt'] as String?,
       json['recordUrl'] as String?,
-      json['cancelReasonId'] as String?,
+      json['cancelReasonId'] as int?,
       json['lessonPlanId'] as String?,
       json['cancelNote'] as String?,
       json['calendarId'] as String?,
@@ -31,8 +31,8 @@ BookingInfo _$BookingInfoFromJson(Map<String, dynamic> json) => BookingInfo(
               json['scheduleDetailInfo'] as Map<String, dynamic>),
       json['classReview'] as String?,
       json['showRecordUrl'] as bool?,
-      (json['feedbacks'] as List<dynamic>)
-          .map((e) => FeedBack.fromJson(e as Map<String, dynamic>))
+      (json['feedbacks'] as List<dynamic>?)
+          ?.map((e) => FeedBack.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

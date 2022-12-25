@@ -396,7 +396,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                     Container(
                       padding: EdgeInsets.all(20),
                       child: Column(
-                        children: getRatingList(scheduleList[i].feedbacks)
+                        children: getRatingList(scheduleList[i].feedbacks!)
 
                       ),
                     ),

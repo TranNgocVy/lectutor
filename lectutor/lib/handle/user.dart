@@ -11,7 +11,7 @@ Future<int> getLearningTimeTotal(String token) async {
   var dio = Dio();
   try{
     dio.options.headers["Authorization"] = "Bearer ${token}";
-    final response = await dio.get(ConstVar.ULR + "call/total");
+    final response = await dio.get(ConstVar.URL + "call/total");
 
     if (response.statusCode == 200) {
       return response.data["total"];
@@ -31,7 +31,7 @@ Future<List<BookingInfo>> getLession(String token) async {
   try{
     int now = DateTime.now().millisecondsSinceEpoch;
     dio.options.headers["Authorization"] = "Bearer ${token}";
-    final response = await dio.get(ConstVar.ULR + "booking/next?dateTime=${now}");
+    final response = await dio.get(ConstVar.URL + "booking/next?dateTime=${now}");
 
     if (response.statusCode == 200) {
       List<BookingInfo> list = [];
@@ -59,7 +59,7 @@ Future<dynamic> getUserInfo(String token) async {
   var dio = Dio();
   try{
     dio.options.headers["Authorization"] = "Bearer ${token}";
-    final response = await dio.get(ConstVar.ULR + "user/info");
+    final response = await dio.get(ConstVar.URL + "user/info");
 
     if (response.statusCode == 200) {
       return response.data["user"];
@@ -68,6 +68,22 @@ Future<dynamic> getUserInfo(String token) async {
     print(e);
   }
   return null;
+}
+
+Future<int> getBalance(String token) async {
+  var dio = Dio();
+  try{
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+    final response = await dio.get(ConstVar.URL + "user/info");
+
+    if (response.statusCode == 200) {
+      var user = User.fromJson(response.data["user"]);
+      return int.parse(user.walletInfo!.amount!.substring(0, user.walletInfo!.amount!.length - 5));
+    }
+  }catch(e){
+    print(e);
+  }
+  return 0;
 }
 
 Future<dynamic> updateProfile (String token, String name, String country, String phone, String birthday, String level, List<String> learnTopics, List<String>testPreparations, String studySchedule ) async{
@@ -81,7 +97,7 @@ Future<dynamic> updateProfile (String token, String name, String country, String
   print("test: " + testPreparations.toString());
   try{
     dio.options.headers["Authorization"] = "Bearer ${token}";
-    final response = await dio.put(ConstVar.ULR + "user/info", data: {
+    final response = await dio.put(ConstVar.URL + "user/info", data: {
       "name": name,
       "country": country,
       "phone": phone,

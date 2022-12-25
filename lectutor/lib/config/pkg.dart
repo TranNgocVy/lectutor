@@ -139,6 +139,17 @@ class Pkg {
     return "${diff} years(s) ago";
   }
 
+  static String getPeriodTime (int startTimestamp, int endTimestamp){
+    DateTime startPeriodTime = DateTime.fromMillisecondsSinceEpoch(startTimestamp);
+    DateTime endPeriodTime = DateTime.fromMillisecondsSinceEpoch(endTimestamp);
+    String startTime = "${startPeriodTime.hour < 10 ? "0${startPeriodTime.hour}" : startPeriodTime.hour}:${startPeriodTime.minute < 10 ? "0${startPeriodTime.minute}" : startPeriodTime.minute}";
+    String endTime = "${endPeriodTime.hour < 10 ? "0${endPeriodTime.hour}" : endPeriodTime.hour}:${endPeriodTime.minute < 10 ? "0${endPeriodTime.minute}" : endPeriodTime.minute}";
+
+    return "${startTime} - ${endTime}";
+  }
+
+
+
 
 
 

@@ -12,16 +12,16 @@ class BookingInfo {
   int updatedAtTimeStamp;
   String id;
   String userId;
-  String scheduleDetailId;
-  String tutorMeetingLink;
-  String studentMeetingLink;
+  String? scheduleDetailId;
+  String? tutorMeetingLink;
+  String? studentMeetingLink;
   String? studentRequest;
   String? tutorReview;
   double? scoreByTutor;
   String? createdAt;
   String? updatedAt;
   String? recordUrl;
-  String? cancelReasonId;
+  int? cancelReasonId;
   String? lessonPlanId;
   String? cancelNote;
   String? calendarId;
@@ -29,7 +29,7 @@ class BookingInfo {
   ScheduleDetailInfo? scheduleDetailInfo;
   String? classReview;
   bool? showRecordUrl;
-  List<FeedBack> feedbacks;
+  List<FeedBack>? feedbacks;
 
 
   factory BookingInfo.fromJson(Map<String, dynamic> json) => _$BookingInfoFromJson(json);

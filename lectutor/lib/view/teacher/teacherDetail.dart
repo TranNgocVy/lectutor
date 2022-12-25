@@ -6,6 +6,8 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lectutor/config/pkg.dart';
 import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/handle/teacher.dart';
+import 'package:lectutor/handle/user.dart';
+import 'package:lectutor/main.dart';
 import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/model/schedule.dart';
 import 'package:lectutor/model/tutorCourseList.dart';
@@ -163,7 +165,9 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   // }
 
   void getScedule (String id) async{
-    var data = await getScheduleByTutorId(context, id);
+    int startTime = date.millisecondsSinceEpoch;
+    int endTime = date.add(Duration(days: 7)).millisecondsSinceEpoch;
+    var data = await getScheduleByTutorId(context, id, startTime, endTime);
     if (data != null){
       setState(() {
         updateSchedule(data);
@@ -176,10 +180,15 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   // }
   void updateSchedule (dynamic data){
     try{
+      schedules.clear();
       for(int i = 0;; i++){
         schedules.add(Schedule.fromJson(data[i]));
+        schedules.sort((s1, s2) => s1.startTimestamp.compareTo(s2.startTimestamp));
       }
-    }catch(e){}
+
+    }catch(e){
+      print(e);
+    }
   }
 
 
@@ -852,87 +861,93 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     );
   }
 
-  Widget getBookCell(String status){
-    if (status == "Booked")
-    {
+  Widget getBookCell(BookingAClassArg bookingAClassArg){
+    if(bookingAClassArg.status == "UnBook"){
       return TableCell(
         verticalAlignment: TableCellVerticalAlignment.middle,
         child: Container(
           padding: EdgeInsets.all(5),
-          child: Text(
-            status,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.green,
-              fontSize: 16,
+          child: ElevatedButton(
+            onPressed: null,
+
+            child: const Text(
+              'Book',
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16
+              ),
+            ),
+            style: ButtonStyle(
+              // backgroundColor: Colors.blue,
+              backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey.shade200),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder( borderRadius: BorderRadius.circular(40) ),),
+              side: MaterialStatePropertyAll<BorderSide>(BorderSide(color: Colors.grey, width: 1)),
             ),
           ),
         ),
       );
-
     }
     else{
-      if (status == "Reserved"){
+      if (bookingAClassArg.status == "Booked")
+      {
         return TableCell(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
             padding: EdgeInsets.all(5),
             child: Text(
-              status,
+              bookingAClassArg.status,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.black38,
+                color: Colors.green,
                 fontSize: 16,
               ),
             ),
           ),
         );
+
       }
       else{
-        if(status == "Book") {
+        if (bookingAClassArg.status == "Reserved"){
           return TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Container(
               padding: EdgeInsets.all(5),
-              child: ElevatedButton(
-                onPressed: (){
-                  Navigator.pushNamed(context, '/tutor/detail/bookclass');
-                },
-                child: const Text(
-                  'Book',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16
-                  ),
-                ),
-                style: ButtonStyle(
-                  // backgroundColor: Colors.blue,
-                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder( borderRadius: BorderRadius.circular(40) ),),
+              child: Text(
+                bookingAClassArg.status,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black38,
+                  fontSize: 16,
                 ),
               ),
             ),
           );
         }
         else{
-          if (status == "UnBook"){
+          if(bookingAClassArg.status == "Book") {
             return TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
               child: Container(
                 padding: EdgeInsets.all(5),
                 child: ElevatedButton(
-                  onPressed: null,
+                  onPressed: () async{
+                    int balance = await getBalance(Const.token);
+                    final result = await Navigator.pushNamed(context, '/tutor/detail/bookclass', arguments: BookingLessonArg(balance, bookingAClassArg.startTime!, bookingAClassArg.endTime!, bookingAClassArg.id!));
+                    if (result == true){
+                      getScedule(widget.tutorDetail.User.id);
+                    }
 
+                    },
                   child: const Text(
                     'Book',
                     style: TextStyle(
-                        color: Colors.grey,
+                        color: Colors.white,
                         fontSize: 16
                     ),
                   ),
                   style: ButtonStyle(
                     // backgroundColor: Colors.blue,
-                    backgroundColor: MaterialStatePropertyAll<Color>(Colors.black12),
+                    backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder( borderRadius: BorderRadius.circular(40) ),),
                   ),
                 ),
@@ -940,13 +955,13 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             );
           }
           else{
-            if(status == ""){
+            if(bookingAClassArg.status == ""){
               return TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Container(),
               );
             }
-            else{
+            else {
               return TableCell(
                 verticalAlignment: TableCellVerticalAlignment.middle,
                 child: Container(
@@ -954,7 +969,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                   padding: EdgeInsets.all(5),
                   height: 60,
                   child: Text(
-                    status,
+                    bookingAClassArg.status,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black87,
@@ -964,11 +979,40 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                 ),
               );
             }
+            // if (bookingAClassArg.status == "UnBook"){
+            //   return TableCell(
+            //     verticalAlignment: TableCellVerticalAlignment.middle,
+            //     child: Container(
+            //       padding: EdgeInsets.all(5),
+            //       child: ElevatedButton(
+            //         onPressed: null,
+            //
+            //         child: const Text(
+            //           'Book',
+            //           style: TextStyle(
+            //               color: Colors.grey,
+            //               fontSize: 16
+            //           ),
+            //         ),
+            //         style: ButtonStyle(
+            //           // backgroundColor: Colors.blue,
+            //           backgroundColor: MaterialStatePropertyAll<Color>(Colors.black12),
+            //           shape: MaterialStateProperty.all(RoundedRectangleBorder( borderRadius: BorderRadius.circular(40) ),),
+            //         ),
+            //       ),
+            //     ),
+            //   );
+            // }
+            // else{
+            //  
+            //   }
+            // }
           }
-        }
 
+        }
       }
     }
+
   }
 
   // TableRow getTableRow(String time, List<String> date){
@@ -988,47 +1032,78 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     list.add(TableRow(
       children: getDayHeader(start),
     ),);
-    Map<String, List<String>> map = {};
-    print("So luong  lopw hocj ${schedules.length}");
-    print("Cos sanwx ban dau: ${list.length}");
+    Map<String, List<BookingAClassArg>> map = {};
 
     for(int i = 0; i < Const.defualtTimeRange.length; i++){
-      map[Const.defualtTimeRange[i]] = ["", "", "", "", "", "", ""];
+      map[Const.defualtTimeRange[i]] = [BookingAClassArg(""),BookingAClassArg(""),BookingAClassArg(""),BookingAClassArg(""),BookingAClassArg(""),BookingAClassArg(""),BookingAClassArg("")];
     }
 
-    // for(int i = 0 ; i < schedules.length; i++){
-    for(int i = 0 ; i < schedules.length && i < 1; i++){
-      print(schedules[i].startTimestamp);
-      print(DateTime.now().millisecondsSinceEpoch);
-      for (int j = 0; j < schedules[i].scheduleDetails.length; j++){
-        DateTime startTime = Const.time.add(Duration(milliseconds: schedules[i].scheduleDetails[j].startPeriodTimestamp));
-        int difDay = Pkg.diffDay(start, startTime);
-        if (startTime.isAfter(start) && Pkg.diffDay(start, startTime) < 7){
-          String key = "${schedules[i].scheduleDetails[j].startPeriod} - ${schedules[i].scheduleDetails[j].endPeriod}";
-          if (schedules[i].scheduleDetails[j].isBooked == false){
-            map[key]![difDay] = "Book";
-          }else{
-            for (int k = 0; k < schedules[i].scheduleDetails[j].bookingInfo.length; k ++){
-              if (schedules[i].scheduleDetails[j].bookingInfo[k].isDeleted != true){
-                if (!map.containsKey(key)){
-                  map[key] = ["", "", "", "", "", "", ""];
-                }
-                if(schedules[i].scheduleDetails[j].bookingInfo[k].userId == userId){
-                  map[key]![difDay] = "Booked";
-                }
-                else{
-                  map[key]![difDay] = "Reserved";
-                }
+
+    for(int i = 0; i<schedules.length; i++){
+      for(int j = 0; j < schedules[i].scheduleDetails.length!; j++){
+        String key = Pkg.getPeriodTime(schedules[i].scheduleDetails[j].startPeriodTimestamp!, schedules[i].scheduleDetails[j].endPeriodTimestamp!);
+        int difDay = Pkg.diffDay(date, DateTime.fromMillisecondsSinceEpoch(schedules[i].scheduleDetails[j].startPeriodTimestamp!));
+        if (schedules[i].scheduleDetails[j].isBooked == false){
+          if(DateTime.now().isAfter(DateTime.fromMillisecondsSinceEpoch(schedules[i].scheduleDetails[j].startPeriodTimestamp!))){
+            map[key]![difDay].status = "UnBook";
+          }
+          else{
+            map[key]![difDay].status = "Book";
+            map[key]![difDay].startTime = schedules[i].scheduleDetails[j].startPeriodTimestamp!;
+            map[key]![difDay].endTime = schedules[i].scheduleDetails[j].endPeriodTimestamp!;
+            map[key]![difDay].id = schedules[i].scheduleDetails[j].id!;
+          }
+        }else{
+          for (int k = 0; k < schedules[i].scheduleDetails[j].bookingInfo.length; k ++){
+            if (schedules[i].scheduleDetails[j].bookingInfo[k].isDeleted != true){
+              print(schedules[i].scheduleDetails[j].bookingInfo[k].userId);
+
+              if(schedules[i].scheduleDetails[j].bookingInfo[k].userId == userId){
+                map[key]![difDay].status = "Booked";
               }
+              else{
+                map[key]![difDay].status = "Reserved";
+              }
+              break;
             }
           }
         }
       }
     }
+
+    // for(int i = 0 ; i < schedules.length; i++){
+    // for(int i = 0 ; i < schedules.length && i < 1; i++){
+    //   print(schedules[i].startTimestamp);
+    //   print(DateTime.now().millisecondsSinceEpoch);
+    //   for (int j = 0; j < schedules[i].scheduleDetails.length; j++){
+    //     DateTime startTime = Const.time.add(Duration(milliseconds: schedules[i].scheduleDetails[j].startPeriodTimestamp!));
+    //     int difDay = Pkg.diffDay(start, startTime);
+    //     if (startTime.isAfter(start) && Pkg.diffDay(start, startTime) < 7){
+    //       String key = "${schedules[i].scheduleDetails[j].startPeriod} - ${schedules[i].scheduleDetails[j].endPeriod}";
+    //       if (schedules[i].scheduleDetails[j].isBooked == false){
+    //         map[key]![difDay] = "Book";
+    //       }else{
+    //         for (int k = 0; k < schedules[i].scheduleDetails[j].bookingInfo.length; k ++){
+    //           if (schedules[i].scheduleDetails[j].bookingInfo[k].isDeleted != true){
+    //             if (!map.containsKey(key)){
+    //               map[key] = ["", "", "", "", "", "", ""];
+    //             }
+    //             if(schedules[i].scheduleDetails[j].bookingInfo[k].userId == userId){
+    //               map[key]![difDay] = "Booked";
+    //             }
+    //             else{
+    //               map[key]![difDay] = "Reserved";
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+
     map.forEach((key, value) {
-      print("${key} - ${value}");
       List<Widget> row = [];
-      row.add(getBookCell(key));
+      row.add(getBookCell(BookingAClassArg(key)));
       for (var i = 0; i < value.length; i++){
         row.add(getBookCell(value[i]));
       }
@@ -1040,9 +1115,9 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     if (list.length == 1){
       for (var i = 0 ; i < Const.defualtTimeRange.length; i++){
         List<Widget> row = [];
-        row.add(getBookCell(Const.defualtTimeRange[i]));
+        row.add(getBookCell(BookingAClassArg(Const.defualtTimeRange[i])));
         for (var i = 0; i < 7; i++){
-          row.add(getBookCell(""));
+          row.add(getBookCell(BookingAClassArg("")));
         }
         list.add(TableRow(
           children: row,
@@ -1050,7 +1125,6 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
       }
     }
 
-    print("Cos sanwx: ${list.length}");
     return list;
   }
 
@@ -1264,4 +1338,13 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
 
 
+}
+
+class BookingAClassArg{
+  String status;
+  int? startTime;
+  int? endTime;
+  String? id;
+
+  BookingAClassArg(this.status);
 }

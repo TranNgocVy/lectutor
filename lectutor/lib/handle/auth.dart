@@ -8,7 +8,7 @@ import 'dart:async';
 Future <dynamic> login(Auth auth) async{
   var dio = Dio();
   try{
-    var response = await dio.post(ConstVar.ULR + 'auth/login', data: auth.toJson());
+    var response = await dio.post(ConstVar.URL + 'auth/login', data: auth.toJson());
 
     if(response.statusCode == 200){
       return response.data;
@@ -22,7 +22,7 @@ Future <dynamic> login(Auth auth) async{
 Future <dynamic> register(Auth auth) async{
   var dio = Dio();
   try{
-    var response = await dio.post(ConstVar.ULR + 'auth/register', data: {
+    var response = await dio.post(ConstVar.URL + 'auth/register', data: {
       "email": auth.email,
       "password": auth.password,
       "source": null
@@ -43,7 +43,7 @@ Future <dynamic> changePasword(String password, String newPassword, String acces
     print(accessToken);
     print("222222222222222222222222222222222222222222");
     dio.options.headers["Authorization"] = "Bearer ${accessToken}";
-    var response = await dio.post(ConstVar.ULR + 'auth/change-password', data: {
+    var response = await dio.post(ConstVar.URL + 'auth/change-password', data: {
       "password": password,
       "newPassword": newPassword
     });
@@ -61,7 +61,7 @@ Future <dynamic> changePasword(String password, String newPassword, String acces
 Future<bool> forgotPassword(String email) async {
   var dio = Dio();
   try{
-    final response = await dio.post(ConstVar.ULR + "user/forgotPassword", data:{"email": email});
+    final response = await dio.post(ConstVar.URL + "user/forgotPassword", data:{"email": email});
 
   if (response.statusCode == 200) {
     return true;

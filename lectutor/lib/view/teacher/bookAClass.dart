@@ -1,29 +1,34 @@
 
 import 'package:flutter/material.dart';
+import 'package:lectutor/handle/schedule.dart';
+import 'package:lectutor/main.dart';
+import '../../config/const.dart';
+import '../../config/pkg.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
 class BookAClass extends StatelessWidget {
-  const BookAClass({super.key});
+  final BookingLessonArg bookingLessonArg;
+  const BookAClass({super.key, required this.bookingLessonArg});
 
 
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, BookAClassPage());
+    return TemplatePage.getHeader(context, BookAClassPage(bookingLessonArg: bookingLessonArg,));
   }
 }
 
 class BookAClassPage extends StatefulWidget {
-  const BookAClassPage({super.key});
+  final BookingLessonArg bookingLessonArg;
+  const BookAClassPage({super.key, required this.bookingLessonArg});
   @override
   State<BookAClassPage> createState() => _BookAClassPage();
 
 }
 
 class _BookAClassPage extends State<BookAClassPage> {
-
-
+  TextEditingController noteController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -111,7 +116,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             Expanded(child: Text(
-                                              "Thời gian học",
+                                              getTimeLessoInfo(widget.bookingLessonArg.startTime, widget.bookingLessonArg.endTime),
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontSize: 16,
@@ -159,7 +164,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           Expanded(child: Text(
-                                            "You have 726 lessons left",
+                                            "You have ${widget.bookingLessonArg.balance} lessons left",
                                             textAlign: TextAlign.end,
                                             style: TextStyle(
                                                 fontSize: 18,
@@ -193,7 +198,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: <Widget>[
                                           Text(
-                                            "lessons",
+                                            "1 lesson",
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.deepPurple
@@ -251,7 +256,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                     autofocus: false,
                                     minLines: 4,
                                     maxLines: null,
-                                    initialValue: '',
+                                    controller: noteController,
                                     decoration: InputDecoration(
                                       hintText: '',
                                       contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -309,8 +314,53 @@ class _BookAClassPage extends State<BookAClassPage> {
                             fontSize: 20,
                           ),
                         ),
-                        onPressed: (){
-                          Navigator.pop(context);
+                        onPressed: () async{
+                          var data = await bookingAClass(Const.token, widget.bookingLessonArg.scheduleDetailIds, noteController.text);
+                          Navigator.pop(context, data);
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              title: Container(
+                                padding: EdgeInsets.only(bottom: 5),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(color: Colors.grey.shade200, width: 2)
+                                    )
+                                ),
+                                child: Row(
+                                  children: [
+                                    data == true ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
+                                    SizedBox(width: ConstVar.mediumspace,),
+                                    Text('Notification'),
+                                  ],
+                                ),
+                              ),
+                              content: Text(data == true?'Booking success':"Booking fail. Try again"),
+                              actions: <Widget>[
+                                TextButton(
+                                  style: ButtonStyle(
+                                    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(30,10,30,10)),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          // side: BorderSide(color: Colors.red)
+                                        )
+                                    ),
+                                    backgroundColor:MaterialStateProperty.all(Colors.blue),
+                                  ),
+
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                                ),
+                              ],
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -328,6 +378,13 @@ class _BookAClassPage extends State<BookAClassPage> {
 
 
 
+  }
+
+  String getTimeLessoInfo(int start, int end){
+    String time = Pkg.getPeriodTime(start, end);
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(start);
+
+    return "$time ${Const.weekday[date.weekday - 1]}, ${date.day} ${Const.months[date.month - 1]} ${date.year}";
   }
 
 

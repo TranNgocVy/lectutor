@@ -8,14 +8,18 @@ part of 'scheduleDetail.dart';
 
 ScheduleDetail _$ScheduleDetailFromJson(Map<String, dynamic> json) =>
     ScheduleDetail(
-      json['startPeriodTimestamp'] as int,
-      json['endPeriodTimestamp'] as int,
-      json['id'] as String,
-      json['scheduleId'] as String,
-      json['startPeriod'] as String,
-      json['endPeriod'] as String,
-      DateTime.parse(json['createdAt'] as String),
-      DateTime.parse(json['updatedAt'] as String),
+      json['startPeriodTimestamp'] as int?,
+      json['endPeriodTimestamp'] as int?,
+      json['id'] as String?,
+      json['scheduleId'] as String?,
+      json['startPeriod'] as String?,
+      json['endPeriod'] as String?,
+      json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
       (json['bookingInfo'] as List<dynamic>)
           .map((e) => BookingInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -30,8 +34,8 @@ Map<String, dynamic> _$ScheduleDetailToJson(ScheduleDetail instance) =>
       'scheduleId': instance.scheduleId,
       'startPeriod': instance.startPeriod,
       'endPeriod': instance.endPeriod,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'updatedAt': instance.updatedAt.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'updatedAt': instance.updatedAt?.toIso8601String(),
       'bookingInfo': instance.bookingInfo,
       'isBooked': instance.isBooked,
     };
