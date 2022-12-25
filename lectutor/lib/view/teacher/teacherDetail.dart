@@ -75,16 +75,16 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     super.dispose();
   }
 
-  List<String> srcs = [
-    "https://assets.mixkit.co/videos/preview/mixkit-spinning-around-the-earth-29351-large.mp4",
-    "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4",
-    "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4"
-  ];
+  // List<String> srcs = [
+  //   "https://assets.mixkit.co/videos/preview/mixkit-spinning-around-the-earth-29351-large.mp4",
+  //   "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4",
+  //   "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4"
+  // ];
 
   Future<void> initializePlayer() async {
     _videoPlayerController1 =
-        // VideoPlayerController.network((tutorDetail?.video).toString());
-    VideoPlayerController.network(srcs[currPlayIndex]);
+        VideoPlayerController.network((widget.tutorDetail?.video).toString());
+    // VideoPlayerController.network(srcs[currPlayIndex]);
     // _videoPlayerController2 =
     // VideoPlayerController.network(srcs[currPlayIndex]);
     await Future.wait([
@@ -1173,8 +1173,8 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           children: <Widget>[
             CircleAvatar(
               // backgroundImage: ,
-              // backgroundImage: NetworkImage((tutorDetail?.User?.avatar).toString()),
-              backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
+              backgroundImage: NetworkImage((widget.tutorDetail?.User?.avatar).toString()),
+              // backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
               // maxRadius: 50,
             ),
             Expanded(

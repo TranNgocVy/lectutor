@@ -43,6 +43,8 @@ class ConstVar{
 
   };
 
+  static List<String> reasonCancel = ["Reschedule at another time", "Busy at that time", "Asked by the tutor", "Other"];
+
   static List<LearnTopic> topicList = [LearnTopic(3, "english-for-kids", "English for Kids"), LearnTopic(4, "business-english", "Business English"), LearnTopic(6, "conversational-english",  "Conversational English")];
   static List<TestPreparation> testPreparationList = [
     TestPreparation(1, "starters", "STARTERS"),

@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:lectutor/config/const.dart';
+import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/schedule.dart';
 import '../../config/pkg.dart';
@@ -33,6 +35,9 @@ class ScheduleListPage extends StatefulWidget {
 class _ScheduleListPage extends State<ScheduleListPage> {
   late List<BookingInfo> bookingList;
   int index = 0;
+  // bool isValid = true;
+  TextEditingController noteController = TextEditingController();
+  String reason = "";
   @override
   void initState() {
     super.initState();
@@ -559,26 +564,190 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                 fontSize: 20,
               ),
             )),
-            ElevatedButton.icon(
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        side: BorderSide(color: Colors.red)
-                    )
+            if(bookinglist[endIndex].scheduleDetailInfo!.startPeriodTimestamp - DateTime.now().millisecondsSinceEpoch > Const.preTimeToCancel)
+              ElevatedButton.icon(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          side: BorderSide(color: Colors.red)
+                      )
+                  ),
                 ),
-              ),
-              icon: Icon(Icons.cancel_presentation, size: 20,color: Colors.red),
-              label: Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 20,
+                icon: Icon(Icons.cancel_presentation, size: 20,color: Colors.red),
+                label: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 20,
+                  ),
                 ),
+                onPressed: (){
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) =>  Dialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), //this right here
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 20,
+                        height: MediaQuery.of(context).size.height - 20,
+                        child: ListView(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(onPressed:() {
+                                  Navigator.pop(context);
+                                }, icon: Icon(Icons.close, color: Colors.red,))
+                              ],
+                            ),
+                            SizedBox(height: ConstVar.minspace),
+                            Center(
+                              child: Container(
+
+                                child: Column(
+                                  children:<Widget> [
+                                    Pkg.setAvatar(bookinglist[endIndex].scheduleDetailInfo!.scheduleInfo.tutorInfo.avatar, bookinglist[endIndex].scheduleDetailInfo!.scheduleInfo.tutorInfo.name),
+                                    SizedBox(height: ConstVar.minspace,),
+                                    Text(bookinglist[endIndex].scheduleDetailInfo!.scheduleInfo.tutorInfo.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
+                                    SizedBox(height: ConstVar.mediumspace,),
+                                    const Text("Lesson Time", style: TextStyle(color: Colors.black54, fontSize: 20),),
+                                    SizedBox(height: ConstVar.minspace,),
+                                    Text(Pkg.getDate(bookinglist[endIndex].scheduleDetailInfo!.startPeriodTimestamp), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: ConstVar.largespace),
+                            Container(
+                              padding: EdgeInsets.all( ConstVar.largespace),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      top: BorderSide(color: Colors.grey.shade200, width: 1)
+                                  )
+                              ),
+                              child: Column(
+
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(
+                                        "* ",
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+
+                                      new Expanded(
+                                        child: Text(
+                                          "What was the reason you cancel this booking?",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: ConstVar.mediumspace,),
+                                  DropdownButtonFormField(
+                                    decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder( //<-- SEE HERE
+                                        borderSide: BorderSide(color: Colors.grey, width: 1),
+                                      ),
+                                      focusedBorder: OutlineInputBorder( //<-- SEE HERE
+                                        borderSide: BorderSide(color: Colors.grey, width: 1),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                    ),
+                                    dropdownColor: Colors.white,
+                                    // onTap: (){
+                                    //   setIsValid(true);
+                                    // },
+                                    // value: ConstVar.levelMap[user.level.toString()],
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        reason = newValue!;
+                                      });
+                                    },
+
+                                    items: (ConstVar.reasonCancel).map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Expanded(
+                                            child: Text(
+                                              value,
+                                            ),
+                                          )
+                                      );
+                                    }).toList(),
+                                  ),
+                                  SizedBox(height: ConstVar.minspace,),
+                                  // isValid == false ? Text("The reason cannot be empty!", style: TextStyle(color: Colors.red),) : Container(),
+                                  SizedBox(height: ConstVar.largespace),
+                                  TextFormField(
+                                    keyboardType: TextInputType.multiline,
+                                    autofocus: false,
+                                    minLines: 4,
+                                    maxLines: null,
+                                    controller: noteController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Additional Notes',
+                                      hintStyle: TextStyle(color: Colors.grey.shade200),
+                                      contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                                    ),
+                                  ),
+                                  SizedBox(height: ConstVar.largespace),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed:() {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("Later", style: TextStyle(color: Colors.black54),),
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.grey.shade200,
+                                        ),
+                                      ),
+                                      SizedBox(width: ConstVar.mediumspace,),
+                                      ElevatedButton(onPressed:() async {
+                                        print("Reason: " + reason);
+                                        if(reason == ""){
+                                          // setIsValid(false);
+                                        }
+                                        else{
+                                          print(bookinglist[endIndex].scheduleDetailInfo!.id);
+                                          var result = await cancelAClass(Const.token, bookinglist[endIndex].id);
+                                          print(result);
+                                          Navigator.pop(context);
+                                          if (result == true){
+                                            List<BookingInfo> newBookingList = await getUpcomingClass(Const.token, 1);
+                                            setState(() {
+                                              bookingList = newBookingList;
+                                            });
+                                          }
+                                        }
+
+                                      }, child: Text("Submit")),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
-              onPressed: null,
-            ),
 
           ],
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -624,5 +793,11 @@ class _ScheduleListPage extends State<ScheduleListPage> {
     }
     return request;
   }
+
+  // void setIsValid (bool _isValid){
+  //   setState(() {
+  //     isValid = _isValid;
+  //   });
+  // }
 
 }

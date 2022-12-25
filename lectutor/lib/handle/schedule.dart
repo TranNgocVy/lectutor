@@ -52,6 +52,7 @@ Future<List<BookingInfo>> getStudentBookedClass(String token, int page) async {
 Future<List<BookingInfo>> getUpcomingClass(String token, int page) async {
   var dio = Dio();
   final current = DateTime.now().millisecondsSinceEpoch;
+  print(current);
   List<BookingInfo> list = [];
   try{
     // dio.options.headers["Authorization"] = "Bearer ${context.watch<Tokens>().access.token}";
@@ -75,6 +76,23 @@ Future<bool> bookingAClass(String token, String id, String note) async {
     var response = await dio.post(ConstVar.URL + "booking", data: {
       "scheduleDetailIds":[id],
       "note": note
+    });
+    if(response.statusCode == 200){
+      print(response.data);
+      return true;
+    }
+  }catch(e){
+    print(e);
+  }
+  return false;
+}
+
+Future<bool> cancelAClass(String token, String id) async {
+  var dio = Dio();
+  try{
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+    var response = await dio.delete(ConstVar.URL + "booking", data: {
+      "scheduleDetailIds":[id],
     });
     if(response.statusCode == 200){
       print(response.data);
