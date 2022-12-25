@@ -95,8 +95,11 @@ class _TeacherListPage extends State<TeacherListPage> {
 
   int totalTime = 0;
 
-  void getTutor() async{
-    var data = await getTeacherList(context);
+  int selectId = 1;
+  int countTotal = 0;
+
+  void getTutor(int page) async{
+    var data = await getTeacherList(context, page);
     if (data != null){
       setState(() {
         updateLists(data);
@@ -133,11 +136,17 @@ class _TeacherListPage extends State<TeacherListPage> {
   void updateLists(dynamic data){
     var tutors = data["tutors"]["rows"];
     var favoriteTutor = data["favoriteTutor"];
+
+    countTotal = data["tutors"]["count"];
+    tutorList.clear();
+    print(countTotal);
+
     for(int i = 0; i < Const.perPage; i++){
       tutorList.add(Tutor.fromJson(tutors[i]));
     }
 
     try{
+      favoriteTutorList.clear();
       for(int i = 0;; i++){
         favoriteTutorList.add(Tutor.fromJson(favoriteTutor[i]));
       }
@@ -152,7 +161,7 @@ class _TeacherListPage extends State<TeacherListPage> {
     getTotalTime();
     getNextBookingList();
 
-    getTutor();
+    getTutor(selectId);
   }
 
   @override
@@ -580,6 +589,12 @@ class _TeacherListPage extends State<TeacherListPage> {
                   Column(
                     children: getTutorList(),
                     // [true, false])
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      getPage(countTotal),
+                    ],
                   )
                 ],
               )
@@ -863,8 +878,72 @@ class _TeacherListPage extends State<TeacherListPage> {
     return -1;
   }
 
+  Widget getPage(int count){
+    List<Widget> list = [];
+    int temp = count;
+    list.add(GestureDetector(
+      onTap: (){
+        if (selectId > 1){
+          setState(() {
+            selectId = selectId - 1;
+          });
+          getTutor(selectId);
 
-  // String getWaitTime(BookingInfo lession){
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: Icon(Icons.chevron_left_rounded),
+      ),
+    ));
+    for(int i = 1; temp > 0; i++){
+      list.add(GestureDetector(
+        onTap: (){
+          if (i != selectId){
+            setState(() {
+              selectId = i;
+            });
+            getTutor(selectId);
+
+          }
+        },
+        child: Container(
+          color: i == selectId ? Colors.blue.shade100: Colors.white,
+          padding: EdgeInsets.all(5),
+          child: Text("$i"),
+        ),
+      ));
+
+      temp = temp - Const.perPage;
+    }
+
+    list.add(GestureDetector(
+      onTap: (){
+        if (selectId <= (count - 1)~/ Const.perPage){
+
+          setState(() {
+            selectId = selectId + 1;
+          });
+          getTutor(selectId);
+
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: Icon(Icons.chevron_right_rounded),
+      ),
+    ));
+
+    return Center(
+      child: Row(
+        children: list,
+      ),
+    );
+  }
+
+
+
+// String getWaitTime(BookingInfo lession){
   //   String second =
   //
   //   return "(Start in ${}:${}:${})";

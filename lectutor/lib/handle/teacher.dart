@@ -11,12 +11,12 @@ import '../model/tutor.dart';
 import '../view/const/constVar.dart';
 import 'dart:async';
 
-Future <dynamic> getTeacherList(BuildContext context) async{
+Future <dynamic> getTeacherList(BuildContext context, int page) async{
   var dio = Dio();
   try{
     // dio.options.headers["Authorization"] = "Bearer ${context.watch<Tokens>().access.token}";
     dio.options.headers["Authorization"] = "Bearer ${Const.token}";
-    var response = await dio.get(ConstVar.ULR + 'tutor/more?perPage=9&page=1');
+    var response = await dio.get(ConstVar.ULR + 'tutor/more?perPage=9&page=$page');
 
     if(response.statusCode == 200){
       return response.data;
