@@ -12,7 +12,7 @@ TutorDetail _$TutorDetailFromJson(Map<String, dynamic> json) => TutorDetail(
       json['education'] as String?,
       json['experience'] as String?,
       json['profession'] as String?,
-      json['accent'] as bool?,
+      json['accent'] as String?,
       json['targetStudent'] as String?,
       json['interests'] as String?,
       json['languages'] as String?,

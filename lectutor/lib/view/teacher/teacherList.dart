@@ -114,9 +114,6 @@ class _TeacherListPage extends State<TeacherListPage> {
         print(nextbookingList.length);
 
         if (nextbookingList.length > 0 ){
-          print(nextbookingList[0].scheduleDetailInfo?.scheduleInfo.date);
-          print(nextbookingList[0].scheduleDetailInfo?.scheduleInfo.startTime);
-          print(nextbookingList[0].scheduleDetailInfo?.scheduleInfo.endTime);
           int now = DateTime.now().millisecondsSinceEpoch;
           countdownController = CountdownController(duration: Duration(milliseconds: nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp - now));
           countdownController.start();
@@ -139,11 +136,15 @@ class _TeacherListPage extends State<TeacherListPage> {
 
     countTotal = data["tutors"]["count"];
     tutorList.clear();
-    print(countTotal);
 
-    for(int i = 0; i < Const.perPage; i++){
-      tutorList.add(Tutor.fromJson(tutors[i]));
-    }
+    try{
+      for(int i = 0; i < Const.perPage; i++){
+        tutorList.add(Tutor.fromJson(tutors[i]));
+        if(tutorList[i].rating == null){
+          tutorList[i].rating = 0;
+        }
+      }
+    }catch(e){}
 
     try{
       favoriteTutorList.clear();
@@ -152,7 +153,21 @@ class _TeacherListPage extends State<TeacherListPage> {
       }
 
     }catch(e){}
+
+
+    for(int i = 0; i< tutorList.length - 1; i++){
+      for(int j = i + 1; j < tutorList.length; j++){
+        if((isContain(tutorList[i], favoriteTutorList) == -1 && isContain(tutorList[j], favoriteTutorList) != -1) ||
+            ((isContain(tutorList[i], favoriteTutorList) == -1 && isContain(tutorList[j], favoriteTutorList) == -1) || ((isContain(tutorList[i], favoriteTutorList) != -1 && isContain(tutorList[j], favoriteTutorList) != -1))) && (tutorList[j].rating! > tutorList[i].rating! ) ){
+          Tutor temp = tutorList[i];
+          tutorList[i] = tutorList[j];
+          tutorList[j] = temp;
+        }
+
+      }
+    }
   }
+
 
 
   @override
@@ -730,14 +745,6 @@ class _TeacherListPage extends State<TeacherListPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: Pkg.getRating(tutorList[i].rating),
-                                // children: <Icon>[
-                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                //   Icon(Icons.star, color: Colors.yellow, size: 15,),
-                                //
-                                // ],
                               )
                             ],
                           ),
@@ -752,18 +759,17 @@ class _TeacherListPage extends State<TeacherListPage> {
                                   IconButton(
                                     onPressed: ()async {
                                       int index = isContain(tutorList[i], favoriteTutorList);
-                                      if(index != -1){
-                                        var data = await addFavoriteTeacher(context, tutorList[i].userId.toString());
-                                        if (data == true){
-                                          setState(() {
-                                            favoriteTutorList.add(tutorList[i]);
-
-                                          });
-                                        }
-                                      }else{
+                                      var data = await addFavoriteTeacher(Const.token, tutorList[i].userId.toString());
+                                      if (data == 1){
                                         setState(() {
-                                          favoriteTutorList.remove(index);
+                                          favoriteTutorList.removeAt(index);
                                         });
+                                      }
+                                      else {
+                                        setState(() {
+                                          favoriteTutorList.add(Tutor.fromJson(data));
+                                        });
+
                                       }
 
                                     },
@@ -871,7 +877,7 @@ class _TeacherListPage extends State<TeacherListPage> {
 
   int isContain(Tutor tutor, List<Tutor> favoriteList){
     for(int i = 0; i < favoriteList.length; i++){
-      if (tutor.userId == favoriteList[i].userId){
+      if (tutor.userId == favoriteList[i].userId || tutor.userId == favoriteList[i].firstId || tutor.userId == favoriteList[i].secondId ){
         return i;
       }
     }
@@ -957,79 +963,5 @@ class _TeacherListPage extends State<TeacherListPage> {
       ),
     );
   }
-
-  // Widget getPage(int count){
-  //   List<Widget> list = [];
-  //   int temp = count;
-  //   list.add(GestureDetector(
-  //     onTap: (){
-  //       if (selectId > 1){
-  //         setState(() {
-  //           selectId = selectId - 1;
-  //         });
-  //         getTutor(selectId);
-  //
-  //       }
-  //     },
-  //     child: Container(
-  //       padding: EdgeInsets.all(5),
-  //       child: Icon(Icons.chevron_left_rounded),
-  //     ),
-  //   ));
-  //   for(int i = 1; temp > 0; i++){
-  //     list.add(GestureDetector(
-  //       onTap: (){
-  //         if (i != selectId){
-  //           setState(() {
-  //             selectId = i;
-  //           });
-  //           getTutor(selectId);
-  //
-  //         }
-  //       },
-  //       child: Container(
-  //         color: i == selectId ? Colors.blue.shade100: Colors.white,
-  //         padding: EdgeInsets.all(5),
-  //         child: Text("$i"),
-  //       ),
-  //     ));
-  //
-  //     temp = temp - Const.perPage;
-  //   }
-  //
-  //   list.add(GestureDetector(
-  //     onTap: (){
-  //       if (selectId <= (count - 1)~/ Const.perPage){
-  //
-  //         setState(() {
-  //           selectId = selectId + 1;
-  //         });
-  //         getTutor(selectId);
-  //
-  //       }
-  //     },
-  //     child: Container(
-  //       padding: EdgeInsets.all(5),
-  //       child: Icon(Icons.chevron_right_rounded),
-  //     ),
-  //   ));
-  //
-  //   return Center(
-  //     child: Row(
-  //       children: list,
-  //     ),
-  //   );
-  // }
-
-
-
-// String getWaitTime(BookingInfo lession){
-  //   String second =
-  //
-  //   return "(Start in ${}:${}:${})";
-  // }
-
-
-
 }
 

@@ -12,7 +12,7 @@ class TutorDetail {
   String? education;
   String? experience;
   String? profession;
-  bool? accent;
+  String? accent;
   String? targetStudent;
   String? interests;
   String? languages;

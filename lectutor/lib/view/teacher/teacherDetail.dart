@@ -54,7 +54,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   // late VideoPlayerController _videoPlayerController2;
   ChewieController? _chewieController;
   int? bufferDelay;
-  // TutorDetail tutorDetail = widget.teacherDetail;
+  late TutorDetail tutorDetail;
   List<Schedule> schedules = [];
   DateTime date = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day);
 
@@ -63,6 +63,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   void initState() {
     super.initState();
     // getTutorDetail(widget.id);
+    tutorDetail = widget.tutorDetail;
     getScedule(widget.tutorDetail.User.id);
 
     initializePlayer();
@@ -84,7 +85,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
   Future<void> initializePlayer() async {
     _videoPlayerController1 =
-        VideoPlayerController.network((widget.tutorDetail?.video).toString());
+        VideoPlayerController.network((tutorDetail?.video).toString());
     // VideoPlayerController.network(srcs[currPlayIndex]);
     // _videoPlayerController2 =
     // VideoPlayerController.network(srcs[currPlayIndex]);
@@ -195,9 +196,9 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> specialtyList = (widget.tutorDetail?.User?.name).toString().split(",");
+    List<String> specialtyList = (tutorDetail?.User?.name).toString().split(",");
     String alias = "";
-    List<String> nameSplit = (widget.tutorDetail?.User?.name).toString().split(" ");
+    List<String> nameSplit = (tutorDetail?.User?.name).toString().split(" ");
     for(int i = 0; i < nameSplit.length && i < 2; i++){
       alias = alias + nameSplit[i][0];
     }
@@ -211,25 +212,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             children: <Widget>[
               Container(
                 padding: EdgeInsets.only(top: 5),
-                child: Pkg.setAvatar(widget.tutorDetail?.User?.avatar,widget.tutorDetail?.User?.name )
-                // widget.tutorDetail.User?.avatar != null?
-                // CircleAvatar(
-                //   // backgroundImage: ,
-                //   // backgroundImage: NetworkImage((tutorDetail?.User?.avatar).toString()),
-                //   backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
-                //   maxRadius: 50,
-                // ):
-                // CircleAvatar(
-                //   backgroundColor: Colors.blue.shade200,
-                //   maxRadius: 50,
-                //   child: Text(
-                //     alias,
-                //     style: TextStyle(
-                //         fontSize: 45,
-                //         color: Colors.white
-                //     ),
-                //   ),
-                // ),
+                child: Pkg.setAvatar(tutorDetail?.User?.avatar,tutorDetail?.User?.name )
               ),
               // CircleAvatar(
               //   backgroundImage: AssetImage('assets/icon/avatar.jpg'),
@@ -248,7 +231,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                           Expanded(
                             flex: 1,
                             child: Text(
-                                (widget.tutorDetail.User?.name).toString(),
+                                (tutorDetail.User?.name).toString(),
                               style: TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold,
@@ -268,7 +251,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                             child: Container(
                               padding: EdgeInsets.all(5),
                               child: Text(
-                                (widget.tutorDetail?.User?.country).toString(),
+                                (tutorDetail?.User?.country).toString(),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.black38,
@@ -283,10 +266,10 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [Row(
-                          children: Pkg.getRating((widget.tutorDetail?.rating)),
+                          children: Pkg.getRating((tutorDetail?.rating)),
                         ),
                           Text(
-                            "(${(widget.tutorDetail?.totalFeedback).toString()})",
+                            "(${(tutorDetail?.totalFeedback).toString()})",
                             style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.black38,
@@ -311,7 +294,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                    (widget.tutorDetail?.bio).toString(),
+                    (tutorDetail.bio).toString(),
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black38,
@@ -328,11 +311,12 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             children: [
               Column(
                 children: [
-                  (widget.tutorDetail?.isFavorite != true) ?
+                  (tutorDetail?.isFavorite != true) ?
                   IconButton(
-                    onPressed: (){
+                    onPressed: () async {
+                      var data = await addFavoriteTeacher(Const.token, tutorDetail.User.id!);
                       setState(() {
-                        widget.tutorDetail?.isFavorite = true;
+                        tutorDetail?.isFavorite = true;
                       });
                     },
                     icon: Icon(
@@ -342,9 +326,11 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                     ),
                   ):
                   IconButton(
-                    onPressed: (){
+                    onPressed: ()async{
+                      var data = await addFavoriteTeacher(Const.token, tutorDetail.User.id!);
+
                       setState(() {
-                        widget.tutorDetail?.isFavorite = false;
+                        tutorDetail?.isFavorite = false;
                       });
                     },
                     icon: Icon(
@@ -437,7 +423,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                                 ),
                                 Expanded(
                                     child: ListView(
-                                        children: getReviewList(widget.tutorDetail.feedlist!)
+                                        children: getReviewList(tutorDetail.feedlist!)
                                     )),
                               ],
                             ),
@@ -584,7 +570,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               Expanded(
                   child: Row(
                     children: <Widget>[
-                      Pkg.getElevatedButton((widget.tutorDetail?.User?.language).toString()),
+                      Pkg.getElevatedButton((tutorDetail?.User?.language).toString()),
                     ],
                   ))
             ],
@@ -605,7 +591,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
             child: Wrap(
               runSpacing: 2,
               spacing: 5,
-              children: SpecialtiesChoiceChips.getSpecialties((widget.tutorDetail?.specialties).toString().split(","), true).map((value) => ChoiceChip(
+              children: SpecialtiesChoiceChips.getSpecialties((tutorDetail?.specialties).toString().split(","), true).map((value) => ChoiceChip(
                 label: Text(value.label),
                 selected: value.isSelected,
                 selectedColor: Colors.blue.shade200,
@@ -631,7 +617,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           ),
 
           Column(
-            children: getSuggestedCourse(widget.tutorDetail!.User.courses),
+            children: getSuggestedCourse(tutorDetail!.User.courses),
           ),
 
 
@@ -652,7 +638,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                    (widget.tutorDetail?.interests).toString(),
+                    (tutorDetail?.interests).toString(),
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black38,
@@ -678,7 +664,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               Expanded(
                 flex: 1,
                 child: Text(
-                  (widget.tutorDetail?.experience).toString(),
+                  (tutorDetail?.experience).toString(),
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black38,
@@ -935,7 +921,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                     int balance = await getBalance(Const.token);
                     final result = await Navigator.pushNamed(context, '/tutor/detail/bookclass', arguments: BookingLessonArg(balance, bookingAClassArg.startTime!, bookingAClassArg.endTime!, bookingAClassArg.id!));
                     if (result == true){
-                      getScedule(widget.tutorDetail.User.id);
+                      getScedule(tutorDetail.User.id);
                     }
 
                     },
@@ -1174,7 +1160,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           children: <Widget>[
             CircleAvatar(
               // backgroundImage: ,
-              backgroundImage: NetworkImage((widget.tutorDetail?.User?.avatar).toString()),
+              backgroundImage: NetworkImage((tutorDetail?.User?.avatar).toString()),
               // backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
               // maxRadius: 50,
             ),

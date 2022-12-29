@@ -59,7 +59,9 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor(
       json['isNative'] as bool?,
       json['price'] as int?,
       json['isOnline'] as bool?,
-    );
+    )
+      ..firstId = json['firstId'] as String?
+      ..secondId = json['secondId'] as String?;
 
 Map<String, dynamic> _$TutorToJson(Tutor instance) => <String, dynamic>{
       'level': instance.level,
@@ -91,6 +93,8 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) => <String, dynamic>{
       'feedbacks': instance.feedbacks,
       'id': instance.id,
       'userId': instance.userId,
+      'firstId': instance.firstId,
+      'secondId': instance.secondId,
       'video': instance.video,
       'bio': instance.bio,
       'education': instance.education,

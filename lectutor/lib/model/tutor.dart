@@ -34,6 +34,8 @@ class Tutor {
   List<FeedBack>? feedbacks;
   String? id;
   String? userId;
+  String? firstId;
+  String? secondId;
   String? video;
   String? bio;
   String? education;
