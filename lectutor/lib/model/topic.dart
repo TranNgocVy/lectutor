@@ -8,6 +8,7 @@ class Topic {
   String? courseId;
   int? orderCourse;
   String? name;
+  String? nameFile;
   int? numberOfPages;
   String? description;
   String? videoUrl;

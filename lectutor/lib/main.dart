@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/model/token.dart';
 import 'package:lectutor/model/tokens.dart';
+import 'package:lectutor/model/topic.dart';
 import 'package:lectutor/model/tutorDetail.dart';
 import 'package:lectutor/model/user.dart';
 import 'package:lectutor/view/account/profile.dart';
@@ -64,7 +65,7 @@ class MyApp extends StatelessWidget {
         // '/schedule/history': (context) => ScheduleHistory(),
         '/course': (context) => CourseList(),
         // '/course/detail': (context) => CourseDetail(),
-        '/course/detail/topic':(context) => TopicDetail(),
+        // '/course/detail/topic':(context) => TopicDetail(),
         '/video':(context) => Video(),
         '/becometutor/completeproflie': (context) => CompleteProfile(),
         '/becometutor/videointroduction': (context) => VideoIntroduction(),
@@ -137,6 +138,18 @@ class MyApp extends StatelessWidget {
                         );
                       },
                     );
+                  }
+                  else{
+                    if(settings.name == '/course/detail/topic'){
+                      final args = settings.arguments as Topic;
+                      return MaterialPageRoute(
+                        builder: (context) {
+                          return TopicDetail(
+                            topic: args,
+                          );
+                        },
+                      );
+                    }
                   }
                 }
               }

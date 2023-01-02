@@ -150,7 +150,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                                 children: <Widget>[
                                   ElevatedButton(
                                     onPressed: (){
-                                      Navigator.pushNamed(context, '/course/detail/topic');
+                                      Navigator.pushNamed(context, '/course/detail/topic', arguments: course.topics![0]);
                                       // if (pathPDF.isNotEmpty) {
                                       //   Navigator.push(
                                       //     context,
@@ -475,39 +475,44 @@ class _CourseDetailPage extends State<CourseDetailPage> {
     for (var i = 0; i < topicList.length; i++){
       list.add(SizedBox(height: 10,));
       list.add( Card(
-        child: Container(
-            padding: EdgeInsets.fromLTRB(20,40,10,20),
-            child: Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "${i+1}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.black54,
+        child: GestureDetector(
+          child: Container(
+              padding: EdgeInsets.fromLTRB(20,40,10,20),
+              child: Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "${i+1}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black54,
+                      ),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Text(
-                            "${topicList[i].name}",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                      )
-                    ],
-                  ),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Text(
+                              "${topicList[i].name}",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                        )
+                      ],
+                    ),
 
 
-                ],
-              ),
-            )
+                  ],
+                ),
+              )
+          ),
+          onTap: (){
+            Navigator.pushNamed(context, '/course/detail/topic', arguments: topicList[i]);
+          },
         ),
         elevation: 5,
         shadowColor: Colors.grey,

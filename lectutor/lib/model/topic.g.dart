@@ -21,13 +21,14 @@ Topic _$TopicFromJson(Map<String, dynamic> json) => Topic(
       json['updatedAt'] == null
           ? null
           : DateTime.parse(json['updatedAt'] as String),
-    );
+    )..nameFile = json['nameFile'] as String?;
 
 Map<String, dynamic> _$TopicToJson(Topic instance) => <String, dynamic>{
       'id': instance.id,
       'courseId': instance.courseId,
       'orderCourse': instance.orderCourse,
       'name': instance.name,
+      'nameFile': instance.nameFile,
       'numberOfPages': instance.numberOfPages,
       'description': instance.description,
       'videoUrl': instance.videoUrl,
