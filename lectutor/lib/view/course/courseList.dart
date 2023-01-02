@@ -1,7 +1,10 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:lectutor/model/courses.dart';
-import 'package:lectutor/model/topics.dart';
+import 'package:lectutor/config/const.dart';
+import 'package:lectutor/model/category.dart';
+import 'package:lectutor/model/level.dart';
+import '../../handle/course.dart';
+import '../../model/course.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
@@ -23,11 +26,64 @@ class CourseListPage extends StatefulWidget {
 }
 
 class _CourseListPage extends State<CourseListPage> {
-  String level = "";
-  String category = "";
+  List <String> category = [];
+  List<int> selectedLevelId = [];
+  List<String> selectedCategoryId = [];
+  List<String> selectedLevel = [];
+  List<String> selectedCategory = [];
   String sortby = "";
+  String orderby = "";
   final FocusNode _lvlFocus = FocusNode();
   final FocusNode _catFocus = FocusNode();
+  List<Course> courseList = [];
+  List<Category> categoryList = [];
+  int total = 0;
+  int selectId = 1;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCourses(selectId, Const.perPageLarge);
+    getCategory();
+  }
+
+  void getCategory() async{
+    var data = await CourseService.getCategorylist(Const.token);
+    if (data != null){
+      setState(() {
+        categoryList = data;
+        categoryList.forEach((element) { 
+          category.add(element.title!);
+        });
+        
+      });
+    }
+  }
+
+  void getCourses(int page, int size, {List<int> level = const [], List<String> categoryId = const [], String orderBy = ""}) async{
+    var data = await CourseService.getCourselist(Const.token, page, size, level: level, categoryId: categoryId,orderBy: orderBy );
+    if (data != null){
+      setState(() {
+        updateLists(data);
+      });
+    }
+  }
+  void updateLists(dynamic data){
+    total = data["data"]["count"];
+
+    var courses = data["data"]["rows"];
+
+    courseList.clear();
+
+    try {
+      for(int i = 0;; i ++){
+        courseList.add(Course.fromJson(courses[i]));
+      }
+    } catch(e){}
+
+
+  }
+
 
 
   @override
@@ -115,7 +171,7 @@ class _CourseListPage extends State<CourseListPage> {
                     FocusScope.of(context).requestFocus(_lvlFocus);
                   },
                   child: DropdownSearch<String>.multiSelection(
-                    items: ConstVar.levelList,
+                    items: ConstVar.levelStringList,
                     popupProps: PopupPropsMultiSelection.menu(
                       showSelectedItems: true,
                       showSearchBox: true,
@@ -143,11 +199,27 @@ class _CourseListPage extends State<CourseListPage> {
                         hintText: 'Select level',
                       ),
                     ),
-                    // selectedItems: ['Item1', 'Item2'],
-                    onChanged: (val) {
+                    selectedItems: selectedLevel,
+                    onChanged: (val) async {
                       setState(() {
+                        selectedLevel = val;
                         _lvlFocus.requestFocus();
+                        selectedLevelId.clear();
+
+                        val.forEach((element) {
+                          ConstVar.levelList.forEach((level) {
+                            if(level.alias == element){
+                              selectedLevelId.add(int.parse(level.id));
+                            }
+                          });
+                        });
+
+                        selectId = 1;
                       });
+
+
+                      getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+
                     },
                   ),
                 )
@@ -174,7 +246,7 @@ class _CourseListPage extends State<CourseListPage> {
                     FocusScope.of(context).requestFocus(_catFocus);
                   },
                   child: DropdownSearch<String>.multiSelection(
-                    items: ConstVar.type,
+                    items: category,
                     popupProps: PopupPropsMultiSelection.menu(
                       showSelectedItems: true,
                       showSearchBox: true,
@@ -202,11 +274,25 @@ class _CourseListPage extends State<CourseListPage> {
                         hintText: 'Select category',
                       ),
                     ),
-                    // selectedItems: ['Item1', 'Item2'],
-                    onChanged: (val) {
+                    selectedItems: selectedCategory,
+                    onChanged: (val) async {
                       setState(() {
+                        selectedCategory = val;
                         _catFocus.requestFocus();
+                        selectedCategoryId.clear();
+                        val.forEach((element) {
+                          for(int i = 0; i <categoryList.length; i++){
+                            if(element == categoryList[i].title){
+                              selectedCategoryId.add(categoryList[i].id!);
+                              break;
+                            }
+                          }
+                        });
+                        selectId = 1;
+
                       });
+                      getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+
                     },
                   ),
                 )
@@ -263,9 +349,17 @@ class _CourseListPage extends State<CourseListPage> {
               onChanged: (String? newValue) {
                 setState(() {
                   sortby = newValue!;
+                  if(sortby == "level decreasing"){
+                    orderby = "DESC";
+                  }
+                  else{
+                    if(sortby == "level ascending"){
+                      orderby = "ASC";
+                    }
+                  }
                 });
               },
-              items: <String>["level decreasing", "level assending"].map<DropdownMenuItem<String>>((String value) {
+              items: <String>["level decreasing", "level ascending"].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                     value: value,
                     child: Expanded(
@@ -284,50 +378,16 @@ class _CourseListPage extends State<CourseListPage> {
               children: getType(["Course", "E-Book", "Interactive E-book"], 0),
             ),
 
-            SizedBox(height: ConstVar.largespace,),
 
-            Text(
-              "English For Traveling",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-              ),
-            ),
+
 
             // Expanded(
             //   child:
             // ),
             Column(
-              children: getCourseList([
-                Courses("Life in the Internet Age",
-                    "Let's discuss how technology is changing the way we live",
-                    "Intermediate",
-                    [Topics("The Internet"),
-                      Topics("Artificial Intelligence (AI)"),
-                      Topics("Social Media"),
-                      Topics("Internet Privacy"),
-                      Topics("Live Streaming"),
-                      Topics("Coding"),
-                      Topics("Technology Transforming Healthcare"),
-                      Topics("Smart Home Technology"),
-                      Topics("Remote Work - A Dream Job?"),
-                    ]
-                ),
-                Courses("Life in the Internet Age 11111111111111",
-                    "Let's discuss how technology is changing the way we live",
-                    "Intermediate",
-                    [Topics("The Internet"),
-                      Topics("Artificial Intelligence (AI)"),
-                      Topics("Social Media"),
-                      Topics("Internet Privacy"),
-                      Topics("Live Streaming"),
-                      Topics("Coding"),
-                      Topics("Technology Transforming Healthcare"),
-                      Topics("Smart Home Technology"),
-                      Topics("Remote Work - A Dream Job?"),
-                    ]
-                )]),
+              children: getCourseList(courseList),
             ),
+            getPage(total),
           ],
         ),
       ),
@@ -363,89 +423,285 @@ class _CourseListPage extends State<CourseListPage> {
     return list;
   }
 
-  List<Widget> getCourseList(List<Courses> courseList){
+  List<Widget> getCourseList(List<Course> courseList){
+    Map<String, List<Course>> mapCategoryCourse ={};
+
+    courseList.forEach((course) {
+      course.categories!.forEach((category) {
+        if(mapCategoryCourse[category.title!] == null){
+          mapCategoryCourse[category.title!] = [course];
+        }
+        else{
+          mapCategoryCourse[category.title!]!.add(course);
+        }
+      });
+    });
+
+
     List<Widget> list = [];
-    for (var i = 0; i < courseList.length; i++){
-      list.add(SizedBox(height: 10,));
-      list.add( Card(
-        child: GestureDetector(
-          onTap: (){
-            Navigator.pushNamed(context, '/course/detail');
-          },
-          child: Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  child: Image(image: AssetImage("assets/icon/course.png")),
-                ),
-
-                Container(
-                    padding: EdgeInsets.all(20),
-                    child: Expanded(
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  courseList[i].title,
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-
-                          SizedBox(height: ConstVar.minspace,),
-
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  courseList[i].description,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: ConstVar.mediumspace,),
-
-                          Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  courseList[i].level + " -  ${courseList[i].topicList.length} Lessons",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ),
-
-                            ],
-                          ),
-
-                        ],
-                      ),
-                    )
-                )
-              ],
-            ),
+    mapCategoryCourse.forEach((key, value) {
+      if(value != null){
+        list.add(SizedBox(height: ConstVar.largespace,),);
+        list.add(Text(
+          "$key",
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+            fontSize: 23,
           ),
-        ),
-        elevation: 5,
-        shadowColor: Colors.grey,
-      ));
-    }
+        ));
+
+        value.forEach((course) {
+          list.add(SizedBox(height: 10,));
+          list.add( Card(
+            child: GestureDetector(
+              onTap: (){
+                Navigator.pushNamed(context, '/course/detail', arguments: course);
+              },
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      // child: Image(image: AssetImage("assets/icon/course.png")),
+                      child: Image.network(course.imageUrl!),
+                    ),
+
+                    Container(
+                        padding: EdgeInsets.all(20),
+                        child: Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Text(
+                                      course.name!,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+
+                              SizedBox(height: ConstVar.minspace,),
+
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Text(
+                                      course.description!,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: ConstVar.mediumspace,),
+
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Text(
+                                      "${Level.getLevelById(ConstVar.levelList, course.level!).name} -  ${course.topics!.length} Lessons",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+
+                            ],
+                          ),
+                        )
+                    )
+                  ],
+                ),
+              ),
+            ),
+            elevation: 5,
+            shadowColor: Colors.grey,
+          ));
+        });
+
+
+      }
+    });
+
+
+    // for (var i = 0; i < courseList.length; i++){
+    //   list.add(SizedBox(height: 10,));
+    //   list.add( Card(
+    //     child: GestureDetector(
+    //       onTap: (){
+    //         Navigator.pushNamed(context, '/course/detail', arguments: courseList[i]);
+    //       },
+    //       child: Container(
+    //         padding: EdgeInsets.all(10),
+    //         child: Column(
+    //           children: <Widget>[
+    //             Container(
+    //               // child: Image(image: AssetImage("assets/icon/course.png")),
+    //               child: Image.network(courseList[i].imageUrl!),
+    //             ),
+    //
+    //             Container(
+    //                 padding: EdgeInsets.all(20),
+    //                 child: Expanded(
+    //                   child: Column(
+    //                     children: <Widget>[
+    //                       Row(
+    //                         children: <Widget>[
+    //                           Expanded(
+    //                             child: Text(
+    //                               courseList[i].name!,
+    //                               style: TextStyle(
+    //                                 fontSize: 20,
+    //                                 fontWeight: FontWeight.bold,
+    //                               ),
+    //                             ),
+    //                           ),
+    //                         ],
+    //                       ),
+    //
+    //
+    //                       SizedBox(height: ConstVar.minspace,),
+    //
+    //                       Row(
+    //                         children: <Widget>[
+    //                           Expanded(
+    //                             child: Text(
+    //                               courseList[i].description!,
+    //                               style: TextStyle(
+    //                                 fontSize: 16,
+    //                                 color: Colors.grey,
+    //                               ),
+    //                             ),
+    //                           ),
+    //                         ],
+    //                       ),
+    //
+    //                       SizedBox(height: ConstVar.mediumspace,),
+    //
+    //                       Row(
+    //                         children: <Widget>[
+    //                           Expanded(
+    //                             child: Text(
+    //                              "${Level.getLevelById(ConstVar.levelList, courseList[i].level!).name} -  ${courseList[i].topics!.length} Lessons",
+    //                               style: TextStyle(
+    //                                 fontSize: 16,
+    //                                 color: Colors.black87,
+    //                               ),
+    //                             ),
+    //                           ),
+    //
+    //                         ],
+    //                       ),
+    //
+    //                     ],
+    //                   ),
+    //                 )
+    //             )
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //     elevation: 5,
+    //     shadowColor: Colors.grey,
+    //   ));
+    // }
     return list;
+  }
+
+  Widget getPage(int count){
+    int preId = 1;
+    // bool isContinuous = true;
+    List<Widget> list = [];
+    int temp = count;
+    list.add(GestureDetector(
+      onTap: (){
+        if (selectId > 1){
+          setState(() {
+            selectId = selectId - 1;
+          });
+          getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: Icon(Icons.chevron_left_rounded),
+      ),
+    ));
+    for(int i = 1; temp > 0; i++){
+      if(i == 1 || i - 1 == (count - 1) ~/ Const.perPageLarge || ( selectId - 2 < i && i < selectId + 2 )) {
+        list.add(GestureDetector(
+          onTap: (){
+            if (i != selectId){
+              setState(() {
+                selectId = i;
+              });
+              getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+
+            }
+          },
+
+          child: Container(
+            color: i == selectId ? Colors.blue.shade100: Colors.white,
+            padding: EdgeInsets.all(5),
+            child: Text("$i"),
+          ),
+        ));
+
+        preId = i;
+      }
+      else{
+        if(preId + 1 == i){
+          list.add(Container(
+            padding: EdgeInsets.all(5),
+            child: Icon(Icons.more_horiz),
+          ));
+        }
+
+      }
+
+      temp = temp - Const.perPageLarge;
+    }
+
+    list.add(GestureDetector(
+      onTap: (){
+        if (selectId <= (count - 1)~/ Const.perPageLarge){
+
+          setState(() {
+            selectId = selectId + 1;
+          });
+          getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+
+
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.all(5),
+        child: Icon(Icons.chevron_right_rounded),
+      ),
+    ));
+
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: list,
+      ),
+    );
   }
 
 

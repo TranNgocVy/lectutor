@@ -27,21 +27,52 @@ Future <dynamic> getTeacherList(BuildContext context, int page) async{
   return null;
 }
 
-Future <dynamic> searchTeacher(BuildContext context, String name, List<String> nationnality, List<String> specialities) async{
+Future <List<Tutor>> searchTeacher(String token, int page, int perPage, {String name = "", List<String> nationnality = const [], List<String> specialities = const []}) async{
   var dio = Dio();
+  List<Tutor> list = [];
+  List<String> spec = [];
+  for(int i = 0; i< specialities.length; i++){
+    for(int j = 0; j < ConstVar.topicList.length; j ++){
+      print("${ConstVar.topicList[j].name} = ${specialities[i]}");
+      if(ConstVar.topicList[j].name == specialities[i]){
+        spec.add(ConstVar.topicList[j].key!);
+        continue;
+      }
+    }
+    for(int j = 0; j < ConstVar.testPreparationList.length; j ++){
+      if(ConstVar.testPreparationList[j].name == specialities[i]){
+        spec.add(ConstVar.testPreparationList[j].key!);
+        continue;
+      }
+    }
+  }
+  print(specialities);
+
   try{
     // dio.options.headers["Authorization"] = "Bearer ${context.watch<Tokens>().access.token}";
-    dio.options.headers["Authorization"] = "Bearer ${Const.token}";
-    var response = await dio.post(ConstVar.URL + 'tutor/search');
+    dio.options.headers["Authorization"] = "Bearer ${token}";
+    dio.options.headers["Content-type"] = "application/json;encoding=utf-8";
+
+    var response = await dio.post(ConstVar.URL + 'tutor/search', data: {
+      "page": page,
+      "perPage": perPage,
+      "search": name,
+      "filters": {
+        "specialties": spec,
+      },
+    });
 
     if(response.statusCode == 200){
-      print(response.data);
+      int count = response.data["count"];
+      for (int i = 0; i < count; i ++){
+        list.add(Tutor.fromJson(response.data["rows"][i]));
+      }
       return response.data;
     }
   }catch(e){
     print(e);
   }
-  return null;
+  return list;
 }
 
 Future <dynamic> getTeacherDetail(BuildContext context, String id) async{

@@ -4,9 +4,12 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lectutor/model/course.dart';
 // import 'package:lectutor/course/temp.dart';
 import 'package:lectutor/model/courses.dart';
+import 'package:lectutor/model/level.dart';
 import 'package:lectutor/model/topics.dart';
+import '../../model/topic.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 // import 'package:path_provider/path_provider.dart';
@@ -14,24 +17,33 @@ import '../const/page.dart';
 
 
 class CourseDetail extends StatelessWidget {
-  const CourseDetail({super.key});
+  final Course course;
+  const CourseDetail({super.key, required this.course});
 
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, CourseDetailPage());
+    return TemplatePage.getHeader(context, CourseDetailPage(course:  course,));
 
   }
 }
 
 class CourseDetailPage extends StatefulWidget {
-  const CourseDetailPage({super.key});
+  final Course course;
+  const CourseDetailPage({super.key, required this.course});
   @override
   State<CourseDetailPage> createState() => _CourseDetailPage();
 }
 
 class _CourseDetailPage extends State<CourseDetailPage> {
   String pathPDF = "";
+  late Course course;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    course = widget.course;
+  }
 
   // @override
   // void initState() {
@@ -64,20 +76,20 @@ class _CourseDetailPage extends State<CourseDetailPage> {
 
 
 
-  Courses course = Courses("Life in the Internet Age",
-      "Let's discuss how technology is changing the way we live",
-      "Intermediate",
-      [Topics("The Internet"),
-        Topics("Artificial Intelligence (AI)"),
-        Topics("Social Media"),
-        Topics("Internet Privacy"),
-        Topics("Live Streaming"),
-        Topics("Coding"),
-        Topics("Technology Transforming Healthcare"),
-        Topics("Smart Home Technology"),
-        Topics("Remote Work - A Dream Job?"),
-      ]
-  );
+  // Courses course = Courses("Life in the Internet Age",
+  //     "Let's discuss how technology is changing the way we live",
+  //     "Intermediate",
+  //     [Topics("The Internet"),
+  //       Topics("Artificial Intelligence (AI)"),
+  //       Topics("Social Media"),
+  //       Topics("Internet Privacy"),
+  //       Topics("Live Streaming"),
+  //       Topics("Coding"),
+  //       Topics("Technology Transforming Healthcare"),
+  //       Topics("Smart Home Technology"),
+  //       Topics("Remote Work - A Dream Job?"),
+  //     ]
+  // );
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +104,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                 child: Column(
                   children: <Widget>[
                     Container(
-                      child: Image(image: AssetImage("assets/icon/course.png"),),
+                      child: Image.network(course.imageUrl!),
                     ),
 
                     Container(
@@ -104,7 +116,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                                 children: <Widget>[
                                   Expanded(
                                     child: Text(
-                                      course.title,
+                                      course.name!,
                                       style: TextStyle(
                                         fontSize: 25,
                                         fontWeight: FontWeight.bold,
@@ -120,7 +132,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                                 children: <Widget>[
                                   Expanded(
                                     child: Text(
-                                      course.description,
+                                      course.description!,
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Colors.grey,
@@ -221,6 +233,21 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                   SizedBox(height: ConstVar.minspace,),
                   Row(
                     children: <Widget>[
+                      SizedBox(width: 20,),
+                      Expanded(child: Text(
+                        "${course.reason}",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black54,
+                        ),
+                      ))
+                    ],
+                  ),
+
+                  SizedBox(height: ConstVar.mediumspace,),
+
+                  Row(
+                    children: <Widget>[
                       Icon(Icons.question_mark_rounded, color: Colors.red,),
                       SizedBox(width: 5,),
                       Text(
@@ -235,12 +262,13 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                     ],
                   ),
                   SizedBox(height: ConstVar.minspace,),
+
                   Row(
                     children: <Widget>[
-                      SizedBox(width: 40,),
+                      SizedBox(width: 20,),
                       Expanded(
                         child: Text(
-                          course.description,
+                          "${course.purpose}",
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black54,
@@ -286,7 +314,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                     Icon(Icons.supervisor_account_outlined, color: Colors.blue,),
                     SizedBox(width: 5,),
                     Text(
-                      course.level,
+                      "${Level.getLevelById(ConstVar.levelList, course.level!).name}",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.black87,
@@ -332,7 +360,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                     Icon(Icons.topic_outlined, color: Colors.blue,),
                     SizedBox(width: 5,),
                     Text(
-                      course.level,
+                      "${course.topics!.length} ${course.topics!.length > 1 ? "topics" : "topic"}",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.black87,
@@ -380,7 +408,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                 // ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: getTopicList(course.topicList),
+                  children: getTopicList(course.topics!),
                 ),
               ],
             ),
@@ -441,7 +469,8 @@ class _CourseDetailPage extends State<CourseDetailPage> {
     );
   }
 
-  List<Widget> getTopicList(List<Topics> topicList){
+  List<Widget> getTopicList(List<Topic> topicList){
+    topicList.sort((a, b) => a.orderCourse!..compareTo(b.orderCourse!));
     List<Widget> list = [];
     for (var i = 0; i < topicList.length; i++){
       list.add(SizedBox(height: 10,));
@@ -465,7 +494,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                     children: [
                       Expanded(
                           child: Text(
-                            topicList[i].title,
+                            "${topicList[i].name}",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,

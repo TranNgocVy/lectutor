@@ -6,6 +6,7 @@ import '../../config/const.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
+import '../../model/level.dart';
 
 class Profile extends StatelessWidget {
   final User user;
@@ -92,6 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     user = widget.user;
+    topic = getLearnTopicList(user);
   }
   //
   // void getUser()async{
@@ -473,18 +475,25 @@ class _ProfilePageState extends State<ProfilePage> {
                           });
                         },
                         dropdownColor: Colors.white,
-                        value: ConstVar.levelMap[user.level.toString()],
+                        // value: ConstVar.levelMap[user.level.toString()],
+                        value: Level.getLevelByKey(ConstVar.levelList, user.level.toString()).alias,
+
                         onChanged: (String? newValue) {
                           setState(() {
-                            ConstVar.levelMap.forEach((key, value) {
-                              if(value == newValue!){
-                                user.level = key;
+                            // ConstVar.levelMap.forEach((key, value) {
+                            //   if(value == newValue!){
+                            //     user.level = key;
+                            //   }
+                            // });
+                            ConstVar.levelList.forEach((element) {
+                              if(element.alias == newValue){
+                                user.level = element.key;
                               }
                             });
                           });
                         },
 
-                        items: (ConstVar.levelList).map<DropdownMenuItem<String>>((String value) {
+                        items: (ConstVar.levelStringList).map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                               value: value,
                               child: Expanded(
@@ -544,7 +553,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                               ),
-                              selectedItems: getLearnTopicList(user),
+                              selectedItems: topic,
                               onChanged: (val) {
                                 topic.clear();
                                 topic.addAll(val);
@@ -637,7 +646,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       onPressed: ()async{
                         if (nameController.text == "" || countryController.text == "" || _dController.text == "" || topic.length == 0){
                           setState(() {
-                            print("Co vo day a");
                             isValid = false;
                             err = "Please enter all field has *";
                           });

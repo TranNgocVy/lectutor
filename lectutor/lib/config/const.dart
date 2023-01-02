@@ -1,6 +1,7 @@
 class Const {
   static int perPage = 9;
-  static String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTY5YzIwMi03YmJmLTQ2MjAtYWY3Ny1lY2MxNDE5YTZiMjgiLCJpYXQiOjE2NzIzMjAyMDAsImV4cCI6MTY3MjQwNjYwMCwidHlwZSI6ImFjY2VzcyJ9.K2aJetkA9id8gxR_1qSZSuB7H1xrktFf34u6kV-sbeI";
+  static int perPageLarge = 50;
+  static String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNTY5YzIwMi03YmJmLTQ2MjAtYWY3Ny1lY2MxNDE5YTZiMjgiLCJpYXQiOjE2NzI2NjYzMTYsImV4cCI6MTY3Mjc1MjcxNiwidHlwZSI6ImFjY2VzcyJ9.1xQ9X6NAwVy2-QZ64ow2cGo0qsWli7JW5puQUJ7I5I4";
   static DateTime time = DateTime(1970, 1,1,7,0,0,0,0);
   static List<String> weekday = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat","Sun"];
   static List<String> months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

@@ -25,6 +25,7 @@ import 'package:lectutor/view/video/video.dart';
 import 'package:provider/provider.dart';
 
 import 'model/argument.dart';
+import 'model/course.dart';
 import 'model/walletInfo.dart';
 
 void main() {
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
         // '/schedule': (context) => ScheduleList(),
         // '/schedule/history': (context) => ScheduleHistory(),
         '/course': (context) => CourseList(),
-        '/course/detail': (context) => CourseDetail(),
+        // '/course/detail': (context) => CourseDetail(),
         '/course/detail/topic':(context) => TopicDetail(),
         '/video':(context) => Video(),
         '/becometutor/completeproflie': (context) => CompleteProfile(),
@@ -125,6 +126,18 @@ class MyApp extends StatelessWidget {
                       );
                     },
                   );
+                }
+                else{
+                  if(settings.name == "/course/detail"){
+                    final args = settings.arguments as Course;
+                    return MaterialPageRoute(
+                      builder: (context) {
+                        return CourseDetail(
+                          course: args,
+                        );
+                      },
+                    );
+                  }
                 }
               }
             }

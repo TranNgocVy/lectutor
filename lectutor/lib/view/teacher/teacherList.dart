@@ -50,6 +50,7 @@ class TeacherListPage extends StatefulWidget {
 
 class _TeacherListPage extends State<TeacherListPage> {
   final TextEditingController _nameController = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
   final FocusNode _ntFocus = FocusNode();
   final TextEditingController _dController = TextEditingController();
   final FocusNode _dFocus = FocusNode();
@@ -92,6 +93,7 @@ class _TeacherListPage extends State<TeacherListPage> {
   List<Tutor>  tutorList = [];
   List<Tutor>  favoriteTutorList = [];
   List<BookingInfo> nextbookingList = [];
+  List<String> specialities = [];
 
   int totalTime = 0;
 
@@ -290,6 +292,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                           keyboardType: TextInputType.text,
                           autofocus: false,
                           controller: _nameController,
+                          focusNode: _nameFocus,
                           decoration: InputDecoration(
                             hintText: 'Enter tutor name ...',
                             contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -352,10 +355,11 @@ class _TeacherListPage extends State<TeacherListPage> {
                             ElevatedButton(
 
                               onPressed: () async{
-                                final data = await searchTeacher(context, _nameController.text, [],[]);
-
+                                _nameFocus.unfocus();
+                                final data = await searchTeacher(Const.token, selectId, Const.perPage, name: _nameController.text, nationnality:[],specialities:specialities);
                                 setState((){
-                                  updateLists(data);
+                                  tutorList = data;
+                                  countTotal = tutorList.length!;
                                 });
                               },
                               child: const Text(
@@ -527,19 +531,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                           runSpacing: 5,
                           spacing: 5,
 
-                          children: specialtiesChoiceChips.map((value) => ChoiceChip(
-                            label: Text(value.label),
-                            selected: value.isSelected,
-                            selectedColor: Colors.blue.shade100,
-                            focusNode: _tgFocus,
-                            labelStyle: TextStyle(
-                              fontSize: 15,
-                            ),
-                            onSelected: (isSltd) => setState(() {
-                              _tgFocus.requestFocus();
-                              value.isSelected = value.isSelected?false: true;
-                            }),
-                          )).toList(),
+                          children: getSpecialitiesChoiceChip(),
                         ),
 
                         SizedBox(height: ConstVar.mediumspace),
@@ -551,8 +543,11 @@ class _TeacherListPage extends State<TeacherListPage> {
                                   _nameController.text = "";
                                   _dController.text = "";
                                   _tController.text = "";
-
+                                  specialities = [];
                                 });
+
+                                getTutor(1);
+
                               },
                                 child: Text(
                                   "Reset Filters",
@@ -626,252 +621,273 @@ class _TeacherListPage extends State<TeacherListPage> {
 
 
 
-  Container getElevatedButton(String txt, {bool selected = false}){
-    Container btn = Container(
-      padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-      child: ElevatedButton(
-        onPressed: null,
-        child: Text(
-          txt,
-          style: TextStyle(
-            color: selected? Colors.blue:Colors.grey,
-            fontSize: 14,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          // backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-        ),
-      ),
-    );
-
-    return btn;
-  }
+  // Container getElevatedButton(String txt, {bool selected = false}){
+  //   Container btn = Container(
+  //     padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+  //     child: ElevatedButton(
+  //       onPressed: null,
+  //       child: Text(
+  //         txt,
+  //         style: TextStyle(
+  //           color: selected? Colors.blue:Colors.grey,
+  //           fontSize: 14,
+  //         ),
+  //       ),
+  //       style: ElevatedButton.styleFrom(
+  //         // backgroundColor: Colors.white,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(50),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  //
+  //   return btn;
+  // }
   List<Widget> getTutorList(){
     List<Widget> list = [];
-    for(var i = 0; i < tutorList.length; i++){
-      List<String> specialtyList = tutorList[i].specialties.toString().split(",");
-      String alias = "";
-      List<String> nameSplit = tutorList[i].name.toString().split(" ");
-      for(int i = 0; i < nameSplit.length && i < 2; i++){
-        alias = alias + nameSplit[i][0];
-      }
 
-      list.add(
-          Card(
-            borderOnForeground: true,
-            elevation: 3,
-            shadowColor: Colors.grey.shade100,
-            margin: EdgeInsets.all(10),
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap:  ()  async {
-                      late TutorDetail tutorDetail;
-                      List<Schedule> schedules = [];
+    if (tutorList.length == 0){
+      list.add(Center(
+        child: Container(
+          padding: EdgeInsets.all(5),
+          child: Text(
+            "No suitable tutor",
+            style: TextStyle(
+              color: Colors.grey,
+              fontStyle: FontStyle.italic,
+              fontSize: 20
+            ),
+          ),
+        ),
+      ));
+    }
+    else{
+      for(var i = 0; i < tutorList.length; i++){
+        List<String> specialtyList = tutorList[i].specialties.toString().split(",");
+        String alias = "";
+        List<String> nameSplit = tutorList[i].name.toString().split(" ");
+        for(int i = 0; i < nameSplit.length && i < 2; i++){
+          alias = alias + nameSplit[i][0];
+        }
 
-                      var data = await  getTeacherDetail(context, tutorList[i].userId.toString());
-                      print(data);
-                      if (data != null){
-                        tutorDetail = TutorDetail.fromJson(data);
-                      }
-                      tutorDetail.feedlist = tutorList[i].feedbacks!;
-                      print(tutorDetail.User.id);
+        list.add(
+            Card(
+              borderOnForeground: true,
+              elevation: 3,
+              shadowColor: Colors.grey.shade100,
+              margin: EdgeInsets.all(10),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap:  ()  async {
+                        late TutorDetail tutorDetail;
+                        List<Schedule> schedules = [];
 
-                      Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
+                        var data = await  getTeacherDetail(context, tutorList[i].userId.toString());
+                        print(data);
+                        if (data != null){
+                          tutorDetail = TutorDetail.fromJson(data);
+                        }
+                        tutorDetail.feedlist = tutorList[i].feedbacks!;
+                        print(tutorDetail.User.id);
 
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          child: tutorList[i].avatar != null?
+                        Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
+
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            child: tutorList[i].avatar != null?
                             CircleAvatar(
                               // backgroundImage: ,
                               backgroundImage: NetworkImage(tutorList[i].avatar.toString()),
                               // backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
                               // maxRadius: 30,
                             ):
-                          CircleAvatar(
-                            backgroundColor: Colors.blue.shade200,
-                            child: Text(
-                              alias,
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  color: Colors.white
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10,),
-
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                tutorList[i].name.toString(),
+                            CircleAvatar(
+                              backgroundColor: Colors.blue.shade200,
+                              child: Text(
+                                alias,
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                    color: Colors.white
                                 ),
                               ),
-
-                              Row(
-                                children: <Widget>[
-                                  Container(
-                                      padding: EdgeInsets.only(top: 5),
-                                      child: Image(image: Svg("assets/icon/nationality.svg"),width: 30,)
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.all(5),
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      tutorList[i].country.toString(),
-                                      style: TextStyle(
-                                          fontSize: 14
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: Pkg.getRating(tutorList[i].rating),
-                              )
-                            ],
-                          ),
-                        ),
-
-                        Container(
-                            child: Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.max,
-                                children: <IconButton>[
-                                  IconButton(
-                                    onPressed: ()async {
-                                      int index = isContain(tutorList[i], favoriteTutorList);
-                                      var data = await addFavoriteTeacher(Const.token, tutorList[i].userId.toString());
-                                      if (data == 1){
-                                        setState(() {
-                                          favoriteTutorList.removeAt(index);
-                                        });
-                                      }
-                                      else {
-                                        setState(() {
-                                          favoriteTutorList.add(Tutor.fromJson(data));
-                                        });
-
-                                      }
-
-                                    },
-                                    icon: isContain(tutorList[i], favoriteTutorList) != -1 ? Icon( Icons.favorite,
-                                      color:  Colors.red,
-                                      size: 30,
-                                    ) :  Icon( Icons.favorite_border,
-                                      color:  Colors.blue,
-                                      size: 30,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                        ),
-                      ],
-                    ),
-                  ),
-
-
-                  Container(
-                    child: Wrap(
-                      runSpacing: 5,
-
-                      spacing: 5,
-                      children: SpecialtiesChoiceChips.getSpecialties(specialtyList, true).map((value) => ChoiceChip(
-                        label: Text(value.label,),
-
-                        selected: value.isSelected,
-                        selectedColor: Colors.blue.shade100,
-                        focusNode: _tgFocus,
-                        labelStyle: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black
-                        ),
-                      )).toList(),
-                    ),
-
-                  ),
-
-                  Container(
-                    child: Text(
-                      tutorList[i].bio.toString(),
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.max,
-
-                    children: <Widget>[
-                      ElevatedButton.icon(
-
-                        // style: const ButtonStyle(
-                        //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                        //
-                        // ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32.0),
-                            side: BorderSide(
-                                width: 1,
-                                color: Colors.blue
                             ),
                           ),
-                        ),
+                          SizedBox(width: 10,),
 
-                        icon: Icon(Icons.calendar_month_sharp, size: 20,color: Colors.blue,),
-                        label: Text(
-                          'Book',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 13,
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  tutorList[i].name.toString(),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                        padding: EdgeInsets.only(top: 5),
+                                        child: Image(image: Svg("assets/icon/nationality.svg"),width: 30,)
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(5),
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        tutorList[i].country.toString(),
+                                        style: TextStyle(
+                                            fontSize: 14
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: Pkg.getRating(tutorList[i].rating),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        onPressed: ()async{
-                          late TutorDetail tutorDetail;
-                          List<Schedule> schedules = [];
 
-                          var data = await  getTeacherDetail(context, tutorList[i].userId.toString());
-                          if (data != null){
-                            tutorDetail = TutorDetail.fromJson(data);
-                          }
-                          tutorDetail.feedlist = tutorList[i].feedbacks!;
-                          print(tutorDetail.User.id);
+                          Container(
+                              child: Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <IconButton>[
+                                    IconButton(
+                                      onPressed: ()async {
+                                        int index = isContain(tutorList[i], favoriteTutorList);
+                                        var data = await addFavoriteTeacher(Const.token, tutorList[i].userId.toString());
+                                        if (data == 1){
+                                          setState(() {
+                                            favoriteTutorList.removeAt(index);
+                                          });
+                                        }
+                                        else {
+                                          setState(() {
+                                            favoriteTutorList.add(Tutor.fromJson(data));
+                                          });
 
-                          Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
-                        },
+                                        }
 
+                                      },
+                                      icon: isContain(tutorList[i], favoriteTutorList) != -1 ? Icon( Icons.favorite,
+                                        color:  Colors.red,
+                                        size: 30,
+                                      ) :  Icon( Icons.favorite_border,
+                                        color:  Colors.blue,
+                                        size: 30,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                          ),
+                        ],
                       ),
-                    ],
-                  )
-                ],
-              ),
-            ),
+                    ),
 
-          )
-      );
+
+                    Container(
+                      child: Wrap(
+                        runSpacing: 5,
+
+                        spacing: 5,
+                        children: SpecialtiesChoiceChips.getSpecialties(specialtyList, true).map((value) => ChoiceChip(
+                          label: Text(value.label,),
+
+                          selected: value.isSelected,
+                          selectedColor: Colors.blue.shade100,
+                          focusNode: _tgFocus,
+                          labelStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black
+                          ),
+                        )).toList(),
+                      ),
+
+                    ),
+
+                    Container(
+                      child: Text(
+                        tutorList[i].bio.toString(),
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.max,
+
+                      children: <Widget>[
+                        ElevatedButton.icon(
+
+                          // style: const ButtonStyle(
+                          //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+                          //
+                          // ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32.0),
+                              side: BorderSide(
+                                  width: 1,
+                                  color: Colors.blue
+                              ),
+                            ),
+                          ),
+
+                          icon: Icon(Icons.calendar_month_sharp, size: 20,color: Colors.blue,),
+                          label: Text(
+                            'Book',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 13,
+                            ),
+                          ),
+                          onPressed: ()async{
+                            late TutorDetail tutorDetail;
+                            List<Schedule> schedules = [];
+
+                            var data = await  getTeacherDetail(context, tutorList[i].userId.toString());
+                            if (data != null){
+                              tutorDetail = TutorDetail.fromJson(data);
+                            }
+                            tutorDetail.feedlist = tutorList[i].feedbacks!;
+                            print(tutorDetail.User.id);
+
+                            Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
+                          },
+
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+
+            )
+        );
+      }
+
     }
+
+
     return list;
   }
 
@@ -962,6 +978,42 @@ class _TeacherListPage extends State<TeacherListPage> {
         children: list,
       ),
     );
+  }
+  
+  
+  List<ChoiceChip>  getSpecialitiesChoiceChip() {
+    List<ChoiceChip> list = [];
+    for(int i =0; i< specialtiesChoiceChips.length; i++){
+      list.add(ChoiceChip(
+        label: Text(specialtiesChoiceChips[i].label),
+        selected: specialities.contains(specialtiesChoiceChips[i].label),
+        selectedColor: Colors.blue.shade100,
+        focusNode: _tgFocus,
+        labelStyle: TextStyle(
+          fontSize: 15,
+        ),
+        onSelected: (isSltd)async{
+          setState(() {
+            _tgFocus.requestFocus();
+            if(specialtiesChoiceChips[i].isSelected){
+              specialtiesChoiceChips[i].isSelected = false;
+              specialities.remove(specialtiesChoiceChips[i].label);
+            }else{
+              specialtiesChoiceChips[i].isSelected = true;
+              specialities.add(specialtiesChoiceChips[i].label);
+            }
+          });
+
+          final data = await searchTeacher(Const.token, selectId, Const.perPage, name: _nameController.text, nationnality:[],specialities:specialities);
+          setState((){
+            tutorList = data;
+            countTotal = tutorList.length!;
+          });
+
+        },
+      ));
+    }
+    return list;
   }
 }
 

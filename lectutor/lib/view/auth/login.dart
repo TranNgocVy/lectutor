@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/tokens.dart';
@@ -37,6 +38,27 @@ class _LogInPageState extends State<LogInPage> {
   bool isVisiblePassword = false;
   bool isValid = true;
   String error = "";
+
+
+  void handleSingInFacebook() async {
+    final LoginResult result = await FacebookAuth.instance.login();
+
+    if (result.status == LoginStatus.success) {
+      final String? accessToken = result.accessToken!.token;
+      if (accessToken != null) {
+        print("\n\nlogin by facebook\n");
+        // try {
+        //   // await AuthService.loginWithFacebook(accessToken, authProvider, widget.callback);
+        // } catch (e) {
+        //   showTopSnackBar(context, CustomSnackBar.error(message: "Login failed! ${e.toString()}"),
+        //       showOutAnimationDuration: const Duration(milliseconds: 1000), displayDuration: const Duration(microseconds: 4000));
+        // }
+      }
+    } else {
+      // showTopSnackBar(context, const CustomSnackBar.error(message: "Something went wrong!"),
+      //     showOutAnimationDuration: const Duration(milliseconds: 1000), displayDuration: const Duration(microseconds: 4000));
+    }
+  }
 
 
 
@@ -239,15 +261,19 @@ class _LogInPageState extends State<LogInPage> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Ink(
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: CircleBorder(),
+                  GestureDetector(
+                    child: Ink(
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: CircleBorder(),
+                      ),
+                      child: Image(
+                        image: Svg('assets/icon/facebook.svg'),
+                        width: 50,
+                      ),
+
                     ),
-                    child: Image(
-                      image: Svg('assets/icon/facebook.svg'),
-                      width: 50,
-                    ),
+                    onTap: handleSingInFacebook,
                   ),
                   SizedBox(width: ConstVar.mediumspace,),
                   Ink(
