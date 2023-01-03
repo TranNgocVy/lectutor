@@ -9,7 +9,7 @@ class ConstVar{
   static double largespace = 24;
 
   static String URL = "https://sandbox.api.lettutor.com/";
-
+  static String meetServer = "https://meet.lettutor.com";
   static List<String> type = [
     "English for kids",
     "English for Business",

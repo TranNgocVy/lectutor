@@ -9,6 +9,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/handle/teacher.dart';
 import 'package:lectutor/handle/user.dart';
+import 'package:lectutor/handle/videocall.dart';
 import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/model/teacher.dart';
 import 'package:lectutor/model/tutorDetail.dart';
@@ -249,7 +250,13 @@ class _TeacherListPage extends State<TeacherListPage> {
                                   fontSize: 13,
                                 ),
                               ),
-                              onPressed: null,
+                              onPressed: ()async {
+                                String room = "${nextbookingList[0].userId}-${nextbookingList[0].scheduleDetailInfo!.scheduleInfo.tutorId!}";
+                                print("room $room");
+                                // print("name ${context.read()<User>().name}");
+
+                                await VideoCall.videoCall(ConstVar.meetServer, room, "Phhaiii", "student@lettutor.com");
+                              },
                             ),
                           ],
                         ),

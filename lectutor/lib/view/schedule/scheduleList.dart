@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/config/const.dart';
 import 'package:lectutor/handle/schedule.dart';
+import 'package:lectutor/handle/videocall.dart';
 import 'package:lectutor/model/argument.dart';
 import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/schedule.dart';
@@ -518,7 +519,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                 children: <Widget>[
                   ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey.shade50),
+                        backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5.0),
@@ -526,14 +527,18 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                             )
                         )
                     ),
-                    onPressed: (){
-                      Navigator.pushNamed(context, '/video');
+                    onPressed:  ()async {
+                      String room = "${scheduleList[tempIndex].userId}-${scheduleList[tempIndex].scheduleDetailInfo!.scheduleInfo.tutorId!}";
+                      print("room $room");
+                      // print("name ${context.read()<User>().name}");
+
+                      await VideoCall.videoCall(ConstVar.meetServer, room, "Phhaiii", "student@lettutor.com");
                     },
                     child: Text(
                       "Go to meeting",
                       style: TextStyle(
                           fontSize: 18,
-                          color: Colors.grey.shade400
+                          color: Colors.white
                       ),
                     ),
 
