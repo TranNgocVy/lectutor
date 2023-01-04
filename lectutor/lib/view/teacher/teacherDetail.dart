@@ -13,6 +13,7 @@ import 'package:lectutor/model/schedule.dart';
 import 'package:lectutor/model/tutorCourseList.dart';
 import 'package:lectutor/model/tutorDetail.dart';
 import 'package:lectutor/test.dart';
+import 'package:lectutor/view/teacher/reportTeacher.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../config/const.dart';
@@ -57,7 +58,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   late TutorDetail tutorDetail;
   List<Schedule> schedules = [];
   DateTime date = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day);
-
+  TextEditingController noteController = TextEditingController();
 
   @override
   void initState() {
@@ -328,7 +329,6 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                   IconButton(
                     onPressed: ()async{
                       var data = await addFavoriteTeacher(Const.token, tutorDetail.User.id!);
-
                       setState(() {
                         tutorDetail?.isFavorite = false;
                       });
@@ -352,10 +352,19 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
               ),
               Column(
                 children: [
-                  Icon(
-                    Icons.report_gmailerrorred,
-                    color: Colors.blue,
-                    size: 25,
+                  IconButton(
+                    onPressed: (){
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => ReportTeacherPage(name: tutorDetail.User.name!, id: tutorDetail.User.id!),
+                      );
+
+                    },
+                    icon: Icon(
+                      Icons.report_gmailerrorred,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
                   ),
                   SizedBox(height: ConstVar.minspace),
                   Text(

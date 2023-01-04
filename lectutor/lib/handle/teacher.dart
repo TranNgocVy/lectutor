@@ -166,3 +166,18 @@ Future <dynamic> addFavoriteTeacher(String token, String id) async{
   }
   return false;
 }
+
+Future <bool> reportTeacher(String token, String id, String reason) async{
+  var dio = Dio();
+  try{
+    dio.options.headers["Authorization"] = "Bearer $token";
+    var response = await dio.post(ConstVar.URL + 'report', data: {"tutorId": id, "content": reason});
+
+    if(response.statusCode == 200){
+      return true;
+    }
+  }catch(e){
+  }
+  return false;
+}
+
