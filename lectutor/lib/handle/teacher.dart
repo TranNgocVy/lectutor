@@ -27,13 +27,12 @@ Future <dynamic> getTeacherList(BuildContext context, int page) async{
   return null;
 }
 
-Future <List<Tutor>> searchTeacher(String token, int page, int perPage, {String name = "", List<String> nationnality = const [], List<String> specialities = const []}) async{
+Future <List<Tutor>> searchTeacher(String token, int page, int perPage, {String name = "", List<String> nationality = const [], String date = "", String time = "", List<String> specialities = const []}) async{
   var dio = Dio();
   List<Tutor> list = [];
   List<String> spec = [];
   for(int i = 0; i< specialities.length; i++){
     for(int j = 0; j < ConstVar.topicList.length; j ++){
-      print("${ConstVar.topicList[j].name} = ${specialities[i]}");
       if(ConstVar.topicList[j].name == specialities[i]){
         spec.add(ConstVar.topicList[j].key!);
         continue;
@@ -46,7 +45,47 @@ Future <List<Tutor>> searchTeacher(String token, int page, int perPage, {String 
       }
     }
   }
-  print(specialities);
+  dynamic _date = null;
+  dynamic _time = [null, null];
+  dynamic _nationality = {};
+  if(date != ""){
+    var dateList = date.split("-");
+    _date = DateTime(int.parse(dateList[0]), int.parse(dateList[1]),int.parse(dateList[2]));
+
+    if(time != ""){
+      int startHour = int.parse(time.split(" --> ")[0].split(":")[0]);
+      int startMinute = int.parse(time.split(" --> ")[0].split(":")[1]);
+      int endHour = int.parse(time.split(" --> ")[1].split(":")[0]);
+      int endMinute = int.parse(time.split(" --> ")[1].split(":")[1]);
+
+      int startTime = DateTime(_date).millisecondsSinceEpoch + (startHour * 60 + startMinute) * 60 * 1000;
+      int endTime = DateTime(_date).millisecondsSinceEpoch + (endHour * 60 + endMinute) * 60 * 1000;
+      _time = [startTime, endTime];
+    }
+  }
+  if(nationality.length >  0 && nationality.length < 3){
+    if(nationality.contains("Foreign Tutor")){
+      if(nationality.length == 1){
+        _nationality = {"isNative": false, "isVietNamese": false};
+      }
+      else {
+        if (nationality.contains("Vietnamese Tutor")) {
+          _nationality = {"isNative": false};
+        }
+        else {
+          _nationality = {"isVietNamese": false};
+        }
+      }
+    }
+    else{
+      if (nationality.contains("Vietnamese Tutor")) {
+        _nationality["isVietNamese"] = true;
+      }
+      if (nationality.contains("Native English Tutor")) {
+        _nationality["isNative"] = true;
+      }
+    }
+  }
 
   try{
     // dio.options.headers["Authorization"] = "Bearer ${context.watch<Tokens>().access.token}";
@@ -58,7 +97,10 @@ Future <List<Tutor>> searchTeacher(String token, int page, int perPage, {String 
       "perPage": perPage,
       "search": name,
       "filters": {
-        "specialties": spec,
+        "date": _date,
+        "nationality": _nationality,
+        "tutoringTimeAvailable": _time,
+        "specialties": spec
       },
     });
 

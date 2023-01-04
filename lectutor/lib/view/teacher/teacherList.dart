@@ -66,6 +66,8 @@ class _TeacherListPage extends State<TeacherListPage> {
   TimeOfDay initE = TimeOfDay(hour: 8, minute: 0);
   DateTime selectedDate = DateTime.now();
 
+  List<String> nationality = [];
+
   _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -252,8 +254,6 @@ class _TeacherListPage extends State<TeacherListPage> {
                               ),
                               onPressed: ()async {
                                 String room = "${nextbookingList[0].userId}-${nextbookingList[0].scheduleDetailInfo!.scheduleInfo.tutorId!}";
-                                print("room $room");
-                                // print("name ${context.read()<User>().name}");
 
                                 await VideoCall.videoCall(ConstVar.meetServer, room, "Phhaiii", "student@lettutor.com");
                               },
@@ -341,12 +341,13 @@ class _TeacherListPage extends State<TeacherListPage> {
                                         borderSide: BorderSide(width: 1, color: Colors.blue),
                                         borderRadius: BorderRadius.all(Radius.circular(50)),
                                       ),
-                                      hintText: 'Select tutor nationnality',
+                                      hintText: 'Select tutor nationality',
                                     ),
                                   ),
                                   // selectedItems: ['Item1', 'Item2'],
                                   onChanged: (val) {
                                     setState(() {
+                                      nationality = val;
                                       _ntFocus.requestFocus();
                                     });
                                   },
@@ -355,36 +356,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                           ),
                         ),
                         SizedBox(height: ConstVar.minspace),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
 
-                            ElevatedButton(
-
-                              onPressed: () async{
-                                _nameFocus.unfocus();
-                                final data = await searchTeacher(Const.token, selectId, Const.perPage, name: _nameController.text, nationnality:[],specialities:specialities);
-                                setState((){
-                                  tutorList = data;
-                                  countTotal = tutorList.length!;
-                                });
-                              },
-                              child: const Text(
-                                'Search',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    // fontWeight: FontWeight.bold,
-                                    fontSize: 20
-                                ),
-                              ),
-                              style: ButtonStyle(
-                                // backgroundColor: Colors.blue,
-                                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-                              ),
-                            ),
-
-                          ],
-                        ),
                         SizedBox(height: ConstVar.minspace),
                         Text(
                           "Select availiable tutoring time:",
@@ -533,7 +505,36 @@ class _TeacherListPage extends State<TeacherListPage> {
                           ),
                         ),
                         SizedBox(height: ConstVar.minspace),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
 
+                            ElevatedButton(
+
+                              onPressed: () async{
+                                _nameFocus.unfocus();
+                                final data = await searchTeacher(Const.token, selectId, Const.perPage, name: _nameController.text, nationality:nationality,date: _dController.text, time: _tController.text,specialities:specialities);
+                                setState((){
+                                  tutorList = data;
+                                  countTotal = tutorList.length!;
+                                });
+                              },
+                              child: const Text(
+                                'Search',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    // fontWeight: FontWeight.bold,
+                                    fontSize: 20
+                                ),
+                              ),
+                              style: ButtonStyle(
+                                // backgroundColor: Colors.blue,
+                                backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+                              ),
+                            ),
+
+                          ],
+                        ),
                         Wrap(
                           runSpacing: 5,
                           spacing: 5,
@@ -1011,7 +1012,7 @@ class _TeacherListPage extends State<TeacherListPage> {
             }
           });
 
-          final data = await searchTeacher(Const.token, selectId, Const.perPage, name: _nameController.text, nationnality:[],specialities:specialities);
+          final data = await searchTeacher(Const.token, selectId, Const.perPage, name: _nameController.text, nationality:nationality, date:_dController.text, time:  _tController.text, specialities:specialities);
           setState((){
             tutorList = data;
             countTotal = tutorList.length!;
