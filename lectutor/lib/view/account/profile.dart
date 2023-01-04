@@ -1,7 +1,10 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:lectutor/config/pkg.dart';
 import 'package:lectutor/handle/user.dart';
+import 'package:provider/provider.dart';
 import '../../config/const.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
@@ -45,6 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String err = "";
   bool isValid = true;
   List<String> topic = [];
+  String nameOfTutor = "";
 
   late User user;
 
@@ -93,6 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     user = widget.user;
+    nameOfTutor = user.name;
     topic = getLearnTopicList(user);
   }
   //
@@ -130,29 +135,102 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: <Widget>[
                           CircleAvatar(
                             backgroundImage: NetworkImage(user!.avatar.toString()),
-                            maxRadius: 40,
+                            maxRadius: 30,
                           ),
                           Positioned(
                             right: 0.0,
                             bottom: 0.0,
-                            child: Container(
-                              padding: EdgeInsets.all(3),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.blue,
+                            child: GestureDetector(
+                              child: Container(
+                                padding: EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.blue,
+                                ),
+                                child: Icon(
+                                  // onPressed: null,
+                                  // style: ButtonStyle(
+                                  //   padding: MaterialStatePropertyAll(EdgeInsets.zero),
+                                  // ),
+                                  Icons.mode_edit_sharp,
+                                  color: Colors.white,
+                                  size: 20,
+                                  // )
+                                ),
                               ),
-                              child: Icon(
-                                // onPressed: null,
-                                // style: ButtonStyle(
-                                //   padding: MaterialStatePropertyAll(EdgeInsets.zero),
-                                // ),
-                                Icons.mode_edit_sharp,
-                                color: Colors.white,
-                                size: 20,
-                                // )
-                              ),
+                              onTap: () async {
+                                XFile? pickedFile = await Pkg.getImgae(ImageSource.gallery);
+                                if(pickedFile != null){
+                                  var isSuccess = await updateAvatar(Const.token, pickedFile);
+
+                                  if(isSuccess){
+                                    var data = await getUserInfo(Const.token);
+                                    if (data != null){
+                                      setState(() {
+                                        user = User.fromJson(data);
+                                      });
+                                      context.read<User>().update(user);
+
+                                    }
+                                  }
+                                  showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) => AlertDialog(
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      title: Container(
+                                        padding: EdgeInsets.only(bottom: 5),
+                                        decoration: BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(color: Colors.grey.shade200, width: 2)
+                                            )
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            isSuccess ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.cancel, color: Colors.red,),
+                                            SizedBox(width: ConstVar.mediumspace,),
+                                            Text('Notification'),
+                                          ],
+                                        ),
+                                      ),
+                                      content: Text(isSuccess ? 'Upload avatar successfully':"Avatar upload failed"),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          style: ButtonStyle(
+                                            padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.fromLTRB(30,10,30,10)),
+                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10.0),
+                                                  // side: BorderSide(color: Colors.red)
+                                                )
+                                            ),
+                                            backgroundColor:MaterialStateProperty.all(Colors.blue),
+                                          ),
+
+                                          onPressed: () {
+                                            Navigator.pop(context);
+
+                                          },
+                                          child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
+
+
+
+
+
+                                }
+
+
+                              },
                             ),
-                          ),
+                          )
+
                         ],
 
                       ),
@@ -165,7 +243,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text(
-                          user.name,
+                          nameOfTutor,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -664,6 +742,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           }
 
                           var data = await updateProfile(Const.token, nameController.text, countryController.text, user.phone!, _dController.text, user.level!, topicIdList,testIdList, learnscheduleController.text);
+
                           showDialog<String>(
                             context: context,
                             builder: (BuildContext context) => AlertDialog(
@@ -712,7 +791,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             User newUser = User.fromJson(data);
                             setState(() {
                               user = newUser;
+                              nameOfTutor = user.name;
+
                             });
+                            context.read<User>().update(user);
                           }
                         }
                       },

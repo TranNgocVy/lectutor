@@ -53,6 +53,8 @@ dependencies:
   flutter_pdfview: ^1.2.5
   path_provider: ^2.0.11
   jitsi_meet_wrapper: 0.0.5
+  image_picker: ^0.8.6
+  http: ^0.13.5
 
 
 dev_dependencies:

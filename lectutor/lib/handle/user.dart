@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/gestures.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/model/user.dart';
 
@@ -88,13 +90,6 @@ Future<int> getBalance(String token) async {
 
 Future<dynamic> updateProfile (String token, String name, String country, String phone, String birthday, String level, List<String> learnTopics, List<String>testPreparations, String studySchedule ) async{
   var dio = Dio();
-  print("name: " + name);
-  print("birthdaay: " + birthday);
-  print("country: " + country);
-  print("phone: " + phone);
-  print("level: " + level);
-  print("topic: " + learnTopics.toString());
-  print("test: " + testPreparations.toString());
   try{
     dio.options.headers["Authorization"] = "Bearer ${token}";
     final response = await dio.put(ConstVar.URL + "user/info", data: {
@@ -117,4 +112,24 @@ Future<dynamic> updateProfile (String token, String name, String country, String
     print(e);
   }
   return null;
+}
+
+Future<bool> updateAvatar(String token, XFile pickedFile) async{
+  try{
+    var url = Uri.https("sandbox.api.lettutor.com", "user/uploadAvatar");
+    var request = http.MultipartRequest("POST", url);
+    request.headers.addAll({"Authorization": "Bearer ${token}"});
+    request.files.add(await http.MultipartFile.fromPath("avatar", pickedFile.path));
+
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+
+      return true;
+    }
+  }catch(e){
+    print(e);
+  }
+
+  return false;
 }

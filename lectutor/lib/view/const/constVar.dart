@@ -11,9 +11,9 @@ class ConstVar{
   static String URL = "https://sandbox.api.lettutor.com/";
   static String meetServer = "https://meet.lettutor.com";
   static List<String> type = [
-    "English for kids",
-    "English for Business",
-    "Conversational",
+    "English for Kids",
+    "Business English",
+    "Conversational English",
     "STARTERS",
     "MOVERS",
     "FLYERS",
@@ -60,7 +60,7 @@ class ConstVar{
 
   static List<String> reasonCancel = ["Reschedule at another time", "Busy at that time", "Asked by the tutor", "Other"];
 
-  static List<LearnTopic> topicList = [LearnTopic(3, "english-for-kids", "English for kids"), LearnTopic(4, "business-english", "English for Business"), LearnTopic(6, "conversational-english",  "Conversational English")];
+  static List<LearnTopic> topicList = [LearnTopic(3, "english-for-kids", "English for Kids"), LearnTopic(4, "business-english", "Business English"), LearnTopic(6, "conversational-english",  "Conversational English")];
   static List<TestPreparation> testPreparationList = [
     TestPreparation(1, "starters", "STARTERS"),
     TestPreparation(2, "movers", "MOVERS"),

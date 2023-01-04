@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'const.dart';
 class Pkg {
@@ -146,6 +147,20 @@ class Pkg {
     String endTime = "${endPeriodTime.hour < 10 ? "0${endPeriodTime.hour}" : endPeriodTime.hour}:${endPeriodTime.minute < 10 ? "0${endPeriodTime.minute}" : endPeriodTime.minute}";
 
     return "${startTime} - ${endTime}";
+  }
+
+  static Future<XFile?> getImgae(ImageSource source) async {
+    XFile? pickedFile;
+
+    final ImagePicker _picker = ImagePicker();
+
+    try {
+      pickedFile = await _picker.pickImage(
+        source: source,
+      );
+    } catch (e) {
+    }
+    return pickedFile;
   }
 
 
