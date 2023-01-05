@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">lectutor</string>
+    <string name="facebook_app_id">2007741402752756</string>
+    <string name="fb_login_protocol_scheme">fb2007741402752756</string>
+    <string name="facebook_client_token">30f1f3db8844d8cb1a0c07002312f5bf</string>
+</resources>

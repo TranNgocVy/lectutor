@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/tokens.dart';
 import 'package:lectutor/model/auth.dart';
@@ -38,6 +39,7 @@ class _LogInPageState extends State<LogInPage> {
   bool isVisiblePassword = false;
   bool isValid = true;
   String error = "";
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
 
   void handleSingInFacebook() async {
@@ -46,13 +48,23 @@ class _LogInPageState extends State<LogInPage> {
     if (result.status == LoginStatus.success) {
       final String? accessToken = result.accessToken!.token;
       if (accessToken != null) {
-        print("\n\nlogin by facebook\n");
-        // try {
-        //   // await AuthService.loginWithFacebook(accessToken, authProvider, widget.callback);
-        // } catch (e) {
-        //   showTopSnackBar(context, CustomSnackBar.error(message: "Login failed! ${e.toString()}"),
-        //       showOutAnimationDuration: const Duration(milliseconds: 1000), displayDuration: const Duration(microseconds: 4000));
-        // }
+        var data = await loginByFaceBook(accessToken);
+        setState((){
+          if (data != false) {
+            isValid = true;
+
+            User user = User.fromJson(data["user"]);
+            Tokens tokens = Tokens.fromJson(data["tokens"]);
+            context.read<User>().update(user);
+            context.read<Tokens>().update(tokens);
+
+            Navigator.pushNamed(context, '/tutor');
+          }
+          else {
+            isValid = false;
+            error = "Log in failed!";
+          }
+        });
       }
     } else {
       // showTopSnackBar(context, const CustomSnackBar.error(message: "Something went wrong!"),
@@ -60,7 +72,31 @@ class _LogInPageState extends State<LogInPage> {
     }
   }
 
+  void handleSingInGoogle() async {
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
+    final String? accessToken = googleAuth?.accessToken;
+
+    if (accessToken != null) {
+      var data = await loginByGoogle(accessToken);
+      setState((){
+        if (data != false) {
+          isValid = true;
+          User user = User.fromJson(data["user"]);
+          Tokens tokens = Tokens.fromJson(data["tokens"]);
+          context.read<User>().update(user);
+          context.read<Tokens>().update(tokens);
+
+          Navigator.pushNamed(context, '/tutor');
+        }
+        else {
+          isValid = false;
+          error = "Log in failed!";
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +258,7 @@ class _LogInPageState extends State<LogInPage> {
                         context.read<Tokens>().update(tokens);
                         print(tokens.access.token);
 
-                        Navigator.pushNamed(context, '/tutor');
+                        Navigator.popAndPushNamed(context, '/tutor');
                       }
                       else {
                         isValid = false;
@@ -276,15 +312,18 @@ class _LogInPageState extends State<LogInPage> {
                     onTap: handleSingInFacebook,
                   ),
                   SizedBox(width: ConstVar.mediumspace,),
-                  Ink(
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: CircleBorder(),
+                  GestureDetector(
+                    child: Ink(
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: CircleBorder(),
+                      ),
+                      child: Image(
+                        image: Svg('assets/icon/google.svg'),
+                        width: 50,
+                      ),
                     ),
-                    child: Image(
-                      image: Svg('assets/icon/google.svg'),
-                      width: 50,
-                    ),
+                    onTap: handleSingInGoogle,
                   ),
                   SizedBox(width: ConstVar.mediumspace,),
                   Ink(

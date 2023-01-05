@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "36102618639",
+    "project_id": "lectutor-3b2de",
+    "storage_bucket": "lectutor-3b2de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36102618639:android:16251ca201ef6c13dfad7a",
+        "android_client_info": {
+          "package_name": "com.example.lectutor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36102618639-e0fu5nnsujkrr1v8kq3m4gm9rmem55bq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lectutor",
+            "certificate_hash": "6171c643e322bd1e22cddf9042da914cb797e24f"
+          }
+        },
+        {
+          "client_id": "36102618639-jjo894g0fsciupk5905n6qldqm1nq5iq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrHpvXvlcsYzmNbChpKFjDtWDAUPb4gM4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36102618639-jjo894g0fsciupk5905n6qldqm1nq5iq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

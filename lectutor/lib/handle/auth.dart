@@ -39,9 +39,6 @@ Future <dynamic> register(Auth auth) async{
 Future <dynamic> changePasword(String password, String newPassword, String accessToken) async{
   var dio = Dio();
   try{
-    print("11111111111111111111111111111111111111111111111");
-    print(accessToken);
-    print("222222222222222222222222222222222222222222");
     dio.options.headers["Authorization"] = "Bearer ${accessToken}";
     var response = await dio.post(ConstVar.URL + 'auth/change-password', data: {
       "password": password,
@@ -73,4 +70,38 @@ Future<bool> forgotPassword(String email) async {
 
   return false;
 
+}
+
+Future <dynamic> loginByFaceBook(String token) async{
+  var dio = Dio();
+  try{
+    var response = await dio.post(ConstVar.URL + 'auth/facebook', data: {
+      "access_token": token
+    });
+
+    if(response.statusCode == 200){
+      print(response.data);
+      return response.data;
+    }
+  }catch(e){
+    print(e);
+  }
+  return false;
+}
+
+Future <dynamic> loginByGoogle(String token) async{
+  var dio = Dio();
+  try{
+    var response = await dio.post(ConstVar.URL + 'auth/google', data: {
+      "access_token": token
+    });
+
+    if(response.statusCode == 200){
+      print(response.data);
+      return response.data;
+    }
+  }catch(e){
+    print(e);
+  }
+  return false;
 }
