@@ -7,6 +7,7 @@ import 'package:lectutor/handle/user.dart';
 import 'package:provider/provider.dart';
 import '../../config/const.dart';
 import '../../model/language/provider.dart';
+import '../../model/tokens.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
@@ -107,8 +108,11 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final language = languageProvider.language;
-
     Pkg.getLanguage(languageProvider);
+
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
+
     return ListView(
       // borderOnForeground: true,
         shrinkWrap: true,
@@ -156,10 +160,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               onTap: () async {
                                 XFile? pickedFile = await Pkg.getImgae(ImageSource.gallery);
                                 if(pickedFile != null){
-                                  var isSuccess = await updateAvatar(Const.token, pickedFile);
+                                  var isSuccess = await UserService.updateAvatar(token, pickedFile);
 
                                   if(isSuccess){
-                                    var data = await getUserInfo(Const.token);
+                                    var data = await UserService.getUserInfo(token);
                                     if (data != null){
                                       setState(() {
                                         user = User.fromJson(data);
@@ -736,7 +740,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             }
                           }
 
-                          var data = await updateProfile(Const.token, nameController.text, countryController.text, user.phone!, _dController.text, user.level!, topicIdList,testIdList, learnscheduleController.text);
+                          var data = await UserService.updateProfile(token, nameController.text, countryController.text, user.phone!, _dController.text, user.level!, topicIdList,testIdList, learnscheduleController.text);
 
                           showDialog<String>(
                             context: context,

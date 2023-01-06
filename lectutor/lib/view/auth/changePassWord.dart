@@ -37,8 +37,10 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final language = languageProvider.language;
-
     Pkg.getLanguage(languageProvider);
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
+
     return Center(
       child:
       Card(
@@ -202,7 +204,7 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                               error = language.passwordNotMatch;
                             });
                           }else{
-                            var message = await changePasword(passwordController.text, newPasswordController.text, Const.token);
+                            var message = await AuthService.changePasword(passwordController.text, newPasswordController.text, token);
 
                             if (message == true){
                               showDialog<String>(

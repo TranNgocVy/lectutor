@@ -1,6 +1,6 @@
 class Const {
   static int perPage = 9;
-  static int perPageLarge = 50;
+  static int perPageLarge = 9;
   static String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyOTRjZGEwZS01NWEwLTQwM2EtOWZhNy02NjkxODgxY2Y1YmEiLCJpYXQiOjE2NzMwMzQxNzksImV4cCI6MTY3MzEyMDU3OSwidHlwZSI6ImFjY2VzcyJ9.jelCkq5i9j8uwEQuVLFBFtBeq-ShgZem-xXrLcfLVgs";
   static DateTime time = DateTime(1970, 1,1,7,0,0,0,0);
   static List<String> weekday = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat","Sun"];

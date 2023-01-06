@@ -12,6 +12,7 @@ import '../../model/bookingInfo.dart';
 import '../../model/language/language.dart';
 import '../../model/language/provider.dart';
 import '../../model/teacher.dart';
+import '../../model/tokens.dart';
 import '../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -55,8 +56,12 @@ class _ScheduleListPage extends State<ScheduleListPage> {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final language = languageProvider.language;
-
     Pkg.getLanguage(languageProvider);
+
+
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
+
     return Container(
         padding: EdgeInsets.all(20),
         child: ListView(
@@ -288,11 +293,11 @@ class _ScheduleListPage extends State<ScheduleListPage> {
 
               Column(
                 children:
-                getScheduleList(scheduleArg.bookingList, language),
+                getScheduleList(token, scheduleArg.bookingList, language),
               ),
               SizedBox(height: ConstVar.mediumspace,),
 
-              getPage(scheduleArg.count),
+              getPage(token, scheduleArg.count),
 
             ]
         )
@@ -302,11 +307,11 @@ class _ScheduleListPage extends State<ScheduleListPage> {
 
   }
 
-  List<Widget> getScheduleList(List<BookingInfo> scheduleList, Language language){
+  List<Widget> getScheduleList(String token, List<BookingInfo> scheduleList, Language language){
     List<Widget> list = [];
     for (index = 0; index < scheduleList.length; index++){
       int tempIndex = index;
-      List<Widget> lessonList = getLesson(scheduleList, language);
+      List<Widget> lessonList = getLesson(token, scheduleList, language);
       list.add(SizedBox(height: 10,));
       list.add( Card(
         child: Container(
@@ -567,7 +572,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
     return list;
   }
 
-  List<Widget> getLesson (List<BookingInfo> bookinglist, Language language){
+  List<Widget> getLesson (String token, List<BookingInfo> bookinglist, Language language){
     List<Widget> list = [];
     int endIndex = index;
     for(endIndex;; endIndex++){
@@ -743,11 +748,11 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                                         }
                                         else{
                                           print(bookinglist[endIndex].scheduleDetailInfo!.id);
-                                          var result = await cancelAClass(Const.token, bookinglist[endIndex].id);
+                                          var result = await ScheduleService.cancelAClass(token, bookinglist[endIndex].id);
                                           print(result);
                                           Navigator.pop(context);
                                           if (result == true){
-                                            ScheduleArg newScheduleArg = await getUpcomingClass(Const.token, index);
+                                            ScheduleArg newScheduleArg = await ScheduleService.getUpcomingClass(token, index);
                                             setState(() {
                                               scheduleArg = newScheduleArg;
                                             });
@@ -820,7 +825,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
   // }
 
 
-  Widget getPage(int count){
+  Widget getPage(token, int count){
     int preId = 1;
     // bool isContinuous = true;
     List<Widget> list = [];
@@ -831,7 +836,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
           setState(() {
             selectId = selectId - 1;
           });
-          ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+          ScheduleArg newScheduleArg = await ScheduleService.getStudentBookedClass(token, selectId);
           setState(() {
             scheduleArg = newScheduleArg;
           });
@@ -851,7 +856,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
               setState(() {
                 selectId = i;
               });
-              ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+              ScheduleArg newScheduleArg = await ScheduleService.getStudentBookedClass(token, selectId);
               setState(() {
                 scheduleArg = newScheduleArg;
               });
@@ -886,7 +891,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
           setState(() {
             selectId = selectId + 1;
           });
-          ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+          ScheduleArg newScheduleArg = await ScheduleService.getStudentBookedClass(token, selectId);
           setState(() {
             scheduleArg = newScheduleArg;
           });

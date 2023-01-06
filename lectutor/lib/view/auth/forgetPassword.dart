@@ -128,7 +128,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                         error = language.pleaseEnterEmail;
                       });
                     }else{
-                      var isSuccess = await forgotPassword(emailController.text);
+                      var isSuccess = await AuthService.forgotPassword(emailController.text);
                       showDialog<String>(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(

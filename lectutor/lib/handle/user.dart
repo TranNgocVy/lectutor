@@ -8,128 +8,130 @@ import 'package:lectutor/model/user.dart';
 import '../config/const.dart';
 import '../view/const/constVar.dart';
 
-Future<int> getLearningTimeTotal(String token) async {
-  int a = DateTime.now().millisecondsSinceEpoch;
-  var dio = Dio();
-  try{
-    dio.options.headers["Authorization"] = "Bearer ${token}";
-    final response = await dio.get(ConstVar.URL + "call/total");
+class UserService {
+  static Future<int> getLearningTimeTotal(String token) async {
+    int a = DateTime.now().millisecondsSinceEpoch;
+    var dio = Dio();
+    try{
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      final response = await dio.get(ConstVar.URL + "call/total");
 
-    if (response.statusCode == 200) {
-      return response.data["total"];
+      if (response.statusCode == 200) {
+        return response.data["total"];
+      }
+
+    }catch(e){
+      print(e);
     }
 
-  }catch(e){
-    print(e);
+    return 0;
+
+  }
+  static Future<List<BookingInfo>> getLession(String token) async {
+    int a = DateTime.now().millisecondsSinceEpoch;
+    print(a);
+    var dio = Dio();
+    try{
+      int now = DateTime.now().millisecondsSinceEpoch;
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      final response = await dio.get(ConstVar.URL + "booking/next?dateTime=${now}");
+
+      if (response.statusCode == 200) {
+        List<BookingInfo> list = [];
+        try {
+          for(int i = 0;;i ++){
+            var lessons = BookingInfo.fromJson(response.data["data"][i]);
+            list.add(lessons);
+          }
+        }catch(e){}
+
+        list.sort((a, b) => a.scheduleDetailInfo!.startPeriodTimestamp.compareTo(b.scheduleDetailInfo!.startPeriodTimestamp));
+
+        list = list.where((element) => element.scheduleDetailInfo!.startPeriodTimestamp > now).toList();
+        return list;
+      }
+
+    }catch(e){
+      print(e);
+    }
+
+    return [];
   }
 
-  return 0;
+  static Future<dynamic> getUserInfo(String token) async {
+    var dio = Dio();
+    try{
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      final response = await dio.get(ConstVar.URL + "user/info");
 
-}
-Future<List<BookingInfo>> getLession(String token) async {
-  int a = DateTime.now().millisecondsSinceEpoch;
-  print(a);
-  var dio = Dio();
-  try{
-    int now = DateTime.now().millisecondsSinceEpoch;
-    dio.options.headers["Authorization"] = "Bearer ${token}";
-    final response = await dio.get(ConstVar.URL + "booking/next?dateTime=${now}");
-
-    if (response.statusCode == 200) {
-      List<BookingInfo> list = [];
-      try {
-        for(int i = 0;;i ++){
-          var lessons = BookingInfo.fromJson(response.data["data"][i]);
-          list.add(lessons);
-        }
-      }catch(e){}
-
-      list.sort((a, b) => a.scheduleDetailInfo!.startPeriodTimestamp.compareTo(b.scheduleDetailInfo!.startPeriodTimestamp));
-
-      list = list.where((element) => element.scheduleDetailInfo!.startPeriodTimestamp > now).toList();
-      return list;
+      if (response.statusCode == 200) {
+        return response.data["user"];
+      }
+    }catch(e){
+      print(e);
     }
-
-  }catch(e){
-    print(e);
+    return null;
   }
 
-  return [];
-}
+  static Future<int> getBalance(String token) async {
+    var dio = Dio();
+    try{
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      final response = await dio.get(ConstVar.URL + "user/info");
 
-Future<dynamic> getUserInfo(String token) async {
-  var dio = Dio();
-  try{
-    dio.options.headers["Authorization"] = "Bearer ${token}";
-    final response = await dio.get(ConstVar.URL + "user/info");
-
-    if (response.statusCode == 200) {
-      return response.data["user"];
+      if (response.statusCode == 200) {
+        var user = User.fromJson(response.data["user"]);
+        return int.parse(user.walletInfo!.amount!.substring(0, user.walletInfo!.amount!.length - 5));
+      }
+    }catch(e){
+      print(e);
     }
-  }catch(e){
-    print(e);
-  }
-  return null;
-}
-
-Future<int> getBalance(String token) async {
-  var dio = Dio();
-  try{
-    dio.options.headers["Authorization"] = "Bearer ${token}";
-    final response = await dio.get(ConstVar.URL + "user/info");
-
-    if (response.statusCode == 200) {
-      var user = User.fromJson(response.data["user"]);
-      return int.parse(user.walletInfo!.amount!.substring(0, user.walletInfo!.amount!.length - 5));
-    }
-  }catch(e){
-    print(e);
-  }
-  return 0;
-}
-
-Future<dynamic> updateProfile (String token, String name, String country, String phone, String birthday, String level, List<String> learnTopics, List<String>testPreparations, String studySchedule ) async{
-  var dio = Dio();
-  try{
-    dio.options.headers["Authorization"] = "Bearer ${token}";
-    final response = await dio.put(ConstVar.URL + "user/info", data: {
-      "name": name,
-      "country": country,
-      "phone": phone,
-      "birthday": birthday,
-      "level": level,
-      "learnTopics": learnTopics,
-      "testPreparations": testPreparations,
-      "studySchedule": studySchedule
-
-    }
-    );
-
-    if (response.statusCode == 200) {
-      return response.data["user"];
-    }
-  }catch(e){
-    print(e);
-  }
-  return null;
-}
-
-Future<bool> updateAvatar(String token, XFile pickedFile) async{
-  try{
-    var url = Uri.https("sandbox.api.lettutor.com", "user/uploadAvatar");
-    var request = http.MultipartRequest("POST", url);
-    request.headers.addAll({"Authorization": "Bearer ${token}"});
-    request.files.add(await http.MultipartFile.fromPath("avatar", pickedFile.path));
-
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-
-      return true;
-    }
-  }catch(e){
-    print(e);
+    return 0;
   }
 
-  return false;
+  static Future<dynamic> updateProfile (String token, String name, String country, String phone, String birthday, String level, List<String> learnTopics, List<String>testPreparations, String studySchedule ) async{
+    var dio = Dio();
+    try{
+      dio.options.headers["Authorization"] = "Bearer ${token}";
+      final response = await dio.put(ConstVar.URL + "user/info", data: {
+        "name": name,
+        "country": country,
+        "phone": phone,
+        "birthday": birthday,
+        "level": level,
+        "learnTopics": learnTopics,
+        "testPreparations": testPreparations,
+        "studySchedule": studySchedule
+
+      }
+      );
+
+      if (response.statusCode == 200) {
+        return response.data["user"];
+      }
+    }catch(e){
+      print(e);
+    }
+    return null;
+  }
+
+  static Future<bool> updateAvatar(String token, XFile pickedFile) async{
+    try{
+      var url = Uri.https("sandbox.api.lettutor.com", "user/uploadAvatar");
+      var request = http.MultipartRequest("POST", url);
+      request.headers.addAll({"Authorization": "Bearer ${token}"});
+      request.files.add(await http.MultipartFile.fromPath("avatar", pickedFile.path));
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+
+        return true;
+      }
+    }catch(e){
+      print(e);
+    }
+
+    return false;
+  }
 }

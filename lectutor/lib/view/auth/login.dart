@@ -59,7 +59,7 @@ class _LogInPageState extends State<LogInPage> {
     if (result.status == LoginStatus.success) {
       final String? accessToken = result.accessToken!.token;
       if (accessToken != null) {
-        var data = await loginByFaceBook(accessToken);
+        var data = await AuthService.loginByFaceBook(accessToken);
         setState((){
           if (data != false) {
             isValid = true;
@@ -90,7 +90,7 @@ class _LogInPageState extends State<LogInPage> {
     final String? accessToken = googleAuth?.accessToken;
 
     if (accessToken != null) {
-      var data = await loginByGoogle(accessToken);
+      var data = await AuthService.loginByGoogle(accessToken);
       setState((){
         if (data != false) {
           isValid = true;
@@ -286,7 +286,7 @@ class _LogInPageState extends State<LogInPage> {
                   }
                   else{
                     Auth auth = new Auth(emailController.text, passwordController.text);
-                    final data = await login(auth);
+                    final data = await AuthService.login(auth);
 
                     setState((){
                       if (data != false) {

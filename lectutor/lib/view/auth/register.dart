@@ -163,7 +163,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   });
                 }
                 else{
-                  var data = await register(Auth(emailController.text, passwordController.text));
+                  var data = await AuthService.register(Auth(emailController.text, passwordController.text));
                   showDialog<String>(
                     context: context,
                     builder: (BuildContext context) => AlertDialog(

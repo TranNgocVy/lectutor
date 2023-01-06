@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../config/const.dart';
 import '../../config/pkg.dart';
 import '../../model/language/provider.dart';
+import '../../model/tokens.dart';
 import '../const/constVar.dart';
 
 class ReportTeacherPage extends StatefulWidget {
@@ -28,8 +29,11 @@ class _ReportTeacher extends State<ReportTeacherPage> {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final language = languageProvider.language;
-
     Pkg.getLanguage(languageProvider);
+
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
+
     return ListView(
       shrinkWrap: true,
 
@@ -189,7 +193,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
 
               onPressed: () async {
                 if(reason.isNotEmpty){
-                  var isSuccess = await reportTeacher(Const.token, widget.id, reason);
+                  var isSuccess = await TeacherService.reportTeacher(token, widget.id, reason);
 
                   showDialog<String>(
                     context: context,

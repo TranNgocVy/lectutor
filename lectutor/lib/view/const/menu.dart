@@ -4,8 +4,11 @@ import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/view/const/page.dart';
 import 'package:provider/provider.dart';
 import '../../config/const.dart';
+import '../../config/pkg.dart';
 import '../../handle/schedule.dart';
 import '../../handle/user.dart';
+import '../../model/language/provider.dart';
+import '../../model/tokens.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
 
@@ -31,7 +34,12 @@ class _MenuPage extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    // String name = ;
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+    Pkg.getLanguage(languageProvider);
+
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
 
     return Container(
       color: Colors.grey.shade200,
@@ -40,7 +48,7 @@ class _MenuPage extends State<MenuPage> {
           GestureDetector(
             onTap: () async {
 
-              var data = await getUserInfo(Const.token);
+              var data = await UserService.getUserInfo(token);
               if (data != null){
                 Navigator.pop(context);
                 User user = User.fromJson(data);
@@ -88,7 +96,7 @@ class _MenuPage extends State<MenuPage> {
                   SizedBox(width: ConstVar.minspace,),
 
                   Text(
-                    "Buy Lessons",
+                    language.buyLessonMenu,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -117,7 +125,7 @@ class _MenuPage extends State<MenuPage> {
                   SizedBox(width: ConstVar.minspace,),
 
                   Text(
-                    "Change password",
+                    language.changePasswordMenu,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -145,7 +153,7 @@ class _MenuPage extends State<MenuPage> {
                   SizedBox(width: ConstVar.minspace,),
 
                   Text(
-                    "Tutor",
+                    language.tutorMenu,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -157,7 +165,7 @@ class _MenuPage extends State<MenuPage> {
           ),
           GestureDetector(
             onTap: () async{
-              ScheduleArg scheduleArg = await getUpcomingClass(Const.token, 1);
+              ScheduleArg scheduleArg = await ScheduleService.getUpcomingClass(token, 1);
               Navigator.pop(context);
               Navigator.pushNamed(context, "/schedule", arguments: scheduleArg);
             },
@@ -174,7 +182,7 @@ class _MenuPage extends State<MenuPage> {
                   SizedBox(width: ConstVar.minspace,),
 
                   Text(
-                    "Schedule",
+                    language.scheduleMenu,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -186,7 +194,7 @@ class _MenuPage extends State<MenuPage> {
           ),
           GestureDetector(
             onTap: () async{
-              ScheduleArg historyscheduleArg = await getStudentBookedClass(Const.token, 1);
+              ScheduleArg historyscheduleArg = await ScheduleService.getStudentBookedClass(token, 1);
               Navigator.pop(context);
               Navigator.pushNamed(context, "/schedule/history", arguments: historyscheduleArg);
             },
@@ -203,7 +211,7 @@ class _MenuPage extends State<MenuPage> {
                   SizedBox(width: ConstVar.minspace,),
 
                   Text(
-                    "History",
+                    language.historyMenu,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -231,7 +239,7 @@ class _MenuPage extends State<MenuPage> {
                   SizedBox(width: ConstVar.minspace,),
 
                   Text(
-                    "Course",
+                    language.courseMenu,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -260,7 +268,7 @@ class _MenuPage extends State<MenuPage> {
                   SizedBox(width: ConstVar.minspace,),
 
                   Text(
-                    "My course",
+                    language.mycourseMenu,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -289,7 +297,7 @@ class _MenuPage extends State<MenuPage> {
                   SizedBox(width: ConstVar.minspace,),
 
                   Text(
-                    "Become a tutor",
+                    language.becomTutorMenu,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -317,7 +325,7 @@ class _MenuPage extends State<MenuPage> {
                   SizedBox(width: ConstVar.minspace,),
 
                   Text(
-                    "Logout",
+                    language.logoutMenu,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

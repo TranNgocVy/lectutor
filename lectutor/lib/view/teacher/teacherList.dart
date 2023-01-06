@@ -105,16 +105,16 @@ class _TeacherListPage extends State<TeacherListPage> {
   int selectId = 1;
   int countTotal = 0;
 
-  void getTutor(int page) async{
-    var data = await getTeacherList(context, page);
+  void getTutor(String token, int page) async{
+    var data = await TeacherService.getTeacherList(token, page);
     if (data != null){
       setState(() {
         updateLists(data);
       });
     }
   }
-  void getNextBookingList() async{
-    var list = await getLession(Const.token);
+  void getNextBookingList(String token) async{
+    var list = await UserService.getLession(token);
     if (list != []){
       setState(() {
         nextbookingList = list;
@@ -131,8 +131,8 @@ class _TeacherListPage extends State<TeacherListPage> {
       });
     }
   }
-  void getTotalTime() async{
-    var total = await getLearningTimeTotal(Const.token);
+  void getTotalTime(String token) async{
+    var total = await UserService.getLearningTimeTotal(token);
     setState(() {
       totalTime = total;
     });
@@ -180,18 +180,25 @@ class _TeacherListPage extends State<TeacherListPage> {
   @override
   void initState() {
     super.initState();
-    getTotalTime();
-    getNextBookingList();
+    // getTotalTime();
+    // getNextBookingList();
 
-    getTutor(selectId);
+    // getTutor(selectId);
   }
 
   @override
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final language = languageProvider.language;
-
     Pkg.getLanguage(languageProvider);
+
+
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
+    getTotalTime(token);
+    getNextBookingList(token);
+    getTutor(token, selectId);
+
 
     return SingleChildScrollView(
       child: Column(
@@ -205,13 +212,17 @@ class _TeacherListPage extends State<TeacherListPage> {
                 children: <Column>[
                   Column(
                     children: <Widget>[
-                      Text(
-                        nextbookingList.length != 0 ? language.nextLesson : language.noUpComing,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                        ),
-                        textAlign: TextAlign.center,
+                      Row(
+                        children: [
+                          Text(
+                            nextbookingList.length != 0 ? language.nextLesson : language.noUpComing,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ),
                       SizedBox(height: ConstVar.mediumspace),
                       if(nextbookingList.length != 0)
@@ -519,7 +530,7 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                               onPressed: () async{
                                 _nameFocus.unfocus();
-                                final data = await searchTeacher(Const.token, selectId, Const.perPage, name: _nameController.text, nationality:nationality,date: _dController.text, time: _tController.text,specialities:specialities);
+                                final data = await TeacherService.searchTeacher(token, selectId, Const.perPage, name: _nameController.text, nationality:nationality,date: _dController.text, time: _tController.text,specialities:specialities);
                                 setState((){
                                   tutorList = data;
                                   countTotal = tutorList.length!;
@@ -545,7 +556,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                           runSpacing: 5,
                           spacing: 5,
 
-                          children: getSpecialitiesChoiceChip(),
+                          children: getSpecialitiesChoiceChip(token),
                         ),
 
                         SizedBox(height: ConstVar.mediumspace),
@@ -560,7 +571,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                   specialities = [];
                                 });
 
-                                getTutor(1);
+                                getTutor(token, 1);
 
                               },
                                 child: Text(
@@ -611,13 +622,13 @@ class _TeacherListPage extends State<TeacherListPage> {
                   ),
 
                   Column(
-                    children: getTutorList(language),
+                    children: getTutorList(token, language),
                     // [true, false])
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      getPage(countTotal),
+                      getPage(token, countTotal),
                     ],
                   )
                 ],
@@ -658,7 +669,7 @@ class _TeacherListPage extends State<TeacherListPage> {
   //
   //   return btn;
   // }
-  List<Widget> getTutorList(Language language){
+  List<Widget> getTutorList(String token, Language language){
     List<Widget> list = [];
 
     if (tutorList.length == 0){
@@ -702,7 +713,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                         late TutorDetail tutorDetail;
                         List<Schedule> schedules = [];
 
-                        var data = await  getTeacherDetail(context, tutorList[i].userId.toString());
+                        var data = await  TeacherService.getTeacherDetail(token, tutorList[i].userId.toString());
                         print(data);
                         if (data != null){
                           tutorDetail = TutorDetail.fromJson(data);
@@ -785,7 +796,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                     IconButton(
                                       onPressed: ()async {
                                         int index = isContain(tutorList[i], favoriteTutorList);
-                                        var data = await addFavoriteTeacher(Const.token, tutorList[i].userId.toString());
+                                        var data = await TeacherService.addFavoriteTeacher(token, tutorList[i].userId.toString());
                                         if (data == 1){
                                           setState(() {
                                             favoriteTutorList.removeAt(index);
@@ -878,7 +889,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                             late TutorDetail tutorDetail;
                             List<Schedule> schedules = [];
 
-                            var data = await  getTeacherDetail(context, tutorList[i].userId.toString());
+                            var data = await  TeacherService.getTeacherDetail(token, tutorList[i].userId.toString());
                             if (data != null){
                               tutorDetail = TutorDetail.fromJson(data);
                             }
@@ -914,7 +925,7 @@ class _TeacherListPage extends State<TeacherListPage> {
     return -1;
   }
 
-  Widget getPage(int count){
+  Widget getPage(String token, int count){
     int preId = 1;
     // bool isContinuous = true;
     List<Widget> list = [];
@@ -925,7 +936,7 @@ class _TeacherListPage extends State<TeacherListPage> {
           setState(() {
             selectId = selectId - 1;
           });
-          getTutor(selectId);
+          getTutor(token, selectId);
 
         }
       },
@@ -942,7 +953,7 @@ class _TeacherListPage extends State<TeacherListPage> {
               setState(() {
                 selectId = i;
               });
-              getTutor(selectId);
+              getTutor(token, selectId);
 
             }
           },
@@ -976,7 +987,7 @@ class _TeacherListPage extends State<TeacherListPage> {
           setState(() {
             selectId = selectId + 1;
           });
-          getTutor(selectId);
+          getTutor(token, selectId);
 
         }
       },
@@ -995,7 +1006,7 @@ class _TeacherListPage extends State<TeacherListPage> {
   }
   
   
-  List<ChoiceChip>  getSpecialitiesChoiceChip() {
+  List<ChoiceChip>  getSpecialitiesChoiceChip(String token) {
     List<ChoiceChip> list = [];
     for(int i =0; i< specialtiesChoiceChips.length; i++){
       list.add(ChoiceChip(
@@ -1018,7 +1029,7 @@ class _TeacherListPage extends State<TeacherListPage> {
             }
           });
 
-          final data = await searchTeacher(Const.token, selectId, Const.perPage, name: _nameController.text, nationality:nationality, date:_dController.text, time:  _tController.text, specialities:specialities);
+          final data = await TeacherService.searchTeacher(token, selectId, Const.perPage, name: _nameController.text, nationality:nationality, date:_dController.text, time:  _tController.text, specialities:specialities);
           setState((){
             tutorList = data;
             countTotal = tutorList.length!;

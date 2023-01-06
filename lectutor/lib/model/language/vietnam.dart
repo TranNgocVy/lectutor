@@ -109,7 +109,7 @@ class VietNamese extends Language {
   @override
   get bookAlesson => "Đặt lịch học";
   @override
-  get noUpComing => "Bạn không có buổi học nào.";
+  get noUpComing => "Không có buổi học.";
   @override
   get totalHours => "Tổng số giờ bạn đã học là ";
   @override
@@ -346,7 +346,7 @@ class VietNamese extends Language {
 
   //History
   @override
-  get history => "Lịch sử các buổi học";
+  get history => "Lịch sử";
   @override
   get descriptionHistory => "Đây là danh sách các bài học bạn đã tham gia.\nBạn có thể xem lại thông tin chi tiết về các buổi học đã tham gia đã tham gia";
   @override

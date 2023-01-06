@@ -9,6 +9,7 @@ import '../../config/pkg.dart';
 import '../../handle/course.dart';
 import '../../model/course.dart';
 import '../../model/language/provider.dart';
+import '../../model/tokens.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
@@ -49,12 +50,11 @@ class _CourseListPage extends State<CourseListPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCourses(selectId, Const.perPageLarge);
-    getCategory();
+
   }
 
-  void getCategory() async{
-    var data = await CourseService.getCategorylist(Const.token);
+  void getCategory(String token) async{
+    var data = await CourseService.getCategorylist(token);
     if (data != null){
       setState(() {
         categoryList = data;
@@ -66,8 +66,8 @@ class _CourseListPage extends State<CourseListPage> {
     }
   }
 
-  void getCourses(int page, int size, {List<int> level = const [], List<String> categoryId = const [], String orderBy = ""}) async{
-    var data = await CourseService.getCourselist(Const.token, page, size, level: level, categoryId: categoryId,orderBy: orderBy );
+  void getCourses(String token, int page, int size, {List<int> level = const [], List<String> categoryId = const [], String orderBy = ""}) async{
+    var data = await CourseService.getCourselist(token, page, size, level: level, categoryId: categoryId,orderBy: orderBy );
     if (data != null){
       setState(() {
         updateLists(data);
@@ -96,6 +96,12 @@ class _CourseListPage extends State<CourseListPage> {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final language = languageProvider.language;
+
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
+
+    getCourses(token, selectId, Const.perPageLarge);
+    getCategory(token);
 
     Pkg.getLanguage(languageProvider);
     return Container(
@@ -228,7 +234,7 @@ class _CourseListPage extends State<CourseListPage> {
                       });
 
 
-                      getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+                      getCourses(token, selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
 
                     },
                   ),
@@ -301,7 +307,7 @@ class _CourseListPage extends State<CourseListPage> {
                         selectId = 1;
 
                       });
-                      getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+                      getCourses(token, selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
 
                     },
                   ),
@@ -397,7 +403,7 @@ class _CourseListPage extends State<CourseListPage> {
             Column(
               children: getCourseList(courseList, language),
             ),
-            getPage(total),
+            getPage(token, total),
           ],
         ),
       ),
@@ -633,7 +639,7 @@ class _CourseListPage extends State<CourseListPage> {
     return list;
   }
 
-  Widget getPage(int count){
+  Widget getPage(String token, int count){
     int preId = 1;
     // bool isContinuous = true;
     List<Widget> list = [];
@@ -644,7 +650,7 @@ class _CourseListPage extends State<CourseListPage> {
           setState(() {
             selectId = selectId - 1;
           });
-          getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+          getCourses(token, selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
 
         }
       },
@@ -661,7 +667,7 @@ class _CourseListPage extends State<CourseListPage> {
               setState(() {
                 selectId = i;
               });
-              getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+              getCourses(token, selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
 
             }
           },
@@ -695,7 +701,7 @@ class _CourseListPage extends State<CourseListPage> {
           setState(() {
             selectId = selectId + 1;
           });
-          getCourses(selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
+          getCourses(token, selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
 
 
         }

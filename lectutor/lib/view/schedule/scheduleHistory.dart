@@ -12,6 +12,7 @@ import '../../model/feedBack.dart';
 import '../../model/language/language.dart';
 import '../../model/language/provider.dart';
 import '../../model/teacher.dart';
+import '../../model/tokens.dart';
 import '../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -54,6 +55,9 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final language = languageProvider.language;
+
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
 
     Pkg.getLanguage(languageProvider);
     return Container(
@@ -147,7 +151,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
               ),
               SizedBox(height: ConstVar.mediumspace,),
 
-              getPage(historyBookingList.count),
+              getPage(token, historyBookingList.count),
             ]
         )
     );
@@ -513,7 +517,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
     return list;
   }
 
-  Widget getPage(int count){
+  Widget getPage(String token, int count){
     int preId = 1;
     // bool isContinuous = true;
     List<Widget> list = [];
@@ -524,7 +528,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
           setState(() {
             selectId = selectId - 1;
           });
-          ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+          ScheduleArg newScheduleArg = await ScheduleService.getStudentBookedClass(token, selectId);
           setState(() {
             historyBookingList = newScheduleArg;
           });
@@ -544,7 +548,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                 setState(() {
                   selectId = i;
                 });
-                ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+                ScheduleArg newScheduleArg = await ScheduleService.getStudentBookedClass(token, selectId);
                 setState(() {
                   historyBookingList = newScheduleArg;
                 });
@@ -579,7 +583,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
           setState(() {
             selectId = selectId + 1;
           });
-          ScheduleArg newScheduleArg = await getStudentBookedClass(Const.token, selectId);
+          ScheduleArg newScheduleArg = await ScheduleService.getStudentBookedClass(token, selectId);
           setState(() {
             historyBookingList = newScheduleArg;
           });

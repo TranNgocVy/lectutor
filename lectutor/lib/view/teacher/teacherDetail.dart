@@ -21,6 +21,7 @@ import '../../model/argument.dart';
 import '../../model/courses.dart';
 import '../../model/feedBack.dart';
 import '../../model/language/provider.dart';
+import '../../model/tokens.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
@@ -67,7 +68,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     super.initState();
     // getTutorDetail(widget.id);
     tutorDetail = widget.tutorDetail;
-    getScedule(widget.tutorDetail.User.id);
+    // getScedule(widget.tutorDetail.User.id);
 
     initializePlayer();
   }
@@ -169,10 +170,10 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   //   }
   // }
 
-  void getScedule (String id) async{
+  void getScedule (String token, String id) async{
     int startTime = date.millisecondsSinceEpoch;
     int endTime = date.add(Duration(days: 7)).millisecondsSinceEpoch;
-    var data = await getScheduleByTutorId(context, id, startTime, endTime);
+    var data = await ScheduleService.getScheduleByTutorId(token, id, startTime, endTime);
     if (data != null){
       setState(() {
         updateSchedule(data);
@@ -208,8 +209,14 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
     final languageProvider = Provider.of<LanguageProvider>(context);
     final language = languageProvider.language;
-
     Pkg.getLanguage(languageProvider);
+
+
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
+
+    getScedule(token, widget.tutorDetail.User.id);
+
     return Container(
       padding: EdgeInsets.all(20),
       child: ListView(
@@ -322,7 +329,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                   (tutorDetail?.isFavorite != true) ?
                   IconButton(
                     onPressed: () async {
-                      var data = await addFavoriteTeacher(Const.token, tutorDetail.User.id!);
+                      var data = await TeacherService.addFavoriteTeacher(token, tutorDetail.User.id!);
                       setState(() {
                         tutorDetail?.isFavorite = true;
                       });
@@ -335,7 +342,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                   ):
                   IconButton(
                     onPressed: ()async{
-                      var data = await addFavoriteTeacher(Const.token, tutorDetail.User.id!);
+                      var data = await TeacherService.addFavoriteTeacher(token, tutorDetail.User.id!);
                       setState(() {
                         tutorDetail?.isFavorite = false;
                       });
@@ -784,7 +791,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
                     },
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: getTableRow(date, schedules, '${context.watch<User>().id}')
+                    children: getTableRow(token, date, schedules, '${context.watch<User>().id}')
                     // <TableRow>[
                     //   TableRow(
                     //     children: getDayHeader(date),
@@ -864,7 +871,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     );
   }
 
-  Widget getBookCell(BookingAClassArg bookingAClassArg){
+  Widget getBookCell(String token, BookingAClassArg bookingAClassArg){
     if(bookingAClassArg.status == "UnBook"){
       return TableCell(
         verticalAlignment: TableCellVerticalAlignment.middle,
@@ -934,10 +941,10 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                 padding: EdgeInsets.all(5),
                 child: ElevatedButton(
                   onPressed: () async{
-                    int balance = await getBalance(Const.token);
+                    int balance = await UserService.getBalance(token);
                     final result = await Navigator.pushNamed(context, '/tutor/detail/bookclass', arguments: BookingLessonArg(balance, bookingAClassArg.startTime!, bookingAClassArg.endTime!, bookingAClassArg.id!));
                     if (result == true){
-                      getScedule(tutorDetail.User.id);
+                      getScedule(token, tutorDetail.User.id);
                     }
 
                     },
@@ -1029,7 +1036,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   //     children: row,
   //   );
   // }
-  List<TableRow> getTableRow(DateTime start, List<Schedule> schedules, String userId){
+  List<TableRow> getTableRow(String token, DateTime start, List<Schedule> schedules, String userId){
 
     List<TableRow> list = [];
     list.add(TableRow(
@@ -1106,9 +1113,9 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
     map.forEach((key, value) {
       List<Widget> row = [];
-      row.add(getBookCell(BookingAClassArg(key)));
+      row.add(getBookCell(token, BookingAClassArg(key)));
       for (var i = 0; i < value.length; i++){
-        row.add(getBookCell(value[i]));
+        row.add(getBookCell(token, value[i]));
       }
       list.add(TableRow(
         children: row,
@@ -1118,9 +1125,9 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     if (list.length == 1){
       for (var i = 0 ; i < Const.defualtTimeRange.length; i++){
         List<Widget> row = [];
-        row.add(getBookCell(BookingAClassArg(Const.defualtTimeRange[i])));
+        row.add(getBookCell(token, BookingAClassArg(Const.defualtTimeRange[i])));
         for (var i = 0; i < 7; i++){
-          row.add(getBookCell(BookingAClassArg("")));
+          row.add(getBookCell(token, BookingAClassArg("")));
         }
         list.add(TableRow(
           children: row,

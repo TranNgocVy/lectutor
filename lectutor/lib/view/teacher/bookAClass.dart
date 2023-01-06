@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/main.dart';
+import 'package:lectutor/model/tokens.dart';
 import 'package:provider/provider.dart';
 import '../../config/const.dart';
 import '../../config/pkg.dart';
@@ -38,8 +39,13 @@ class _BookAClassPage extends State<BookAClassPage> {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final language = languageProvider.language;
-
     Pkg.getLanguage(languageProvider);
+
+
+    final tokenProvider = Provider.of<Tokens>(context);
+    final token = tokenProvider.access.token;
+
+
     return Container(
         child: Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), //this right here
@@ -324,7 +330,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                           ),
                         ),
                         onPressed: () async{
-                          var data = await bookingAClass(Const.token, widget.bookingLessonArg.scheduleDetailIds, noteController.text);
+                          var data = await ScheduleService.bookingAClass(token, widget.bookingLessonArg.scheduleDetailIds, noteController.text);
                           Navigator.pop(context, data);
                           showDialog<String>(
                             context: context,
