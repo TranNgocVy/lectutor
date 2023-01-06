@@ -18,6 +18,8 @@ import 'package:provider/provider.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 import '../../config/const.dart';
 import '../../config/pkg.dart';
+import '../../model/language/language.dart';
+import '../../model/language/provider.dart';
 import '../../model/schedule.dart';
 import '../../model/tokens.dart';
 import '../../model/tutor.dart';
@@ -37,8 +39,8 @@ class TeacherList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, TeacherListPage());
-
+    // return TemplatePage.getHeader(context, TeacherListPage());
+    return TemplatePage(widget: TeacherListPage(),);
   }
 }
 
@@ -186,6 +188,10 @@ class _TeacherListPage extends State<TeacherListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
 
     return SingleChildScrollView(
       child: Column(
@@ -200,7 +206,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                   Column(
                     children: <Widget>[
                       Text(
-                        nextbookingList.length != 0 ? "Upconming lesson" : "No upcoming lesson.",
+                        nextbookingList.length != 0 ? language.nextLesson : language.noUpComing,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 30,
@@ -231,7 +237,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                 countdownController: countdownController,
                                 builder: (_, Duration time) {
                                   return Text(
-                                    'Start in ${time.inHours < 10 ? "0${time.inHours}":time.inHours}:${time.inMinutes % 60 < 10 ? "0${time.inMinutes % 60}":time.inMinutes % 60}:${time.inSeconds % 60 < 10 ? "0${time.inSeconds % 60}" : time.inSeconds % 60}',
+                                    '${language.startIn} ${time.inHours < 10 ? "0${time.inHours}":time.inHours}:${time.inMinutes % 60 < 10 ? "0${time.inMinutes % 60}":time.inMinutes % 60}:${time.inSeconds % 60 < 10 ? "0${time.inSeconds % 60}" : time.inSeconds % 60}',
                                     style: TextStyle(color: Colors.yellow, fontSize: 12),
                                   );
                                 }),
@@ -246,7 +252,7 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                               icon: Icon(Icons.video_library, size: 20,color: Colors.blue,),
                               label: Text(
-                                'Enter lesson room',
+                                language.enterroom,
                                 style: TextStyle(
                                   color: Colors.blue,
                                   fontSize: 13,
@@ -262,7 +268,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                         ),
                       SizedBox(height: ConstVar.minspace),
                       Text(
-                        totalTime < 60 ? "Total lesson time is ${totalTime} minutes" : "Total lesson time is ${totalTime ~/ 60} hours ${totalTime % 60} minutes",
+                        totalTime < 60 ? "${language.totalLessonTimeIs} ${totalTime} ${language.minutes}" : "${language.totalLessonTimeIs} ${totalTime ~/ 60} ${language.hour} ${totalTime % 60} ${language.minutes}",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -285,7 +291,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          "Find a tutor",
+                          language.findATutor,
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             fontSize: 25,
@@ -301,7 +307,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                           controller: _nameController,
                           focusNode: _nameFocus,
                           decoration: InputDecoration(
-                            hintText: 'Enter tutor name ...',
+                            hintText: language.enterTutorName,
                             contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(50.0)),
                           ),
@@ -341,7 +347,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                         borderSide: BorderSide(width: 1, color: Colors.blue),
                                         borderRadius: BorderRadius.all(Radius.circular(50)),
                                       ),
-                                      hintText: 'Select tutor nationality',
+                                      hintText: language.selectcCategory,
                                     ),
                                   ),
                                   // selectedItems: ['Item1', 'Item2'],
@@ -359,7 +365,7 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                         SizedBox(height: ConstVar.minspace),
                         Text(
-                          "Select availiable tutoring time:",
+                          "${language.selectAvailableTime}:",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -383,7 +389,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                 borderSide: BorderSide(width: 1, color: Colors.blue),
                                 borderRadius: BorderRadius.all(Radius.circular(50)),
                               ),
-                              hintText: 'Select a day',
+                              hintText: language.selectDate,
                               suffixIcon: (_dController.text.isNotEmpty && _dFocus.hasFocus) ?
                               IconButton(onPressed: () {setState(() {
                                 _dController.clear();
@@ -413,7 +419,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                                 borderSide: BorderSide(width: 1, color: Colors.blue),
                                 borderRadius: BorderRadius.all(Radius.circular(50)),
                               ),
-                              hintText: 'Time range',
+                              hintText: language.selectTime,
                               suffixIcon: (_tController.text.isNotEmpty && _tFocus.hasFocus) ?
                               IconButton(
                                   onPressed: ()
@@ -519,8 +525,8 @@ class _TeacherListPage extends State<TeacherListPage> {
                                   countTotal = tutorList.length!;
                                 });
                               },
-                              child: const Text(
-                                'Search',
+                              child: Text(
+                                language.search,
                                 style: TextStyle(
                                     color: Colors.white,
                                     // fontWeight: FontWeight.bold,
@@ -558,7 +564,7 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                               },
                                 child: Text(
-                                  "Reset Filters",
+                                  language.resetFilters,
                                   style: TextStyle(
                                     color: Colors.blue,
                                     fontSize: 20,
@@ -594,7 +600,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                       mainAxisSize: MainAxisSize.max,
                       children: <Text>[
                         Text(
-                          "Recommended Tutors",
+                          language.recommendedTutor,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -605,7 +611,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                   ),
 
                   Column(
-                    children: getTutorList(),
+                    children: getTutorList(language),
                     // [true, false])
                   ),
                   Row(
@@ -652,7 +658,7 @@ class _TeacherListPage extends State<TeacherListPage> {
   //
   //   return btn;
   // }
-  List<Widget> getTutorList(){
+  List<Widget> getTutorList(Language language){
     List<Widget> list = [];
 
     if (tutorList.length == 0){
@@ -660,7 +666,7 @@ class _TeacherListPage extends State<TeacherListPage> {
         child: Container(
           padding: EdgeInsets.all(5),
           child: Text(
-            "No suitable tutor",
+            language.noResult,
             style: TextStyle(
               color: Colors.grey,
               fontStyle: FontStyle.italic,
@@ -862,7 +868,7 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                           icon: Icon(Icons.calendar_month_sharp, size: 20,color: Colors.blue,),
                           label: Text(
-                            'Book',
+                            language.book,
                             style: TextStyle(
                               color: Colors.blue,
                               fontSize: 13,

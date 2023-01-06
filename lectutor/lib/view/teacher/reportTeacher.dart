@@ -2,8 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:lectutor/handle/teacher.dart';
+import 'package:provider/provider.dart';
 
 import '../../config/const.dart';
+import '../../config/pkg.dart';
+import '../../model/language/provider.dart';
 import '../const/constVar.dart';
 
 class ReportTeacherPage extends StatefulWidget {
@@ -23,6 +26,10 @@ class _ReportTeacher extends State<ReportTeacherPage> {
   List<bool> isSelectedReason = [false, false, false];
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return ListView(
       shrinkWrap: true,
 
@@ -43,7 +50,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
             ),
             child: Row(
               children: [
-                Text('Report ${widget.name}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                Text('${language.report} ${widget.name}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
               ],
             ),
           ),
@@ -54,7 +61,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                   Icon(Icons.report, color: Colors.blue, size: 25,),
                   SizedBox(width: 10,),
                   Expanded(
-                      child:Text("Help us understand what's happening", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)
+                      child:Text("${language.helpReport}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)
                   )
                 ],
               ),
@@ -66,11 +73,11 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                   setState(() {
                     isSelectedReason[0] = value!;
                     if(value! == true){
-                      reason = "${reason}This tutor is annoying me\n";
+                      reason = "${reason}${language.firsrReason}\n";
                       noteController.text = reason;
                     }
                     else{
-                      List<String> reasonList = reason.split("This tutor is annoying me\n");
+                      List<String> reasonList = reason.split("${language.firsrReason}\n");
                       reason = "";
                       reasonList.forEach((element) {
                         reason = "${reason}${element}";
@@ -79,7 +86,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                     }
                   });
                 },
-                title: Text("This tutor is annoying me"),
+                title: Text("${language.firsrReason}"),
               ),
               CheckboxListTile(
                 value: isSelectedReason[1],
@@ -88,11 +95,11 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                   setState(() {
                     isSelectedReason[1] = value!;
                     if(value! == true){
-                      reason = "${reason}This profile is pretending be someone or is fake\n";
+                      reason = "${reason}${language.secondReason}\n";
                       noteController.text = reason;
                     }
                     else{
-                      List<String> reasonList = reason.split("This profile is pretending be someone or is fake\n");
+                      List<String> reasonList = reason.split("${language.secondReason}\n");
                       reason = "";
                       reasonList.forEach((element) {
                         reason = "${reason}${element}";
@@ -101,7 +108,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                     }
                   });
                 },
-                title: Text("This profile is pretending be someone or is fake"),
+                title: Text("${language.secondReason}"),
               ),
               CheckboxListTile(
                 value: isSelectedReason[2],
@@ -110,11 +117,11 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                   setState(() {
                     isSelectedReason[2] = value!;
                     if(value! == true){
-                      reason = "${reason}Inappropriate profile photo\n";
+                      reason = "${reason}${language.thirdReason}\n";
                       noteController.text = reason;
                     }
                     else{
-                      List<String> reasonList = reason.split("Inappropriate profile photo\n");
+                      List<String> reasonList = reason.split("${language.thirdReason}\n");
                       reason = "";
                       reasonList.forEach((element) {
                         reason = "${reason}${element}";
@@ -123,7 +130,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                     }
                   });
                 },
-                title: Text("Inappropriate profile photo"),
+                title: Text(language.thirdReason),
               ),
               TextFormField(
                 keyboardType: TextInputType.multiline,
@@ -138,7 +145,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                   });
                 },
                 decoration: InputDecoration(
-                  hintText: 'Please let us know details about your problem',
+                  hintText: language.reasonHint,
                   hintStyle: TextStyle(color: Colors.grey.shade200),
                   hintMaxLines: 5,
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -166,7 +173,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                 Navigator.pop(context);
 
               },
-              child: const Text('Cancel', style: TextStyle(color: Colors.black),),
+              child: Text(language.cancel, style: TextStyle(color: Colors.black),),
             ),
             TextButton(
               style: ButtonStyle(
@@ -202,11 +209,11 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                           children: [
                             isSuccess ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.cancel, color: Colors.red,),
                             SizedBox(width: ConstVar.mediumspace,),
-                            Text('Notification'),
+                            Text(language.notification),
                           ],
                         ),
                       ),
-                      content: Text(isSuccess ? 'Report ${widget.name} successfully':"Report ${widget.name} failed"),
+                      content: Text(isSuccess ? '${language.report} ${widget.name} ${language.success}':"${language.report} ${widget.name} ${language.fail}"),
                       actions: <Widget>[
                         TextButton(
                           style: ButtonStyle(
@@ -227,7 +234,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                             }
 
                           },
-                          child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                          child: Text(language.back, style: TextStyle(color: Colors.white),),
                         ),
                       ],
                     ),
@@ -236,7 +243,7 @@ class _ReportTeacher extends State<ReportTeacherPage> {
                 }
 
               },
-              child: const Text('Submit', style: TextStyle(color: Colors.white),),
+              child: Text(language.submit, style: TextStyle(color: Colors.white),),
             ),
 
           ],

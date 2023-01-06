@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../config/pkg.dart';
 import '../../handle/auth.dart';
+import '../../model/language/provider.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
@@ -10,7 +13,8 @@ class ForgetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, ForgetPasswordPage());
+    // return TemplatePage.getHeader(context, ForgetPasswordPage());
+    return TemplatePage(widget:  ForgetPasswordPage(), isLogin: false,);
 
   }
 }
@@ -27,6 +31,10 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   bool isError = false;
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -36,7 +44,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
               padding: EdgeInsets.all(24.0,),
               children: <Widget>[
                 Text(
-                  'Reset Password',
+                  language.resetPassword,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.black,
@@ -48,7 +56,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 SizedBox(height: ConstVar.largespace),
 
                 Text(
-                  'Please enter your email address to search for your account.',
+                  language.descriptionResetPassword,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
@@ -58,7 +66,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 SizedBox(height: ConstVar.mediumspace),
 
                 Text(
-                  'EMAIL',
+                  language.email,
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
@@ -78,7 +86,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                   },
                   controller: emailController,
                   decoration: InputDecoration(
-                    hintText: 'Enter your email...',
+                    hintText: language.enterYourEmail,
                     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                   ),
@@ -117,7 +125,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                     if (emailController.text == ""){
                       setState(() {
                         isError = true;
-                        error = "Please enter your registered email";
+                        error = language.pleaseEnterEmail;
                       });
                     }else{
                       var isSuccess = await forgotPassword(emailController.text);
@@ -139,11 +147,11 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                               children: [
                                 isSuccess == true ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
                                 SizedBox(width: ConstVar.mediumspace,),
-                                Text('Notification'),
+                                Text(language.notification),
                               ],
                             ),
                           ),
-                          content: Text(isSuccess == true?'Please check to reset password.':"You have failed to reset password. Try again"),
+                          content: Text(isSuccess == true?language.forgotPasswordSuccess:language.forgotPasswordFail),
                           actions: <Widget>[
                             TextButton(
                               style: ButtonStyle(
@@ -163,15 +171,15 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                                   Navigator.pop(context);
                                 }
                               },
-                              child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                              child: Text(language.back, style: TextStyle(color: Colors.white),),
                             ),
                           ],
                         ),
                       );
                     }
                   },
-                  child: const Text(
-                    'Send reset link',
+                  child: Text(
+                    language.confirmREsetPassword,
                     style: TextStyle(
                         color: Colors.white,
                         // fontWeight: FontWeight.bold,

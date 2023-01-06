@@ -2,7 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:lectutor/handle/auth.dart';
+import 'package:provider/provider.dart';
+import '../../config/pkg.dart';
 import '../../model/auth.dart';
+import '../../model/language/provider.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
@@ -13,7 +16,8 @@ class Register extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, RegisterPage());
+    // return TemplatePage.getHeader(context, RegisterPage());
+    return TemplatePage(widget:  RegisterPage(), isLogin: false,);
 
   }
 }
@@ -33,13 +37,17 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Center(
       child: ListView(
           shrinkWrap: true,
           padding: EdgeInsets.all(24.0,),
           children: <Widget>[
             Text(
-              'Start learning with Lutors',
+              language.titleSignUp,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.blue,
@@ -51,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
             SizedBox(height: ConstVar.largespace),
 
             Text(
-              'Become fluent faster through one on one video chat lessons tailored to your goals.',
+              language.descriptionSignup,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -61,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
             SizedBox(height: ConstVar.largespace),
 
             Text(
-              'EMAIL',
+              language.email,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
@@ -80,7 +88,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 });
               },
               decoration: InputDecoration(
-                hintText: 'Enter your email...',
+                hintText: language.enterYourEmail,
                 contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
               ),
@@ -89,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
             SizedBox(height: ConstVar.mediumspace),
 
             Text(
-              'PASSWORD',
+              language.password,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
@@ -108,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 });
               },
               decoration: InputDecoration(
-                hintText: 'Enter your password...',
+                hintText: language.enterPassword,
                 contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                 suffixIcon: IconButton(
@@ -151,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 if(emailController.text == "" || emailController.text == ""){
                   setState(() {
                     isValid = false;
-                    error = "Please input all fields";
+                    error = language.emptyField;
                   });
                 }
                 else{
@@ -174,11 +182,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           children: [
                             data != null ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
                             SizedBox(width: ConstVar.mediumspace,),
-                            Text('Notification'),
+                            Text(language.notification),
                           ],
                         ),
                       ),
-                      content: Text(data != null?'You have successfully registered an account. Please await admin to active your account':"You have failed to register for an account. Try again"),
+                      content: Text(data != null? language.signupSuccess:language.signupFail),
                       actions: <Widget>[
                         TextButton(
                           style: ButtonStyle(
@@ -198,7 +206,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               Navigator.popUntil(context,ModalRoute.withName('/'));
                             }
                           },
-                          child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                          child: Text(language.back, style: TextStyle(color: Colors.white),),
                         ),
                       ],
                     ),
@@ -207,8 +215,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
 
               },
-              child: const Text(
-                'SIGN UP',
+              child: Text(
+                language.signUp,
                 style: TextStyle(
                     color: Colors.white,
                     // fontWeight: FontWeight.bold,
@@ -224,7 +232,7 @@ class _RegisterPageState extends State<RegisterPage> {
             SizedBox(height: ConstVar.largespace),
 
             Text(
-              'Or continue with?',
+              language.continueWith,
               style: TextStyle(color: Colors.black, fontSize: 14),
               textAlign: TextAlign.center,
             ),
@@ -281,10 +289,10 @@ class _RegisterPageState extends State<RegisterPage> {
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                  text: 'Already have an account?',
+                  text: language.hasAccountSignUp,
                   style: TextStyle(color: Colors.black, fontSize: 14),
                   children: <TextSpan>[
-                    TextSpan(text: ' Log in',
+                    TextSpan(text: ' ${language.login}',
                         style: TextStyle(color: Colors.blueAccent, fontSize: 16),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {

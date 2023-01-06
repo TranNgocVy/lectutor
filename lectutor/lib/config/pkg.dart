@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lectutor/model/language/language.dart';
+import 'package:lectutor/model/language/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../model/language/english.dart';
+import '../model/language/vietnam.dart';
 import 'const.dart';
 class Pkg {
   static List<Widget> getRating(double? rating){
@@ -161,6 +166,16 @@ class Pkg {
     } catch (e) {
     }
     return pickedFile;
+  }
+
+  static Future<void> getLanguage(LanguageProvider languageProvider) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final lang = prefs.getString('language') ?? "EN";
+    if (lang == "EN") {
+      languageProvider.language = English();
+    } else {
+      languageProvider.language = VietNamese();
+    }
   }
 
 

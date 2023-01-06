@@ -5,9 +5,12 @@ import 'package:lectutor/model/argument.dart';
 import 'package:lectutor/model/bookingInfo.dart';
 import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/schedule.dart';
+import 'package:provider/provider.dart';
 import '../../config/const.dart';
 import '../../config/pkg.dart';
 import '../../model/feedBack.dart';
+import '../../model/language/language.dart';
+import '../../model/language/provider.dart';
 import '../../model/teacher.dart';
 import '../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -22,7 +25,8 @@ class ScheduleHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, ScheduleHistoryPage(historyScheduleArg: historyScheduleArg));
+    // return TemplatePage.getHeader(context, ScheduleHistoryPage(historyScheduleArg: historyScheduleArg));
+    return TemplatePage(widget: ScheduleHistoryPage(historyScheduleArg: historyScheduleArg));
 
   }
 }
@@ -48,6 +52,10 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Container(
         padding: EdgeInsets.all(20),
         child: ListView(
@@ -62,7 +70,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                   ),
 
                   Text(
-                    "History",
+                    language.history,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 30,
@@ -103,7 +111,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "The following is a list of lessons you have attended",
+                              language.descriptionHistory,
                               style: TextStyle(
                                   color: Colors.black38,
                                   fontSize: 16
@@ -112,19 +120,19 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                           )
                         ],
                       ),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              "You can review the details of the lessons you have attended",
-                              style: TextStyle(
-                                  color: Colors.black38,
-                                  fontSize: 16
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                      // Row(
+                      //   children: <Widget>[
+                      //     Expanded(
+                      //       child: Text(
+                      //         "You can review the details of the lessons you have attended",
+                      //         style: TextStyle(
+                      //             color: Colors.black38,
+                      //             fontSize: 16
+                      //         ),
+                      //       ),
+                      //     )
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),
@@ -135,7 +143,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
 
               Column(
                 children:
-                getScheduleList(historyBookingList.bookingList),
+                getScheduleList(historyBookingList.bookingList, language),
               ),
               SizedBox(height: ConstVar.mediumspace,),
 
@@ -148,7 +156,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
 
   }
 
-  List<Widget> getScheduleList(List<BookingInfo> scheduleList){
+  List<Widget> getScheduleList(List<BookingInfo> scheduleList, Language language){
     List<Widget> list = [];
     for (var i = 0; i < scheduleList.length ; i++){
       list.add(SizedBox(height: 10,));
@@ -237,28 +245,28 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                               ],
                             ),
                             // SizedBox(height: 1),
-                            Row(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.messenger_outline_outlined,
-                                  color: Colors.blue,
-                                  size: 25,
-                                ),
-                                Expanded(
-                                  child: TextButton(
-                                    onPressed: null,
-                                    child: Text(
-                                      "Direct Message",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.blue,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                              ],
-                            ),
+                            // Row(
+                            //   children: <Widget>[
+                            //     Icon(
+                            //       Icons.messenger_outline_outlined,
+                            //       color: Colors.blue,
+                            //       size: 25,
+                            //     ),
+                            //     Expanded(
+                            //       child: TextButton(
+                            //         onPressed: null,
+                            //         child: Text(
+                            //           "Direct Message",
+                            //           style: TextStyle(
+                            //             fontSize: 16,
+                            //             color: Colors.blue,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ),
+                            //
+                            //   ],
+                            // ),
                           ],
                         ),
                       ),
@@ -310,29 +318,29 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                     Row(
                       children: <Widget>[
                         Expanded(child: Text(
-                          "Lesson time: ${Pkg.getDurationLession(scheduleList[i].scheduleDetailInfo!.startPeriodTimestamp, scheduleList[i].scheduleDetailInfo!.endPeriodTimestamp)}",
+                          "${language.LessonTime} ${Pkg.getDurationLession(scheduleList[i].scheduleDetailInfo!.startPeriodTimestamp, scheduleList[i].scheduleDetailInfo!.endPeriodTimestamp)}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20,
                           ),
                         )),
 
-                        SizedBox(height: 2,),
-                        if(scheduleList[i].showRecordUrl != null && scheduleList[i]!.showRecordUrl == true)
-                          ElevatedButton.icon(
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-                            ),
-                            icon: Icon(Icons.video_library, size: 20,color: Colors.white),
-                            label: Text(
-                              'Record',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            ),
-                            onPressed: null,
-                          ),
+                        // SizedBox(height: 2,),
+                        // if(scheduleList[i].showRecordUrl != null && scheduleList[i]!.showRecordUrl == true)
+                        //   ElevatedButton.icon(
+                        //     style: const ButtonStyle(
+                        //       backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+                        //     ),
+                        //     icon: Icon(Icons.video_library, size: 20,color: Colors.white),
+                        //     label: Text(
+                        //       'Record',
+                        //       style: TextStyle(
+                        //         color: Colors.white,
+                        //         fontSize: 20,
+                        //       ),
+                        //     ),
+                        //     onPressed: null,
+                        //   ),
                       ],
                       // mainAxisAlignment: MainAxisAlignment.center,
                     ),
@@ -355,7 +363,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              scheduleList[i].studentRequest != null && scheduleList[i].studentRequest!.isNotEmpty ? "Request for lesson" : "No request for lesson",
+                              scheduleList[i].studentRequest != null && scheduleList[i].studentRequest!.isNotEmpty ? language.requestForLesson : language.noRequestForLesson,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.black87,
@@ -389,7 +397,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Tutor haven't reviewed yet",
+                              language.tutorHaveNotReviewed,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.black87,
@@ -402,7 +410,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                     Container(
                       padding: EdgeInsets.all(20),
                       child: Column(
-                        children: getRatingList(scheduleList[i].feedbacks!)
+                        children: getRatingList(scheduleList[i].feedbacks!, language)
 
                       ),
                     ),
@@ -421,7 +429,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
     return list;
   }
 
-  List<Widget> getRatingList(List<FeedBack> feedbackList){
+  List<Widget> getRatingList(List<FeedBack> feedbackList, Language language){
     List<Widget> list = [];
     if(feedbackList.length == 0){
       list.add(Row(
@@ -430,7 +438,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
           TextButton(
             onPressed: null,
             child: Text(
-              "Add a Rating",
+              language.addRating,
               textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: 18,
@@ -441,7 +449,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
           TextButton(
             onPressed: null,
             child: Text(
-              "Report",
+              language.report,
               textAlign: TextAlign.end,
               style: TextStyle(
                 fontSize: 18,
@@ -460,7 +468,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text("Rating", style: TextStyle(fontSize: 18,
+                    Text(language.Rating, style: TextStyle(fontSize: 18,
                       color: Colors.black87,),),
                     SizedBox(width: 5,),
                     Row(
@@ -474,7 +482,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                     TextButton(
                       onPressed: null,
                       child: Text(
-                        "Report",
+                        language.report,
                         textAlign: TextAlign.end,
                         style: TextStyle(
                           fontSize: 18,
@@ -485,7 +493,7 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
                     TextButton(
                       onPressed: null,
                       child: Text(
-                        "Report",
+                        language.report,
                         textAlign: TextAlign.end,
                         style: TextStyle(
                           fontSize: 18,

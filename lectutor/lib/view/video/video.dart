@@ -11,8 +11,8 @@ class Video extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, VideoPage());
-
+    // return TemplatePage.getHeader(context, VideoPage());
+    return new TemplatePage(widget: VideoPage());
   }
 }
 

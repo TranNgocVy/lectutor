@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/main.dart';
+import 'package:provider/provider.dart';
 import '../../config/const.dart';
 import '../../config/pkg.dart';
 import '../../model/argument.dart';
+import '../../model/language/provider.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
@@ -16,7 +18,9 @@ class BookAClass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, BookAClassPage(bookingLessonArg: bookingLessonArg,));
+    // return TemplatePage.getHeader(context, BookAClassPage(bookingLessonArg: bookingLessonArg,));
+    return TemplatePage(widget:  BookAClassPage(bookingLessonArg: bookingLessonArg,));
+
   }
 }
 
@@ -32,6 +36,10 @@ class _BookAClassPage extends State<BookAClassPage> {
   TextEditingController noteController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Container(
         child: Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), //this right here
@@ -58,7 +66,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                           ),
                         ),
                         child: Text(
-                          "Booking details",
+                          language.bookingDetail,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 25,
@@ -87,7 +95,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                         mainAxisSize: MainAxisSize.max,
                                         children: <Widget>[
                                           Text(
-                                            "Booking Time",
+                                            language.bookingTime,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 20,
@@ -151,7 +159,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                   children: <Widget>[
                                     Expanded(
                                       child: Text(
-                                        "Balance",
+                                        language.balance,
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
@@ -165,7 +173,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           Expanded(child: Text(
-                                            "You have ${widget.bookingLessonArg.balance} lessons left",
+                                            "${widget.bookingLessonArg.balance} ${language.lesson}",
                                             textAlign: TextAlign.end,
                                             style: TextStyle(
                                                 fontSize: 18,
@@ -186,7 +194,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                   children: <Widget>[
                                     Expanded(
                                       child: Text(
-                                        "Price",
+                                        language.price,
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
@@ -199,7 +207,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: <Widget>[
                                           Text(
-                                            "1 lesson",
+                                            "1 ${language.lesson}",
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.deepPurple
@@ -233,7 +241,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                     mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
                                       Text(
-                                        "Note",
+                                        language.note,
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
@@ -281,8 +289,8 @@ class _BookAClassPage extends State<BookAClassPage> {
                         onPressed: (){
                       Navigator.pop(context);
                       },
-                        child: const Text(
-                          'Cancel',
+                        child: Text(
+                          language.cancel,
                           style: TextStyle(
                               color: Colors.blue,
                               // fontWeight: FontWeight.bold,
@@ -309,7 +317,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                         // ),
                         icon: Icon(Icons.keyboard_double_arrow_right_outlined, size: 20,color: Colors.white,),
                         label: Text(
-                          'Book',
+                          language.book,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -336,11 +344,11 @@ class _BookAClassPage extends State<BookAClassPage> {
                                   children: [
                                     data == true ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
                                     SizedBox(width: ConstVar.mediumspace,),
-                                    Text('Notification'),
+                                    Text(language.notification),
                                   ],
                                 ),
                               ),
-                              content: Text(data == true?'Booking success':"Booking fail. Try again"),
+                              content: Text(data == true?language.bookingSuccess:language.bookingFail),
                               actions: <Widget>[
                                 TextButton(
                                   style: ButtonStyle(
@@ -357,7 +365,7 @@ class _BookAClassPage extends State<BookAClassPage> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                                  child: Text(language.back, style: TextStyle(color: Colors.white),),
                                 ),
                               ],
                             ),

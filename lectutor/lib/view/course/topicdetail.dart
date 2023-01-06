@@ -15,7 +15,9 @@ class TopicDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, TopicDetailPage(topic: topic,));
+    // return TemplatePage.getHeader(context, TopicDetailPage(topic: topic,));
+    return TemplatePage(widget: TopicDetailPage(topic: topic,));
+
   }
 }
 
@@ -36,7 +38,7 @@ class _TopicDetailPage extends State<TopicDetailPage> {
   bool loaded = false;
 
   Future<File> getFileFromUrl(String url, {name}) async {
-    var fileName = 'testonline';
+    var fileName = '';
     if (name != null) {
       fileName = name;
     }

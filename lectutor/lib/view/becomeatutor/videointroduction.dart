@@ -9,7 +9,8 @@ class VideoIntroduction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, VideoIntroductionPage());
+    // return TemplatePage.getHeader(context, VideoIntroductionPage());
+    return TemplatePage(widget:  VideoIntroductionPage());
 
   }
 

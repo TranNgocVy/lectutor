@@ -2,9 +2,13 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:lectutor/config/const.dart';
 import 'package:lectutor/model/category.dart';
+import 'package:lectutor/model/language/language.dart';
 import 'package:lectutor/model/level.dart';
+import 'package:provider/provider.dart';
+import '../../config/pkg.dart';
 import '../../handle/course.dart';
 import '../../model/course.dart';
+import '../../model/language/provider.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
@@ -15,7 +19,9 @@ class CourseList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, CourseListPage());
+    // return TemplatePage.getHeader(context, CourseListPage());
+    return TemplatePage(widget: CourseListPage());
+
   }
 }
 
@@ -88,6 +94,10 @@ class _CourseListPage extends State<CourseListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Container(
       padding: EdgeInsets.fromLTRB(10,30,10,10),
       child: Expanded(
@@ -103,7 +113,7 @@ class _CourseListPage extends State<CourseListPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        "Discover Courses",
+                        language.discoverCourse,
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 25,
@@ -122,7 +132,7 @@ class _CourseListPage extends State<CourseListPage> {
 
             Expanded(
                 child: Text(
-                  "LiveTutor has built the most quality, methodical and scientific courses in the fields of life for those who are in need of improving their knowledge of the fields.",
+                  language.descriptionDiscoverCourse,
                   style: TextStyle(
                       color: Colors.black54,
                       fontSize: 16
@@ -196,7 +206,7 @@ class _CourseListPage extends State<CourseListPage> {
                           borderSide: BorderSide(width: 1, color: Colors.blue),
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
-                        hintText: 'Select level',
+                        hintText: language.selectLevel,
                       ),
                     ),
                     selectedItems: selectedLevel,
@@ -271,7 +281,7 @@ class _CourseListPage extends State<CourseListPage> {
                           borderSide: BorderSide(width: 1, color: Colors.blue),
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
-                        hintText: 'Select category',
+                        hintText: language.selectcCategory,
                       ),
                     ),
                     selectedItems: selectedCategory,
@@ -344,22 +354,22 @@ class _CourseListPage extends State<CourseListPage> {
                 fillColor: Colors.white,
               ),
               dropdownColor: Colors.white,
-              hint: Text("Sort by level"),
+              hint: Text(language.sortByLevel),
               // value: level,
               onChanged: (String? newValue) {
                 setState(() {
                   sortby = newValue!;
-                  if(sortby == "level decreasing"){
+                  if(sortby == language.desc){
                     orderby = "DESC";
                   }
                   else{
-                    if(sortby == "level ascending"){
+                    if(sortby == language.asc){
                       orderby = "ASC";
                     }
                   }
                 });
               },
-              items: <String>["level decreasing", "level ascending"].map<DropdownMenuItem<String>>((String value) {
+              items: <String>[language.asc, language.desc].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                     value: value,
                     child: Expanded(
@@ -375,7 +385,7 @@ class _CourseListPage extends State<CourseListPage> {
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: getType(["Course", "E-Book", "Interactive E-book"], 0),
+              children: getType([language.course], 0),
             ),
 
 
@@ -385,7 +395,7 @@ class _CourseListPage extends State<CourseListPage> {
             //   child:
             // ),
             Column(
-              children: getCourseList(courseList),
+              children: getCourseList(courseList, language),
             ),
             getPage(total),
           ],
@@ -423,7 +433,7 @@ class _CourseListPage extends State<CourseListPage> {
     return list;
   }
 
-  List<Widget> getCourseList(List<Course> courseList){
+  List<Widget> getCourseList(List<Course> courseList, Language language){
     Map<String, List<Course>> mapCategoryCourse ={};
 
     courseList.forEach((course) {
@@ -510,7 +520,7 @@ class _CourseListPage extends State<CourseListPage> {
                                 children: <Widget>[
                                   Expanded(
                                     child: Text(
-                                      "${Level.getLevelById(ConstVar.levelList, course.level!).name} -  ${course.topics!.length} Lessons",
+                                      "${Level.getLevelById(ConstVar.levelList, course.level!).name} -  ${course.topics!.length} ${language.course}",
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Colors.black87,

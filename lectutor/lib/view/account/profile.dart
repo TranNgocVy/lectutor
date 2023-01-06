@@ -6,6 +6,7 @@ import 'package:lectutor/config/pkg.dart';
 import 'package:lectutor/handle/user.dart';
 import 'package:provider/provider.dart';
 import '../../config/const.dart';
+import '../../model/language/provider.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
@@ -14,20 +15,10 @@ import '../../model/level.dart';
 class Profile extends StatelessWidget {
   final User user;
   const Profile({super.key, required this.user});
-
-
-
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //     title: 'Profile',
-    //     home: Scaffold(
-    //       // appBar: AppBar(title: const Text(_title)),
-    //       resizeToAvoidBottomInset: false,
-    //       body: ProfilePage(),
-    //     )
-    // );
-    return TemplatePage.getHeader(context, ProfilePage(user: user,));
+    // return TemplatePage.getHeader(context, ProfilePage(user: user,));
+    return TemplatePage(widget:  ProfilePage(user: user,),);
 
   }
 }
@@ -114,6 +105,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return ListView(
       // borderOnForeground: true,
         shrinkWrap: true,
@@ -191,11 +186,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                           children: [
                                             isSuccess ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.cancel, color: Colors.red,),
                                             SizedBox(width: ConstVar.mediumspace,),
-                                            Text('Notification'),
+                                            Text(language.notification),
                                           ],
                                         ),
                                       ),
-                                      content: Text(isSuccess ? 'Upload avatar successfully':"Avatar upload failed"),
+                                      content: Text(isSuccess ? language.notificationUploadAvatarSuccess:language.notificationUploadAvatarFail),
                                       actions: <Widget>[
                                         TextButton(
                                           style: ButtonStyle(
@@ -213,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             Navigator.pop(context);
 
                                           },
-                                          child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                                          child: Text(language.back, style: TextStyle(color: Colors.white),),
                                         ),
                                       ],
                                     ),
@@ -261,14 +256,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
 
 
-                        SizedBox(height: ConstVar.minspace),
-                        Text(
-                          "Others review you",
-                          style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 16
-                          ),
-                        )
+                        // SizedBox(height: ConstVar.minspace),
+                        // Text(
+                        //   "Others review you",
+                        //   style: TextStyle(
+                        //       color: Colors.blue,
+                        //       fontSize: 16
+                        //   ),
+                        // )
                       ],
                     ),
                   ],
@@ -284,7 +279,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Account',
+                          language.account,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black45,
@@ -300,7 +295,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     new Expanded (
                       flex:1,
-                      child : createLabel("Name", true),
+                      child : createLabel(language.name, true),
                     ),
                     new Expanded(
                       flex :2,
@@ -336,7 +331,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     new Expanded (
                       flex:1,
-                      child : createLabel("Email Address", false),
+                      child : createLabel(language.emailAddress, false),
                     ),
                     new Expanded(
                       flex :2,
@@ -377,7 +372,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     new Expanded (
                       flex:1,
-                      child : createLabel("Country", true),
+                      child : createLabel(language.country, true),
                     ),
                     new Expanded(
                       flex :2,
@@ -428,7 +423,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     new Expanded (
                       flex:1,
-                      child : createLabel("Phone number", false),
+                      child : createLabel(language.phone, false),
                     ),
                     new Expanded(
                       flex :2,
@@ -438,7 +433,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         initialValue: '${user.phone}',
                         enabled: false,
                         decoration: InputDecoration(
-                          hintText: 'Phone number of lectotur',
+                          // hintText: 'Phone number of lectotur',
                           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                         ),
@@ -467,7 +462,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     new Expanded (
                       flex:1,
-                      child : createLabel("Birthday", true),
+                      child : createLabel(language.birthday, true),
                     ),
                     new Expanded(
                       flex :2,
@@ -531,7 +526,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     new Expanded (
                       flex:1,
-                      child : createLabel("My Level", true),
+                      child : createLabel(language.level, true),
                     ),
                     Expanded(
                       flex :2,
@@ -592,7 +587,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     new Expanded (
                       flex:1,
-                      child : createLabel("Want to learn", true),
+                      child : createLabel(language.wantToLearn, true),
                     ),
                     new Expanded(
                       flex :2,
@@ -657,7 +652,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     new Expanded (
                       flex:1,
-                      child : createLabel("Learn Schedule", false),
+                      child : createLabel(language.learchedule, false),
                     ),
                     new Expanded(
                       flex :2,
@@ -679,7 +674,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                         controller: learnscheduleController..text = "${user.studySchedule}",
                         decoration: InputDecoration(
-                          hintText: "Note the time of the week you want to study on Lettutor",
+                          hintText: language.schedulehint,
                           hintMaxLines: 3,
                           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -725,7 +720,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         if (nameController.text == "" || countryController.text == "" || _dController.text == "" || topic.length == 0){
                           setState(() {
                             isValid = false;
-                            err = "Please enter all field has *";
+                            err = language.emptyStartFile;
                           });
                         }else{
                           List<String> topicIdList = [];
@@ -761,11 +756,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   children: [
                                     data != null ? Icon(Icons.task_alt, color: Colors.greenAccent,):Icon(Icons.error, color: Colors.red,),
                                     SizedBox(width: ConstVar.mediumspace,),
-                                    Text('Notification'),
+                                    Text(language.notification),
                                   ],
                                 ),
                               ),
-                              content: Text(data != null?'Edit profile successful':"Edit profile failed. Try again"),
+                              content: Text(data != null?language.notificationProfileSuccess:language.notificationProfileFail),
                               actions: <Widget>[
                                 TextButton(
                                   style: ButtonStyle(
@@ -782,7 +777,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                                  child: Text(language.back, style: TextStyle(color: Colors.white),),
                                 ),
                               ],
                             ),
@@ -798,8 +793,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           }
                         }
                       },
-                      child: const Text(
-                        'Save changes',
+                      child: Text(
+                        language.save,
                         style: TextStyle(
                             color: Colors.white,
                             // fontWeight: FontWeight.bold,

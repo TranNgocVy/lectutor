@@ -1,5 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../config/pkg.dart';
+import '../../model/language/provider.dart';
 import '../const/constVar.dart';
 
 class Review extends StatelessWidget {
@@ -32,6 +35,10 @@ class _ReviewPage extends State<ReviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Container(
         child: Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), //this right here
@@ -58,7 +65,7 @@ class _ReviewPage extends State<ReviewPage> {
                           ),
                         ),
                         child: Text(
-                          "Others review",
+                          language.otherReview,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 25,

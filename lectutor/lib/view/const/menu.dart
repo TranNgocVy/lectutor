@@ -14,7 +14,9 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, MenuPage(), isMenu: true);
+    // return TemplatePage.getHeader(context, MenuPage(), isMenu: true);
+    return TemplatePage(widget:  MenuPage(), isMenu: true);
+
   }
 
 }

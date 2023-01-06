@@ -6,8 +6,11 @@ import 'package:lectutor/handle/videocall.dart';
 import 'package:lectutor/model/argument.dart';
 import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/schedule.dart';
+import 'package:provider/provider.dart';
 import '../../config/pkg.dart';
 import '../../model/bookingInfo.dart';
+import '../../model/language/language.dart';
+import '../../model/language/provider.dart';
 import '../../model/teacher.dart';
 import '../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -21,7 +24,8 @@ class ScheduleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, ScheduleListPage(scheduleArg: scheduleArg));
+    // return TemplatePage.getHeader(context, ScheduleListPage(scheduleArg: scheduleArg));
+    return TemplatePage(widget: ScheduleListPage(scheduleArg: scheduleArg));
 
   }
 }
@@ -49,6 +53,10 @@ class _ScheduleListPage extends State<ScheduleListPage> {
   }
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Container(
         padding: EdgeInsets.all(20),
         child: ListView(
@@ -63,7 +71,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                   ),
 
                   Text(
-                    "Schedule",
+                    language.schedule,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 30,
@@ -90,7 +98,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "Here is a list of the sessions you have booked",
+                              language.desciptionSchedule,
                               style: TextStyle(
                                   color: Colors.black38,
                                   fontSize: 16
@@ -99,19 +107,19 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                           )
                         ],
                       ),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              "You can track when the meeting starts, join the meeting with one click or can cancel the meeting before 2 hours",
-                              style: TextStyle(
-                                  color: Colors.black38,
-                                  fontSize: 16
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                      // Row(
+                      //   children: <Widget>[
+                      //     Expanded(
+                      //       child: Text(
+                      //         "You can track when the meeting starts, join the meeting with one click or can cancel the meeting before 2 hours",
+                      //         style: TextStyle(
+                      //             color: Colors.black38,
+                      //             fontSize: 16
+                      //         ),
+                      //       ),
+                      //     )
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),
@@ -120,153 +128,153 @@ class _ScheduleListPage extends State<ScheduleListPage> {
 
               SizedBox(height: ConstVar.largespace),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Last Book",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: ConstVar.mediumspace,),
-
-
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade200, width: 1),
-                      color: Colors.grey.shade100,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            // decoration: BoxDecoration(
-                            //   border: Border.all(color: Colors.grey.shade200, width: 1),
-                            // ),
-                            child: Text(
-                              "Name",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              // border: Border.all(color: Colors.grey.shade200, width: 1),
-                                color: Colors.white
-                            ),
-                            child: Text(
-                              "Name of the book",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                      ],
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300, width: 1),
-                      color: Colors.grey.shade100,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            // decoration: BoxDecoration(
-                            //   border: Border.all(color: Colors.grey.shade200, width: 1),
-                            // ),
-                            child: Text(
-                              "Page",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              // border: Border.all(color: Colors.grey.shade200, width: 1),
-                              color: Colors.white,
-                            ),
-                            child: Text(
-                              "1",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87 ,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300, width: 1),
-                        color: Colors.grey.shade100
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            // decoration: BoxDecoration(
-                            //   border: Border.all(color: Colors.grey.shade200, width: 1),
-                            // ),
-                            child: Text(
-                              "Description",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              // border: Border.all(color: Colors.grey.shade200, width: 1),
-                                color: Colors.white
-
-                            ),
-                            child: Text(
-                              "Description about this book.",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black87 ,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                ],
-              ),
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: <Widget>[
+              //     Text(
+              //       "Last Book",
+              //       style: TextStyle(
+              //         fontSize: 20,
+              //         fontWeight: FontWeight.bold,
+              //       ),
+              //     ),
+              //     SizedBox(height: ConstVar.mediumspace,),
+              //
+              //
+              //     Container(
+              //       decoration: BoxDecoration(
+              //         border: Border.all(color: Colors.grey.shade200, width: 1),
+              //         color: Colors.grey.shade100,
+              //       ),
+              //       child: Row(
+              //         children: [
+              //           Expanded(
+              //             flex: 1,
+              //             child: Container(
+              //               padding: EdgeInsets.all(5),
+              //               // decoration: BoxDecoration(
+              //               //   border: Border.all(color: Colors.grey.shade200, width: 1),
+              //               // ),
+              //               child: Text(
+              //                 "Name",
+              //                 style: TextStyle(
+              //                   fontSize: 18,
+              //                   color: Colors.black87,
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //           Expanded(
+              //             flex: 2,
+              //             child: Container(
+              //               padding: EdgeInsets.all(5),
+              //               decoration: BoxDecoration(
+              //                 // border: Border.all(color: Colors.grey.shade200, width: 1),
+              //                   color: Colors.white
+              //               ),
+              //               child: Text(
+              //                 "Name of the book",
+              //                 style: TextStyle(
+              //                   fontSize: 16,
+              //                   color: Colors.blue,
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //
+              //         ],
+              //       ),
+              //     ),
+              //     Container(
+              //       decoration: BoxDecoration(
+              //         border: Border.all(color: Colors.grey.shade300, width: 1),
+              //         color: Colors.grey.shade100,
+              //       ),
+              //       child: Row(
+              //         children: [
+              //           Expanded(
+              //             flex: 1,
+              //             child: Container(
+              //               padding: EdgeInsets.all(5),
+              //               // decoration: BoxDecoration(
+              //               //   border: Border.all(color: Colors.grey.shade200, width: 1),
+              //               // ),
+              //               child: Text(
+              //                 "Page",
+              //                 style: TextStyle(
+              //                   fontSize: 18,
+              //                   color: Colors.black87,
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //           Expanded(
+              //             flex: 2,
+              //             child: Container(
+              //               padding: EdgeInsets.all(5),
+              //               decoration: BoxDecoration(
+              //                 // border: Border.all(color: Colors.grey.shade200, width: 1),
+              //                 color: Colors.white,
+              //               ),
+              //               child: Text(
+              //                 "1",
+              //                 style: TextStyle(
+              //                   fontSize: 16,
+              //                   color: Colors.black87 ,
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     Container(
+              //       decoration: BoxDecoration(
+              //           border: Border.all(color: Colors.grey.shade300, width: 1),
+              //           color: Colors.grey.shade100
+              //       ),
+              //       child: Row(
+              //         children: [
+              //           Expanded(
+              //             flex: 1,
+              //             child: Container(
+              //               padding: EdgeInsets.all(5),
+              //               // decoration: BoxDecoration(
+              //               //   border: Border.all(color: Colors.grey.shade200, width: 1),
+              //               // ),
+              //               child: Text(
+              //                 "Description",
+              //                 style: TextStyle(
+              //                   fontSize: 18,
+              //                   color: Colors.black87,
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //           Expanded(
+              //             flex: 2,
+              //             child: Container(
+              //               padding: EdgeInsets.all(5),
+              //               decoration: BoxDecoration(
+              //                 // border: Border.all(color: Colors.grey.shade200, width: 1),
+              //                   color: Colors.white
+              //
+              //               ),
+              //               child: Text(
+              //                 "Description about this book.",
+              //                 style: TextStyle(
+              //                   fontSize: 16,
+              //                   color: Colors.black87 ,
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //
+              //   ],
+              // ),
 
               SizedBox(height: ConstVar.mediumspace,),
               Container(
@@ -280,7 +288,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
 
               Column(
                 children:
-                getScheduleList(scheduleArg.bookingList),
+                getScheduleList(scheduleArg.bookingList, language),
               ),
               SizedBox(height: ConstVar.mediumspace,),
 
@@ -294,11 +302,11 @@ class _ScheduleListPage extends State<ScheduleListPage> {
 
   }
 
-  List<Widget> getScheduleList(List<BookingInfo> scheduleList){
+  List<Widget> getScheduleList(List<BookingInfo> scheduleList, Language language){
     List<Widget> list = [];
     for (index = 0; index < scheduleList.length; index++){
       int tempIndex = index;
-      List<Widget> lessonList = getLesson(scheduleList);
+      List<Widget> lessonList = getLesson(scheduleList, language);
       list.add(SizedBox(height: 10,));
       list.add( Card(
         child: Container(
@@ -320,7 +328,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                     ),
                     SizedBox(height: 2,),
                     Text(
-                      lessonList.length == 1 ?"1 lesson" : "${lessonList.length - 1} consecutive lessons",
+                      lessonList.length == 1 ?"1 ${language.lesson}" : "${lessonList.length - 1} ${language.lesson}",
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         fontSize: 16,
@@ -387,28 +395,28 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                               ],
                             ),
                             // SizedBox(height: 1),
-                            Row(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.messenger_outline_outlined,
-                                  color: Colors.blue,
-                                  size: 25,
-                                ),
-                                Expanded(
-                                  child: TextButton(
-                                    onPressed: null,
-                                    child: Text(
-                                      "Direct Message",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.blue,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                              ],
-                            ),
+                            // Row(
+                            //   children: <Widget>[
+                            //     Icon(
+                            //       Icons.messenger_outline_outlined,
+                            //       color: Colors.blue,
+                            //       size: 25,
+                            //     ),
+                            //     Expanded(
+                            //       child: TextButton(
+                            //         onPressed: null,
+                            //         child: Text(
+                            //           "Direct Message",
+                            //           style: TextStyle(
+                            //             fontSize: 16,
+                            //             color: Colors.blue,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ),
+                            //
+                            //   ],
+                            // ),
                           ],
                         ),
                       ),
@@ -449,7 +457,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                                     color: Colors.black87,
                                   ),
                                   label: Text(
-                                    "Request for lesson",
+                                    language.requestForLesson,
                                     // textAlign: TextAlign.end,
                                     style: TextStyle(
                                       fontSize: 18,
@@ -475,7 +483,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                               initialValue: getRequests(scheduleList, tempIndex, index),
                               decoration: InputDecoration(
                                 hintMaxLines: 3,
-                                hintText: 'Currently there are no requests for this class. Please write down any requests for the teacher.',
+                                hintText: language.requestForLessonHint,
                                 contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 10.0),
                                 // border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                               ),
@@ -489,7 +497,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                                 TextButton(
                                   onPressed: null,
                                   child: Text(
-                                    "Edit request",
+                                    language.edit,
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
                                       fontSize: 18,
@@ -535,7 +543,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                       await VideoCall.videoCall(ConstVar.meetServer, room, "Phhaiii", "student@lettutor.com");
                     },
                     child: Text(
-                      "Go to meeting",
+                      language.goToMeeting,
                       style: TextStyle(
                           fontSize: 18,
                           color: Colors.white
@@ -559,7 +567,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
     return list;
   }
 
-  List<Widget> getLesson (List<BookingInfo> bookinglist){
+  List<Widget> getLesson (List<BookingInfo> bookinglist, Language language){
     List<Widget> list = [];
     int endIndex = index;
     for(endIndex;; endIndex++){
@@ -588,7 +596,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                 ),
                 icon: Icon(Icons.cancel_presentation, size: 20,color: Colors.red),
                 label: Text(
-                  'Cancel',
+                  language.cancel,
                   style: TextStyle(
                     color: Colors.red,
                     fontSize: 20,
@@ -622,7 +630,7 @@ class _ScheduleListPage extends State<ScheduleListPage> {
                                     SizedBox(height: ConstVar.minspace,),
                                     Text(bookinglist[endIndex].scheduleDetailInfo!.scheduleInfo.tutorInfo.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
                                     SizedBox(height: ConstVar.mediumspace,),
-                                    const Text("Lesson Time", style: TextStyle(color: Colors.black54, fontSize: 20),),
+                                    Text(language.LessonTime, style: TextStyle(color: Colors.black54, fontSize: 20),),
                                     SizedBox(height: ConstVar.minspace,),
                                     Text(Pkg.getDate(bookinglist[endIndex].scheduleDetailInfo!.startPeriodTimestamp), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
                                   ],

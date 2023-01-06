@@ -9,6 +9,9 @@ import 'package:lectutor/model/course.dart';
 import 'package:lectutor/model/courses.dart';
 import 'package:lectutor/model/level.dart';
 import 'package:lectutor/model/topics.dart';
+import 'package:provider/provider.dart';
+import '../../config/pkg.dart';
+import '../../model/language/provider.dart';
 import '../../model/topic.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
@@ -23,7 +26,8 @@ class CourseDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, CourseDetailPage(course:  course,));
+    // return TemplatePage.getHeader(context, CourseDetailPage(course:  course,));
+    return TemplatePage(widget: CourseDetailPage(course:  course,));
 
   }
 }
@@ -93,6 +97,10 @@ class _CourseDetailPage extends State<CourseDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Container(
       padding: EdgeInsets.fromLTRB(10,5,10,10),
       child: Expanded(
@@ -165,7 +173,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                                       backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
                                     ),
                                     child: Text(
-                                      "Discover",
+                                      language.discover,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 18,
@@ -203,7 +211,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Text(
-                          "Overview",
+                          language.overview,
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 25
@@ -220,7 +228,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                       Icon(Icons.question_mark_rounded, color: Colors.red,),
                       SizedBox(width: 5,),
                       Text(
-                        "Why take this course",
+                        language.whyTakeThisCourse,
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.black87,
@@ -251,7 +259,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                       Icon(Icons.question_mark_rounded, color: Colors.red,),
                       SizedBox(width: 5,),
                       Text(
-                        "What will you be able to do",
+                        language.whatWillYouBeAbleToDo,
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.black87,
@@ -297,7 +305,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        "Experience Level",
+                        language.experienceLevel,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 25
@@ -343,7 +351,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        "Course Length",
+                        language.courseLength,
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
@@ -360,7 +368,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                     Icon(Icons.topic_outlined, color: Colors.blue,),
                     SizedBox(width: 5,),
                     Text(
-                      "${course.topics!.length} ${course.topics!.length > 1 ? "topics" : "topic"}",
+                      "${course.topics!.length} ${language.topic}",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.black87,
@@ -391,7 +399,7 @@ class _CourseDetailPage extends State<CourseDetailPage> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        "List Topics",
+                        language.listTopic,
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
@@ -414,52 +422,52 @@ class _CourseDetailPage extends State<CourseDetailPage> {
             ),
 
             SizedBox(height: ConstVar.mediumspace,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.black12, width: 1),
-                      )
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text(
-                        "Suggested Tutors",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: ConstVar.minspace,),
-
-                RichText(
-                  text: TextSpan(
-                      text: "Keegan ",
-                      style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
-                      children: <TextSpan>[
-                        TextSpan(text: 'More info',
-                            style: TextStyle(color: Colors.blue, fontSize: 18),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.pushNamed(context, '/tutor/detail');
-
-                              }
-                        )
-                      ]
-                  ),
-                  // loginButton,
-                  // forgotLabel
-                )
-              ],
-            ),
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: <Widget>[
+            //     Container(
+            //       padding: EdgeInsets.all(10),
+            //       decoration: BoxDecoration(
+            //           border: Border(
+            //             bottom: BorderSide(color: Colors.black12, width: 1),
+            //           )
+            //       ),
+            //       child: Row(
+            //         mainAxisSize: MainAxisSize.max,
+            //         children: [
+            //           Text(
+            //             language.su,
+            //             style: TextStyle(
+            //               fontSize: 25,
+            //               fontWeight: FontWeight.bold,
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //
+            //     SizedBox(height: ConstVar.minspace,),
+            //
+            //     RichText(
+            //       text: TextSpan(
+            //           text: "Keegan ",
+            //           style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+            //           children: <TextSpan>[
+            //             TextSpan(text: 'More info',
+            //                 style: TextStyle(color: Colors.blue, fontSize: 18),
+            //                 recognizer: TapGestureRecognizer()
+            //                   ..onTap = () {
+            //                     Navigator.pushNamed(context, '/tutor/detail');
+            //
+            //                   }
+            //             )
+            //           ]
+            //       ),
+            //       // loginButton,
+            //       // forgotLabel
+            //     )
+            //   ],
+            // ),
             SizedBox(height: ConstVar.mediumspace,),
 
 

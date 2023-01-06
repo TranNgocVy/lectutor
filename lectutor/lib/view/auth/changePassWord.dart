@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lectutor/config/const.dart';
 import 'package:lectutor/handle/auth.dart';
 import 'package:provider/provider.dart';
+import '../../config/pkg.dart';
+import '../../model/language/provider.dart';
 import '../../model/tokens.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
@@ -13,7 +15,8 @@ class ChangePassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, ChangePasswordPage());
+    // return TemplatePage.getHeader(context, ChangePasswordPage());
+    return TemplatePage(widget:  ChangePasswordPage(),);
 
   }
 }
@@ -32,6 +35,10 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
   String error = "";
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Center(
       child:
       Card(
@@ -56,7 +63,7 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                   ),
                 ),
                 child: Text(
-                  "Change password",
+                  language.changePassword,
                   textAlign: TextAlign.start,
                   style: TextStyle(
                       fontSize: 20,
@@ -71,7 +78,7 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                 children: <Widget>[
                   new Expanded (
                     flex:1,
-                    child : createLabel("Password"),
+                    child : createLabel(language.password),
                   ),
                   new Expanded(
                     flex :2,
@@ -97,13 +104,13 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
 
               ),
 
-              SizedBox(height: ConstVar.mediumspace),
+              SizedBox(height: ConstVar.minspace),
 
               Row(
                 children: <Widget>[
                   new Expanded (
                     flex:1,
-                    child : createLabel("New password"),
+                    child : createLabel(language.newPassword),
                   ),
                   new Expanded(
                     flex :2,
@@ -129,13 +136,13 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
 
               ),
 
-              SizedBox(height: ConstVar.mediumspace),
+              SizedBox(height: ConstVar.minspace),
 
               Row(
                 children: <Widget>[
                   new Expanded (
                     flex:1,
-                    child : createLabel("Confirm password"),
+                    child : createLabel(language.confirmPassword),
                   ),
                   new Expanded(
                     flex :2,
@@ -161,7 +168,7 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
 
               ),
 
-              SizedBox(height: ConstVar.mediumspace),
+              SizedBox(height: ConstVar.minspace),
               isTrue == false ? Container(
                 // padding: EdgeInsets.all(10),
                 child: Text(error, style: TextStyle(color: Colors.red),),
@@ -178,21 +185,21 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                       if (passwordController.text == "" || newPasswordController.text == "" || confirmPasswordController.text == ""){
                         setState(() {
                           isTrue = false;
-                          error = "Please input all fields";
+                          error = language.emptyField;
                         });
                       }
                       else{
                         if (passwordController.text.length < 6 || newPasswordController.text.length < 6 || confirmPasswordController.text.length < 6){
                           setState(() {
                             isTrue = false;
-                            error = "Field's length must be at least 6 characters";
+                            error = language.passwordAtLeast;
                           });
                         }
                         else{
                           if(newPasswordController.text != confirmPasswordController.text){
                             setState(() {
                               isTrue = false;
-                              error = "New password must be the same as the Confirmation password";
+                              error = language.passwordNotMatch;
                             });
                           }else{
                             var message = await changePasword(passwordController.text, newPasswordController.text, Const.token);
@@ -216,11 +223,11 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                                       children: [
                                         Icon(Icons.task_alt, color: Colors.greenAccent,),
                                         SizedBox(width: ConstVar.mediumspace,),
-                                        Text('Notification'),
+                                        Text(language.notification),
                                       ],
                                     ),
                                   ),
-                                  content: Text('You have successfully changed password. Please log in with new password'),
+                                  content: Text(language.changePasswordSuccess),
                                   actions: <Widget>[
                                     TextButton(
                                       style: ButtonStyle(
@@ -238,7 +245,7 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                                         Navigator.popUntil(context,ModalRoute.withName('/'));
 
                                       },
-                                      child: const Text('Ok', style: TextStyle(color: Colors.white),),
+                                      child: Text(language.back, style: TextStyle(color: Colors.white),),
                                     ),
                                   ],
                                 ),
@@ -247,7 +254,7 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                             else{
                               setState(() {
                                 isTrue = false;
-                                error = "Incorrect password";
+                                error = language.passwordIncorect;
                               });
                             }
 
@@ -257,8 +264,8 @@ class _ChangePasswordPage extends State<ChangePasswordPage> {
                       }
 
                     },
-                    child: const Text(
-                      'Change password',
+                    child: Text(
+                      language.changePassword,
                       style: TextStyle(
                           color: Colors.white,
                           // fontWeight: FontWeight.bold,

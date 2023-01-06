@@ -5,11 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lectutor/config/pkg.dart';
 import 'package:lectutor/model/course.dart';
+import 'package:lectutor/model/language/english.dart';
+import 'package:lectutor/model/language/language.dart';
+import 'package:lectutor/model/language/provider.dart';
 import 'package:lectutor/model/tokens.dart';
 import 'package:lectutor/model/auth.dart';
 import 'package:lectutor/model/user.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../handle/auth.dart';
 import '../const/constVar.dart';
 import 'package:dio/dio.dart';
@@ -21,7 +26,8 @@ class LogIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, LogInPage(), isLogin: false);
+    // return TemplatePage.getHeader(context, LogInPage(), isLogin: false);
+    return TemplatePage(widget:  LogInPage(), isLogin: false,);
 
   }
 
@@ -39,6 +45,11 @@ class _LogInPageState extends State<LogInPage> {
   bool isVisiblePassword = false;
   bool isValid = true;
   String error = "";
+
+  Language lang = English();
+
+
+
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
 
@@ -98,8 +109,38 @@ class _LogInPageState extends State<LogInPage> {
     }
   }
 
+  late String email;
+  late String password;
+
+  Future<void> _saveEmailPassword(String _email, String _password) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', _email);
+    await prefs.setString('password', _password);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEmailPassword();
+  }
+  Future<void> _loadEmailPassword() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      email = prefs.getString('email') ?? "";
+      password = prefs.getString('password') ?? "";
+
+      emailController.text = email;
+      passwordController.text = password;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
+
     return Container(
       child: Center(
         child: ListView(
@@ -109,7 +150,8 @@ class _LogInPageState extends State<LogInPage> {
               Image(image: AssetImage("assets/icon/background.png")),
 
               Text(
-                'Say hello to your English tutors',
+                // 'Say hello to your English tutors',
+                language.titleLogin,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.blue,
@@ -121,7 +163,8 @@ class _LogInPageState extends State<LogInPage> {
               SizedBox(height: ConstVar.largespace),
 
               Text(
-                'Become fluent faster through one on one video chat lessons tailored to your goals.',
+                // 'Become fluent faster through one on one video chat lessons tailored to your goals.',
+                language.descriptionLogin,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
@@ -131,7 +174,8 @@ class _LogInPageState extends State<LogInPage> {
               SizedBox(height: ConstVar.largespace),
 
               Text(
-                'EMAIL',
+                // 'EMAIL',
+                language.email,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
@@ -151,7 +195,7 @@ class _LogInPageState extends State<LogInPage> {
                   });
                 },
                 decoration: InputDecoration(
-                  hintText: 'Enter your email...',
+                  hintText: language.enterYourEmail,
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                 ),
@@ -160,7 +204,8 @@ class _LogInPageState extends State<LogInPage> {
               SizedBox(height: ConstVar.mediumspace),
 
               Text(
-                'PASSWORD',
+                // 'PASSWORD',
+                language.password,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
@@ -179,7 +224,7 @@ class _LogInPageState extends State<LogInPage> {
                   });
                 },
                 decoration: InputDecoration(
-                  hintText: 'Enter your password...',
+                  hintText: language.enterPassword,
                   contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
                   suffixIcon: IconButton(
@@ -222,7 +267,7 @@ class _LogInPageState extends State<LogInPage> {
                   Navigator.pushNamed(context, "/forgetpassword");
                 },
                 child: Text(
-                  'Forgot Password?',
+                  language.forgotPassword,
                   style: TextStyle(color: Colors.blueAccent, fontSize: 14),
                 ),
               ),
@@ -236,7 +281,7 @@ class _LogInPageState extends State<LogInPage> {
                   if(emailController.text == "" || passwordController.text == ""){
                     setState(() {
                       isValid = false;
-                      error = "Please input all fields";
+                      error = language.emptyField;
                     });
                   }
                   else{
@@ -258,19 +303,21 @@ class _LogInPageState extends State<LogInPage> {
                         context.read<Tokens>().update(tokens);
                         print(tokens.access.token);
 
+                        _saveEmailPassword(emailController.text, passwordController.text);
+
                         Navigator.popAndPushNamed(context, '/tutor');
                       }
                       else {
                         isValid = false;
-                        error = "Log in failed! Incorrect email or password";
+                        error = language.loginFail;
                       }
                     });
                   }
 
 
                 },
-                child: const Text(
-                  'LOG IN',
+                child: Text(
+                  language.signIn,
                   style: TextStyle(
                       color: Colors.white,
                       // fontWeight: FontWeight.bold,
@@ -286,7 +333,7 @@ class _LogInPageState extends State<LogInPage> {
               SizedBox(height: ConstVar.largespace),
 
               Text(
-                'Or continue with?',
+                language.continueWith,
                 style: TextStyle(color: Colors.black, fontSize: 14),
                 textAlign: TextAlign.center,
               ),
@@ -348,10 +395,10 @@ class _LogInPageState extends State<LogInPage> {
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                    text: 'Not a member yet?',
+                    text: language.signUpQuestion,
                     style: TextStyle(color: Colors.black, fontSize: 14),
                     children: <TextSpan>[
-                      TextSpan(text: ' Sign up',
+                      TextSpan(text: " ${language.signUp}",
                           style: TextStyle(color: Colors.blueAccent, fontSize: 16),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {

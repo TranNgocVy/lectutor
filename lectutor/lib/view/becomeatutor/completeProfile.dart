@@ -14,7 +14,8 @@ class CompleteProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, CompleteProfilePage());
+    // return TemplatePage.getHeader(context, CompleteProfilePage());
+    return TemplatePage(widget:  CompleteProfilePage());
 
   }
 

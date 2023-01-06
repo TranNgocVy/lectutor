@@ -9,7 +9,8 @@ class Approval extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, ApprovalPage());
+    // return TemplatePage.getHeader(context, ApprovalPage());
+    return TemplatePage(widget:  ApprovalPage());
 
   }
 

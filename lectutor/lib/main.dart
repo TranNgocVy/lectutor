@@ -27,6 +27,7 @@ import 'package:provider/provider.dart';
 
 import 'model/argument.dart';
 import 'model/course.dart';
+import 'model/language/provider.dart';
 import 'model/walletInfo.dart';
 
 void main() {
@@ -34,7 +35,7 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (_) => User("", "", "", "", "", "", [], "", "", false, WalletInfo("", "", "", false, DateTime.now(), DateTime.now(), 0), [], "", "", [], [], 0, "", false)),
       ChangeNotifierProvider(create: (_) => Tokens(Token("", DateTime.now()), Token("", DateTime.now()))),
-
+      ChangeNotifierProvider(create: (_) => LanguageProvider()),
     ],
     child: const MyApp(),
   ));

@@ -20,6 +20,7 @@ import '../../config/const.dart';
 import '../../model/argument.dart';
 import '../../model/courses.dart';
 import '../../model/feedBack.dart';
+import '../../model/language/provider.dart';
 import '../../model/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
@@ -34,7 +35,8 @@ class TeacherDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TemplatePage.getHeader(context, TeacherDetailPage(tutorDetail: tutorDetail));
+    // return TemplatePage.getHeader(context, TeacherDetailPage(tutorDetail: tutorDetail));
+    return TemplatePage(widget: TeacherDetailPage(tutorDetail: tutorDetail),);
 
   }
 }
@@ -203,6 +205,11 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     for(int i = 0; i < nameSplit.length && i < 2; i++){
       alias = alias + nameSplit[i][0];
     }
+
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final language = languageProvider.language;
+
+    Pkg.getLanguage(languageProvider);
     return Container(
       padding: EdgeInsets.all(20),
       child: ListView(
@@ -341,7 +348,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                   ),
                   SizedBox(height: ConstVar.minspace),
                   Text(
-                    "Favorite",
+                    language.favorite,
                     style: TextStyle(
                       color: Colors.blue,
                       fontSize: 14,
@@ -368,7 +375,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                   ),
                   SizedBox(height: ConstVar.minspace),
                   Text(
-                    "Report",
+                    language.report,
                     style: TextStyle(
                       color: Colors.blue,
                       fontSize: 14,
@@ -416,7 +423,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
-                                            "Others review",
+                                            language.otherReview,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 25,
@@ -447,7 +454,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                       ),),
                   SizedBox(height: ConstVar.minspace),
                   Text(
-                    "Review",
+                    language.review,
                     style: TextStyle(
                       color: Colors.blue,
                       fontSize: 14,
@@ -565,7 +572,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           SizedBox(height: ConstVar.largespace),
 
           Text(
-            "Language",
+            language.languages,
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -588,7 +595,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           SizedBox(height: ConstVar.largespace),
 
           Text(
-            "Specialties",
+            language.specialties,
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -618,7 +625,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           SizedBox(height: ConstVar.largespace),
 
           Text(
-            "Suggested courses",
+            language.suggestedCourses,
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -633,7 +640,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           SizedBox(height: ConstVar.largespace),
 
           Text(
-            "Interests",
+            language.interests,
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -659,7 +666,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
           SizedBox(height: ConstVar.largespace),
 
           Text(
-            "Teaching experience",
+            language.teacherExperience,
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
