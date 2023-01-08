@@ -241,8 +241,9 @@ class _CourseListPage extends State<CourseListPage> {
 
                         selectId = 1;
                       });
-
-
+                      setState(() {
+                        selectId = 1;
+                      });
                       getCourses(token, selectId, Const.perPageLarge, level: selectedLevelId, categoryId: selectedCategoryId, orderBy: orderby);
 
                     },
