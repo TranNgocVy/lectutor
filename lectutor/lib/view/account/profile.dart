@@ -7,11 +7,11 @@ import 'package:lectutor/handle/user.dart';
 import 'package:provider/provider.dart';
 import '../../config/const.dart';
 import '../../model/language/provider.dart';
-import '../../model/tokens.dart';
-import '../../model/user.dart';
+import '../../model/user/tokens.dart';
+import '../../model/user/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
-import '../../model/level.dart';
+import '../../model/level/level.dart';
 
 class Profile extends StatelessWidget {
   final User user;
@@ -91,6 +91,7 @@ class _ProfilePageState extends State<ProfilePage> {
     user = widget.user;
     nameOfTutor = user.name;
     topic = getLearnTopicList(user);
+    nameController.text = user.name!;
   }
   //
   // void getUser()async{
@@ -312,7 +313,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             isValid = true;
                           });
                         },
-                        controller: nameController..text = user.name,
+                        controller: nameController,
                         onChanged: (String? val){
                           setState(() {
                             user.name = val!;

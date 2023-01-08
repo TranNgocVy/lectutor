@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lectutor/model/tutorInfo.dart';
+
+import '../tutor/tutorInfo.dart';
 part 'feedBack.g.dart';
 @JsonSerializable()
 class FeedBack {

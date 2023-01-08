@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'feedBack.dart';
+import '../feedback/feedBack.dart';
 part 'tutor.g.dart';
 
 @JsonSerializable()

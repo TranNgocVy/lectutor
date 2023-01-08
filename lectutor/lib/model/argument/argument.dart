@@ -1,4 +1,4 @@
-import 'bookingInfo.dart';
+import '../booking/bookingInfo.dart';
 
 class BookingLessonArg{
   int balance;

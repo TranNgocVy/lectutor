@@ -1,12 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lectutor/model/course.dart';
-import 'package:lectutor/model/learnTopic.dart';
-import 'package:lectutor/model/testPreparation.dart';
-import 'package:lectutor/model/tutor.dart';
-import 'package:lectutor/model/tutorInfo.dart';
-import 'package:lectutor/model/walletInfo.dart';
+import 'package:lectutor/model/topic/learnTopic.dart';
+import 'package:lectutor/model/testPreparation/testPreparation.dart';
+import 'package:lectutor/model/tutor/tutor.dart';
+import 'package:lectutor/model/user/walletInfo.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
+
+import '../course/course.dart';
 
 part 'user.g.dart';
 

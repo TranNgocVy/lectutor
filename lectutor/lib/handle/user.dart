@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/gestures.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lectutor/model/bookingInfo.dart';
-import 'package:lectutor/model/user.dart';
+import 'package:lectutor/model/booking/bookingInfo.dart';
+import 'package:lectutor/model/user/user.dart';
 
 import '../config/const.dart';
 import '../view/const/constVar.dart';

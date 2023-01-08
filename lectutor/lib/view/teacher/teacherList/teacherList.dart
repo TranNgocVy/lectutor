@@ -3,30 +3,24 @@ import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_countdown_timer/countdown.dart';
-import 'package:flutter_countdown_timer/countdown_controller.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/handle/teacher.dart';
-import 'package:lectutor/handle/user.dart';
-import 'package:lectutor/handle/videocall.dart';
-import 'package:lectutor/model/bookingInfo.dart';
-import 'package:lectutor/model/teacher.dart';
-import 'package:lectutor/model/tutorDetail.dart';
-import 'package:lectutor/model/user.dart';
+import 'package:lectutor/model/tutor/tutorDetail.dart';
+import 'package:lectutor/view/teacher/teacherList/teacherCard.dart';
 import 'package:provider/provider.dart';
 import 'package:time_range_picker/time_range_picker.dart';
-import '../../config/const.dart';
-import '../../config/pkg.dart';
-import '../../model/language/language.dart';
-import '../../model/language/provider.dart';
-import '../../model/schedule.dart';
-import '../../model/tokens.dart';
-import '../../model/tutor.dart';
-import '../const/choicechip.dart';
-import '../const/constVar.dart';
-import '../const/page.dart';
-import '../const/specialtieschoiceschip.dart';
+import '../../../config/const.dart';
+import '../../../config/pkg.dart';
+import '../../../model/language/language.dart';
+import '../../../model/language/provider.dart';
+import '../../../model/schedule/schedule.dart';
+import '../../../model/user/tokens.dart';
+import '../../../model/tutor/tutor.dart';
+import '../../const/choicechip.dart';
+import '../../const/constVar.dart';
+import '../../const/page.dart';
+import '../../const/specialtieschoiceschip.dart';
+import './banner.dart' as banner;
 
 
 class TeacherList extends StatelessWidget {
@@ -60,7 +54,6 @@ class _TeacherListPage extends State<TeacherListPage> {
   final TextEditingController _tController = TextEditingController();
   final FocusNode _tFocus = FocusNode();
   final FocusNode _tgFocus = FocusNode();
-  late CountdownController countdownController;
 
   List<ChoiceChipData> specialtiesChoiceChips = SpecialtiesChoiceChips.getSpecialties(ConstVar.type, false);
 
@@ -97,46 +90,30 @@ class _TeacherListPage extends State<TeacherListPage> {
 
   List<Tutor>  tutorList = [];
   List<Tutor>  favoriteTutorList = [];
-  List<BookingInfo> nextbookingList = [];
   List<String> specialities = [];
 
-  int totalTime = 0;
 
   int selectId = 1;
   int countTotal = 0;
 
-  void getTutor(String token, int page) async{
-    var data = await TeacherService.getTeacherList(token, page);
-    if (data != null){
-      setState(() {
-        updateLists(data);
-      });
-    }
-  }
-  void getNextBookingList(String token) async{
-    var list = await UserService.getLession(token);
-    if (list != []){
-      setState(() {
-        nextbookingList = list;
-        print(nextbookingList.length);
+  bool? isLoadingTutors = null;
 
-        if (nextbookingList.length > 0 ){
-          int now = DateTime.now().millisecondsSinceEpoch;
-          countdownController = CountdownController(duration: Duration(milliseconds: nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp - now));
-          countdownController.start();
-        }
-        else{
-          countdownController = CountdownController(duration: Duration(seconds: 0));
+
+  void getTutor(String token, int page) async{
+    if(isLoadingTutors == null || isLoadingTutors == false){
+      isLoadingTutors = true;
+      var data = await TeacherService.getTeacherList(token, page);
+      setState(() {
+        if (data != null && mounted){
+          updateLists(data);
         }
       });
+      isLoadingTutors = false;
+
+
     }
   }
-  void getTotalTime(String token) async{
-    var total = await UserService.getLearningTimeTotal(token);
-    setState(() {
-      totalTime = total;
-    });
-  }
+
   void updateLists(dynamic data){
     var tutors = data["tutors"]["rows"];
     var favoriteTutor = data["favoriteTutor"];
@@ -176,7 +153,6 @@ class _TeacherListPage extends State<TeacherListPage> {
   }
 
 
-
   @override
   void initState() {
     super.initState();
@@ -195,102 +171,109 @@ class _TeacherListPage extends State<TeacherListPage> {
 
     final tokenProvider = Provider.of<Tokens>(context);
     final token = tokenProvider.access.token;
-    getTotalTime(token);
-    getNextBookingList(token);
-    getTutor(token, selectId);
+
+    // if(isLoadingTotalTime){
+    //   getTotalTime(token);
+    // }
+
+    if(isLoadingTutors == null){
+      getTutor(token, selectId);
+    }
 
 
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Container(
-            color: Colors.blue,
-            padding: EdgeInsets.fromLTRB(10,30,10,10),
-            child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Column>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        children: [
-                          Text(
-                            nextbookingList.length != 0 ? language.nextLesson : language.noUpComing,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: ConstVar.mediumspace),
-                      if(nextbookingList.length != 0)
-                        Column(
-                          children: <Widget>[
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                  text: " ${Pkg.getDate(nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp)} ${Pkg.getDurationLession(nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp, nextbookingList[0].scheduleDetailInfo!.endPeriodTimestamp)}",
-                                  style: TextStyle(color: Colors.white, fontSize: 14),
-                                  // children: <TextSpan>[
-                                  //   TextSpan(text: ' (start in 65:65:51)',
-                                  //     style: TextStyle(color: Colors.yellow, fontSize: 12),
-                                  //     // recognizer: TapGestureRecognizer()
-                                  //     //   ..onTap = () {}
-                                  //   )
-                                  // ]
-                              ),
-                              // loginButton,
-                              // forgotLabel
-                            ),
-                            Countdown(
-                                countdownController: countdownController,
-                                builder: (_, Duration time) {
-                                  return Text(
-                                    '${language.startIn} ${time.inHours < 10 ? "0${time.inHours}":time.inHours}:${time.inMinutes % 60 < 10 ? "0${time.inMinutes % 60}":time.inMinutes % 60}:${time.inSeconds % 60 < 10 ? "0${time.inSeconds % 60}" : time.inSeconds % 60}',
-                                    style: TextStyle(color: Colors.yellow, fontSize: 12),
-                                  );
-                                }),
-                            SizedBox(height: ConstVar.minspace),
-                            ElevatedButton.icon(
-                              style: const ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                              ),
-                              // style: ElevatedButton.styleFrom(
-                              //   shape: RoundedRectangleBorder(borderRadius: );
-                              // ),
+          banner.Banner(),
 
-                              icon: Icon(Icons.video_library, size: 20,color: Colors.blue,),
-                              label: Text(
-                                language.enterroom,
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 13,
-                                ),
-                              ),
-                              onPressed: ()async {
-                                String room = "${nextbookingList[0].userId}-${nextbookingList[0].scheduleDetailInfo!.scheduleInfo.tutorId!}";
-
-                                await VideoCall.videoCall(ConstVar.meetServer, room, "Phhaiii", "student@lettutor.com");
-                              },
-                            ),
-                          ],
-                        ),
-                      SizedBox(height: ConstVar.minspace),
-                      Text(
-                        totalTime < 60 ? "${language.totalLessonTimeIs} ${totalTime} ${language.minutes}" : "${language.totalLessonTimeIs} ${totalTime ~/ 60} ${language.hour} ${totalTime % 60} ${language.minutes}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ]
-            ),
-          ),
+          // Container(
+          //   color: Colors.blue,
+          //   padding: EdgeInsets.fromLTRB(10,30,10,10),
+          //   child: Row(
+          //       mainAxisSize: MainAxisSize.max,
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: <Column>[
+          //         Column(
+          //           children: <Widget>[
+          //             Row(
+          //               children: [
+          //                 Text(
+          //                   nextbookingList.length != 0 ? language.nextLesson : language.noUpComing,
+          //                   style: TextStyle(
+          //                     color: Colors.white,
+          //                     fontSize: 30,
+          //                   ),
+          //                   textAlign: TextAlign.center,
+          //                 ),
+          //               ],
+          //             ),
+          //             SizedBox(height: ConstVar.mediumspace),
+          //             if(nextbookingList.length != 0)
+          //               Column(
+          //                 children: <Widget>[
+          //                   RichText(
+          //                     textAlign: TextAlign.center,
+          //                     text: TextSpan(
+          //                         text: " ${Pkg.getDate(nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp)} ${Pkg.getDurationLession(nextbookingList[0].scheduleDetailInfo!.startPeriodTimestamp, nextbookingList[0].scheduleDetailInfo!.endPeriodTimestamp)}",
+          //                         style: TextStyle(color: Colors.white, fontSize: 14),
+          //                         // children: <TextSpan>[
+          //                         //   TextSpan(text: ' (start in 65:65:51)',
+          //                         //     style: TextStyle(color: Colors.yellow, fontSize: 12),
+          //                         //     // recognizer: TapGestureRecognizer()
+          //                         //     //   ..onTap = () {}
+          //                         //   )
+          //                         // ]
+          //                     ),
+          //                     // loginButton,
+          //                     // forgotLabel
+          //                   ),
+          //                   Countdown(
+          //                       countdownController: countdownController,
+          //                       builder: (_, Duration time) {
+          //                         return Text(
+          //                           '${language.startIn} ${time.inHours < 10 ? "0${time.inHours}":time.inHours}:${time.inMinutes % 60 < 10 ? "0${time.inMinutes % 60}":time.inMinutes % 60}:${time.inSeconds % 60 < 10 ? "0${time.inSeconds % 60}" : time.inSeconds % 60}',
+          //                           style: TextStyle(color: Colors.yellow, fontSize: 12),
+          //                         );
+          //                       }),
+          //                   SizedBox(height: ConstVar.minspace),
+          //                   ElevatedButton.icon(
+          //                     style: const ButtonStyle(
+          //                       backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+          //                     ),
+          //                     // style: ElevatedButton.styleFrom(
+          //                     //   shape: RoundedRectangleBorder(borderRadius: );
+          //                     // ),
+          //
+          //                     icon: Icon(Icons.video_library, size: 20,color: Colors.blue,),
+          //                     label: Text(
+          //                       language.enterroom,
+          //                       style: TextStyle(
+          //                         color: Colors.blue,
+          //                         fontSize: 13,
+          //                       ),
+          //                     ),
+          //                     onPressed: ()async {
+          //                       String room = "${nextbookingList[0].userId}-${nextbookingList[0].scheduleDetailInfo!.scheduleInfo.tutorId!}";
+          //
+          //                       await VideoCall.videoCall(ConstVar.meetServer, room, "Phhaiii", "student@lettutor.com");
+          //                     },
+          //                   ),
+          //                 ],
+          //               ),
+          //             SizedBox(height: ConstVar.minspace),
+          //             Text(
+          //               totalTime < 60 ? "${language.totalLessonTimeIs} ${totalTime} ${language.minutes}" : "${language.totalLessonTimeIs} ${totalTime ~/ 60} ${language.hour} ${totalTime % 60} ${language.minutes}",
+          //               style: TextStyle(
+          //                 color: Colors.white,
+          //                 fontSize: 12,
+          //               ),
+          //               textAlign: TextAlign.center,
+          //             ),
+          //           ],
+          //         ),
+          //       ]
+          //   ),
+          // ),
 
           Container(
               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -622,7 +605,7 @@ class _TeacherListPage extends State<TeacherListPage> {
                   ),
 
                   Column(
-                    children: getTutorList(token, language),
+                    children: getTutorList(token, tutorList, language),
                     // [true, false])
                   ),
                   Row(
@@ -669,7 +652,7 @@ class _TeacherListPage extends State<TeacherListPage> {
   //
   //   return btn;
   // }
-  List<Widget> getTutorList(String token, Language language){
+  List<Widget> getTutorList(String token, List<Tutor> tutorList, Language language){
     List<Widget> list = [];
 
     if (tutorList.length == 0){
@@ -696,222 +679,425 @@ class _TeacherListPage extends State<TeacherListPage> {
           alias = alias + nameSplit[i][0];
         }
 
-        list.add(
-            Card(
-              borderOnForeground: true,
-              elevation: 3,
-              shadowColor: Colors.grey.shade100,
-              margin: EdgeInsets.all(10),
-              child: Container(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        list.add(Card(
+          borderOnForeground: true,
+          elevation: 3,
+          shadowColor: Colors.grey.shade100,
+          margin: EdgeInsets.all(10),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                GestureDetector(
+                  onTap:  ()  async {
+                    late TutorDetail tutorDetail;
+                    List<Schedule> schedules = [];
+
+                    var data = await  TeacherService.getTeacherDetail(token, tutorList[i].userId.toString());
+                    if (data != null){
+                      tutorDetail = TutorDetail.fromJson(data);
+                    }
+                    tutorDetail.feedlist = tutorList[i].feedbacks!;
+
+                    Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
+
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        child: tutorList[i].avatar != null?
+                        CircleAvatar(
+                          // backgroundImage: ,
+                          backgroundImage: NetworkImage(tutorList[i].avatar.toString()),
+                          // backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
+                          // maxRadius: 30,
+                        ):
+                        CircleAvatar(
+                          backgroundColor: Colors.blue.shade200,
+                          child: Text(
+                            alias,
+                            style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10,),
+
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              tutorList[i].name.toString(),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            Row(
+                              children: <Widget>[
+                                Container(
+                                    padding: EdgeInsets.only(top: 5),
+                                    child: Image(image: Svg("assets/icon/nationality.svg"),width: 30,)
+                                ),
+                                Container(
+                                  padding: EdgeInsets.all(5),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    tutorList[i].country.toString(),
+                                    style: TextStyle(
+                                        fontSize: 14
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: Pkg.getRating(tutorList[i].rating),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      Container(
+                          child: Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <IconButton>[
+                                IconButton(
+                                  onPressed: ()async {
+                                    int index = isContain(tutorList[i], favoriteTutorList);
+                                    var data = await TeacherService.addFavoriteTeacher(token, tutorList[i].userId.toString());
+                                    if (data == 1){
+                                      setState(() {
+                                        favoriteTutorList.removeAt(index);
+                                      });
+                                    }
+                                    else {
+                                      setState(() {
+                                        favoriteTutorList.add(Tutor.fromJson(data));
+                                      });
+
+                                    }
+
+                                  },
+                                  icon: isContain(tutorList[i], favoriteTutorList) != -1 ? Icon( Icons.favorite,
+                                    color:  Colors.red,
+                                    size: 30,
+                                  ) :  Icon( Icons.favorite_border,
+                                    color:  Colors.blue,
+                                    size: 30,
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                      ),
+                    ],
+                  ),
+                ),
+
+
+                Container(
+                  child: Wrap(
+                    runSpacing: 5,
+
+                    spacing: 5,
+                    children: SpecialtiesChoiceChips.getSpecialties(specialtyList, true).map((value) => ChoiceChip(
+                      label: Text(value.label,),
+
+                      selected: value.isSelected,
+                      selectedColor: Colors.blue.shade100,
+                      focusNode: _tgFocus,
+                      labelStyle: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black
+                      ),
+                    )).toList(),
+                  ),
+
+                ),
+
+                Container(
+                  child: Text(
+                    tutorList[i].bio.toString(),
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+
                   children: <Widget>[
-                    GestureDetector(
-                      onTap:  ()  async {
+                    ElevatedButton.icon(
+
+                      // style: const ButtonStyle(
+                      //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+                      //
+                      // ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                          side: BorderSide(
+                              width: 1,
+                              color: Colors.blue
+                          ),
+                        ),
+                      ),
+
+                      icon: Icon(Icons.calendar_month_sharp, size: 20,color: Colors.blue,),
+                      label: Text(
+                        language.book,
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 13,
+                        ),
+                      ),
+                      onPressed: ()async{
                         late TutorDetail tutorDetail;
                         List<Schedule> schedules = [];
 
                         var data = await  TeacherService.getTeacherDetail(token, tutorList[i].userId.toString());
-                        print(data);
                         if (data != null){
                           tutorDetail = TutorDetail.fromJson(data);
                         }
                         tutorDetail.feedlist = tutorList[i].feedbacks!;
-                        print(tutorDetail.User.id);
 
                         Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
-
                       },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            child: tutorList[i].avatar != null?
-                            CircleAvatar(
-                              // backgroundImage: ,
-                              backgroundImage: NetworkImage(tutorList[i].avatar.toString()),
-                              // backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
-                              // maxRadius: 30,
-                            ):
-                            CircleAvatar(
-                              backgroundColor: Colors.blue.shade200,
-                              child: Text(
-                                alias,
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.white
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 10,),
-
-                          Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  tutorList[i].name.toString(),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                        padding: EdgeInsets.only(top: 5),
-                                        child: Image(image: Svg("assets/icon/nationality.svg"),width: 30,)
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.all(5),
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        tutorList[i].country.toString(),
-                                        style: TextStyle(
-                                            fontSize: 14
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: Pkg.getRating(tutorList[i].rating),
-                                )
-                              ],
-                            ),
-                          ),
-
-                          Container(
-                              child: Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <IconButton>[
-                                    IconButton(
-                                      onPressed: ()async {
-                                        int index = isContain(tutorList[i], favoriteTutorList);
-                                        var data = await TeacherService.addFavoriteTeacher(token, tutorList[i].userId.toString());
-                                        if (data == 1){
-                                          setState(() {
-                                            favoriteTutorList.removeAt(index);
-                                          });
-                                        }
-                                        else {
-                                          setState(() {
-                                            favoriteTutorList.add(Tutor.fromJson(data));
-                                          });
-
-                                        }
-
-                                      },
-                                      icon: isContain(tutorList[i], favoriteTutorList) != -1 ? Icon( Icons.favorite,
-                                        color:  Colors.red,
-                                        size: 30,
-                                      ) :  Icon( Icons.favorite_border,
-                                        color:  Colors.blue,
-                                        size: 30,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-
-
-                    Container(
-                      child: Wrap(
-                        runSpacing: 5,
-
-                        spacing: 5,
-                        children: SpecialtiesChoiceChips.getSpecialties(specialtyList, true).map((value) => ChoiceChip(
-                          label: Text(value.label,),
-
-                          selected: value.isSelected,
-                          selectedColor: Colors.blue.shade100,
-                          focusNode: _tgFocus,
-                          labelStyle: TextStyle(
-                              fontSize: 15,
-                              color: Colors.black
-                          ),
-                        )).toList(),
-                      ),
 
                     ),
-
-                    Container(
-                      child: Text(
-                        tutorList[i].bio.toString(),
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.max,
-
-                      children: <Widget>[
-                        ElevatedButton.icon(
-
-                          // style: const ButtonStyle(
-                          //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                          //
-                          // ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(32.0),
-                              side: BorderSide(
-                                  width: 1,
-                                  color: Colors.blue
-                              ),
-                            ),
-                          ),
-
-                          icon: Icon(Icons.calendar_month_sharp, size: 20,color: Colors.blue,),
-                          label: Text(
-                            language.book,
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 13,
-                            ),
-                          ),
-                          onPressed: ()async{
-                            late TutorDetail tutorDetail;
-                            List<Schedule> schedules = [];
-
-                            var data = await  TeacherService.getTeacherDetail(token, tutorList[i].userId.toString());
-                            if (data != null){
-                              tutorDetail = TutorDetail.fromJson(data);
-                            }
-                            tutorDetail.feedlist = tutorList[i].feedbacks!;
-                            print(tutorDetail.User.id);
-
-                            Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
-                          },
-
-                        ),
-                      ],
-                    )
                   ],
-                ),
-              ),
+                )
+              ],
+            ),
+          ),
+        ));
 
-            )
-        );
+        // list.add(
+        //     Card(
+        //       borderOnForeground: true,
+        //       elevation: 3,
+        //       shadowColor: Colors.grey.shade100,
+        //       margin: EdgeInsets.all(10),
+        //       child: Container(
+        //         padding: EdgeInsets.all(10),
+        //         child: Column(
+        //           mainAxisSize: MainAxisSize.min,
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           children: <Widget>[
+        //             GestureDetector(
+        //               onTap:  ()  async {
+        //                 late TutorDetail tutorDetail;
+        //                 List<Schedule> schedules = [];
+        //
+        //                 var data = await  TeacherService.getTeacherDetail(token, tutorList[i].userId.toString());
+        //                 if (data != null){
+        //                   tutorDetail = TutorDetail.fromJson(data);
+        //                 }
+        //                 tutorDetail.feedlist = tutorList[i].feedbacks!;
+        //
+        //                 Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
+        //
+        //               },
+        //               child: Row(
+        //                 mainAxisSize: MainAxisSize.max,
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 children: <Widget>[
+        //                   Container(
+        //                     child: tutorList[i].avatar != null?
+        //                     CircleAvatar(
+        //                       // backgroundImage: ,
+        //                       backgroundImage: NetworkImage(tutorList[i].avatar.toString()),
+        //                       // backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
+        //                       // maxRadius: 30,
+        //                     ):
+        //                     CircleAvatar(
+        //                       backgroundColor: Colors.blue.shade200,
+        //                       child: Text(
+        //                         alias,
+        //                         style: TextStyle(
+        //                             fontSize: 25,
+        //                             color: Colors.white
+        //                         ),
+        //                       ),
+        //                     ),
+        //                   ),
+        //                   SizedBox(width: 10,),
+        //
+        //                   Container(
+        //                     child: Column(
+        //                       crossAxisAlignment: CrossAxisAlignment.start,
+        //                       children: <Widget>[
+        //                         Text(
+        //                           tutorList[i].name.toString(),
+        //                           style: TextStyle(
+        //                             fontSize: 18,
+        //                             fontWeight: FontWeight.bold,
+        //                           ),
+        //                         ),
+        //
+        //                         Row(
+        //                           children: <Widget>[
+        //                             Container(
+        //                                 padding: EdgeInsets.only(top: 5),
+        //                                 child: Image(image: Svg("assets/icon/nationality.svg"),width: 30,)
+        //                             ),
+        //                             Container(
+        //                               padding: EdgeInsets.all(5),
+        //                               alignment: Alignment.centerLeft,
+        //                               child: Text(
+        //                                 tutorList[i].country.toString(),
+        //                                 style: TextStyle(
+        //                                     fontSize: 14
+        //                                 ),
+        //                               ),
+        //                             ),
+        //                           ],
+        //                         ),
+        //                         Row(
+        //                           mainAxisAlignment: MainAxisAlignment.start,
+        //                           children: Pkg.getRating(tutorList[i].rating),
+        //                         )
+        //                       ],
+        //                     ),
+        //                   ),
+        //
+        //                   Container(
+        //                       child: Expanded(
+        //                         child: Row(
+        //                           mainAxisAlignment: MainAxisAlignment.end,
+        //                           mainAxisSize: MainAxisSize.max,
+        //                           children: <IconButton>[
+        //                             IconButton(
+        //                               onPressed: ()async {
+        //                                 int index = isContain(tutorList[i], favoriteTutorList);
+        //                                 var data = await TeacherService.addFavoriteTeacher(token, tutorList[i].userId.toString());
+        //                                 if (data == 1){
+        //                                   setState(() {
+        //                                     favoriteTutorList.removeAt(index);
+        //                                   });
+        //                                 }
+        //                                 else {
+        //                                   setState(() {
+        //                                     favoriteTutorList.add(Tutor.fromJson(data));
+        //                                   });
+        //
+        //                                 }
+        //
+        //                               },
+        //                               icon: isContain(tutorList[i], favoriteTutorList) != -1 ? Icon( Icons.favorite,
+        //                                 color:  Colors.red,
+        //                                 size: 30,
+        //                               ) :  Icon( Icons.favorite_border,
+        //                                 color:  Colors.blue,
+        //                                 size: 30,
+        //                               ),
+        //                             )
+        //                           ],
+        //                         ),
+        //                       )
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //
+        //
+        //             Container(
+        //               child: Wrap(
+        //                 runSpacing: 5,
+        //
+        //                 spacing: 5,
+        //                 children: SpecialtiesChoiceChips.getSpecialties(specialtyList, true).map((value) => ChoiceChip(
+        //                   label: Text(value.label,),
+        //
+        //                   selected: value.isSelected,
+        //                   selectedColor: Colors.blue.shade100,
+        //                   focusNode: _tgFocus,
+        //                   labelStyle: TextStyle(
+        //                       fontSize: 15,
+        //                       color: Colors.black
+        //                   ),
+        //                 )).toList(),
+        //               ),
+        //
+        //             ),
+        //
+        //             Container(
+        //               child: Text(
+        //                 tutorList[i].bio.toString(),
+        //                 style: TextStyle(
+        //                   fontSize: 16,
+        //                 ),
+        //               ),
+        //             ),
+        //             Row(
+        //               mainAxisAlignment: MainAxisAlignment.end,
+        //               mainAxisSize: MainAxisSize.max,
+        //
+        //               children: <Widget>[
+        //                 ElevatedButton.icon(
+        //
+        //                   // style: const ButtonStyle(
+        //                   //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+        //                   //
+        //                   // ),
+        //                   style: ElevatedButton.styleFrom(
+        //                     backgroundColor: Colors.white,
+        //                     shape: RoundedRectangleBorder(
+        //                       borderRadius: BorderRadius.circular(32.0),
+        //                       side: BorderSide(
+        //                           width: 1,
+        //                           color: Colors.blue
+        //                       ),
+        //                     ),
+        //                   ),
+        //
+        //                   icon: Icon(Icons.calendar_month_sharp, size: 20,color: Colors.blue,),
+        //                   label: Text(
+        //                     language.book,
+        //                     style: TextStyle(
+        //                       color: Colors.blue,
+        //                       fontSize: 13,
+        //                     ),
+        //                   ),
+        //                   onPressed: ()async{
+        //                     late TutorDetail tutorDetail;
+        //                     List<Schedule> schedules = [];
+        //
+        //                     var data = await  TeacherService.getTeacherDetail(token, tutorList[i].userId.toString());
+        //                     if (data != null){
+        //                       tutorDetail = TutorDetail.fromJson(data);
+        //                     }
+        //                     tutorDetail.feedlist = tutorList[i].feedbacks!;
+        //
+        //                     Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
+        //                   },
+        //
+        //                 ),
+        //               ],
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //
+        //     )
+        // );
       }
 
     }
-
 
     return list;
   }

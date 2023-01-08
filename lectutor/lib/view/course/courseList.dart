@@ -1,15 +1,15 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:lectutor/config/const.dart';
-import 'package:lectutor/model/category.dart';
+import 'package:lectutor/model/category/category.dart';
 import 'package:lectutor/model/language/language.dart';
-import 'package:lectutor/model/level.dart';
+import 'package:lectutor/model/level/level.dart';
 import 'package:provider/provider.dart';
 import '../../config/pkg.dart';
 import '../../handle/course.dart';
-import '../../model/course.dart';
+import '../../model/course/course.dart';
 import '../../model/language/provider.dart';
-import '../../model/tokens.dart';
+import '../../model/user/tokens.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 
@@ -46,6 +46,9 @@ class _CourseListPage extends State<CourseListPage> {
   List<Category> categoryList = [];
   int total = 0;
   int selectId = 1;
+
+  bool isLoadingCategory = true;
+  bool isLoadingCourse = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -64,6 +67,7 @@ class _CourseListPage extends State<CourseListPage> {
         
       });
     }
+    isLoadingCategory = false;
   }
 
   void getCourses(String token, int page, int size, {List<int> level = const [], List<String> categoryId = const [], String orderBy = ""}) async{
@@ -73,6 +77,7 @@ class _CourseListPage extends State<CourseListPage> {
         updateLists(data);
       });
     }
+    isLoadingCourse = false;
   }
   void updateLists(dynamic data){
     total = data["data"]["count"];
@@ -100,8 +105,12 @@ class _CourseListPage extends State<CourseListPage> {
     final tokenProvider = Provider.of<Tokens>(context);
     final token = tokenProvider.access.token;
 
-    getCourses(token, selectId, Const.perPageLarge);
-    getCategory(token);
+    if(isLoadingCourse){
+      getCourses(token, selectId, Const.perPageLarge);
+    }
+    if(isLoadingCategory){
+      getCategory(token);
+    }
 
     Pkg.getLanguage(languageProvider);
     return Container(

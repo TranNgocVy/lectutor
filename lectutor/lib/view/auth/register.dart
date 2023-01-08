@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lectutor/handle/auth.dart';
 import 'package:provider/provider.dart';
 import '../../config/pkg.dart';
-import '../../model/auth.dart';
+import '../../model/user/auth.dart';
 import '../../model/language/provider.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';

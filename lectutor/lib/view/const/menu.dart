@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lectutor/model/argument.dart';
-import 'package:lectutor/model/bookingInfo.dart';
+import 'package:lectutor/model/argument/argument.dart';
+import 'package:lectutor/model/booking/bookingInfo.dart';
 import 'package:lectutor/view/const/page.dart';
 import 'package:provider/provider.dart';
 import '../../config/const.dart';
@@ -8,8 +8,8 @@ import '../../config/pkg.dart';
 import '../../handle/schedule.dart';
 import '../../handle/user.dart';
 import '../../model/language/provider.dart';
-import '../../model/tokens.dart';
-import '../../model/user.dart';
+import '../../model/user/tokens.dart';
+import '../../model/user/user.dart';
 import '../const/constVar.dart';
 
 class Menu extends StatelessWidget {

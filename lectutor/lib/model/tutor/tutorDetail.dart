@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lectutor/model/tutorUser.dart';
+import 'package:lectutor/model/tutor/tutorUser.dart';
 
-import 'feedBack.dart';
+import '../feedback/feedBack.dart';
 part 'tutorDetail.g.dart';
 
 @JsonSerializable()

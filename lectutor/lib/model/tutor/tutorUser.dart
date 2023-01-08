@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lectutor/model/tutorCourseList.dart';
+import 'package:lectutor/model/tutor/tutorCourseList.dart';
 part 'tutorUser.g.dart';
 
 @JsonSerializable()

@@ -1,8 +1,8 @@
-import 'package:lectutor/model/learnTopic.dart';
-import 'package:lectutor/model/level.dart';
-import 'package:lectutor/model/testPreparation.dart';
+import 'package:lectutor/model/topic/learnTopic.dart';
+import 'package:lectutor/model/level/level.dart';
+import 'package:lectutor/model/testPreparation/testPreparation.dart';
 
-import '../../model/topic.dart';
+import '../../model/topic/topic.dart';
 class ConstVar{
   static double minspace = 6;
   static double mediumspace = 12;

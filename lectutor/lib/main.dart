@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lectutor/model/bookingInfo.dart';
-import 'package:lectutor/model/token.dart';
-import 'package:lectutor/model/tokens.dart';
-import 'package:lectutor/model/topic.dart';
-import 'package:lectutor/model/tutorDetail.dart';
-import 'package:lectutor/model/user.dart';
+import 'package:lectutor/model/booking/bookingInfo.dart';
+import 'package:lectutor/model/user/token.dart';
+import 'package:lectutor/model/user/tokens.dart';
+import 'package:lectutor/model/topic/topic.dart';
+import 'package:lectutor/model/tutor/tutorDetail.dart';
+import 'package:lectutor/model/user/user.dart';
 import 'package:lectutor/view/account/profile.dart';
 import 'package:lectutor/view/auth/changePassWord.dart';
 import 'package:lectutor/view/auth/forgetPassword.dart';
@@ -17,18 +17,18 @@ import 'package:lectutor/view/const/menu.dart';
 import 'package:lectutor/view/course/courseDetail.dart';
 import 'package:lectutor/view/course/courseList.dart';
 import 'package:lectutor/view/course/topicdetail.dart';
-import 'package:lectutor/view/schedule/scheduleHistory.dart';
-import 'package:lectutor/view/schedule/scheduleList.dart';
+import 'package:lectutor/view/schedule/scheduleHistory/scheduleHistory.dart';
+import 'package:lectutor/view/schedule/scheduleList/scheduleList.dart';
 import 'package:lectutor/view/teacher/bookAClass.dart';
 import 'package:lectutor/view/teacher/teacherDetail.dart';
-import 'package:lectutor/view/teacher/teacherList.dart';
+import 'package:lectutor/view/teacher/teacherList/teacherList.dart';
 import 'package:lectutor/view/video/video.dart';
 import 'package:provider/provider.dart';
 
-import 'model/argument.dart';
-import 'model/course.dart';
+import 'model/argument/argument.dart';
+import 'model/course/course.dart';
 import 'model/language/provider.dart';
-import 'model/walletInfo.dart';
+import 'model/user/walletInfo.dart';
 
 void main() {
   runApp(MultiProvider(

@@ -1,22 +1,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:lectutor/handle/schedule.dart';
-import 'package:lectutor/model/argument.dart';
-import 'package:lectutor/model/bookingInfo.dart';
-import 'package:lectutor/model/courses.dart';
-import 'package:lectutor/model/schedule.dart';
+import 'package:lectutor/model/argument/argument.dart';
+import 'package:lectutor/model/booking/bookingInfo.dart';
+import 'package:lectutor/model/schedule/schedule.dart';
 import 'package:provider/provider.dart';
-import '../../config/const.dart';
-import '../../config/pkg.dart';
-import '../../model/feedBack.dart';
-import '../../model/language/language.dart';
-import '../../model/language/provider.dart';
-import '../../model/teacher.dart';
-import '../../model/tokens.dart';
-import '../const/constVar.dart';
+import '../../../config/const.dart';
+import '../../../config/pkg.dart';
+import '../../../model/feedback/feedBack.dart';
+import '../../../model/language/language.dart';
+import '../../../model/language/provider.dart';
+import '../../../model/user/tokens.dart';
+import '../../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
-import '../const/page.dart';
+import '../../const/page.dart';
 
 
 
@@ -467,49 +465,54 @@ class _ScheduleHistoryPage extends State<ScheduleHistoryPage> {
     else{
       for(int i =0 ;i< feedbackList.length; i++){
         list.add(
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text(language.Rating, style: TextStyle(fontSize: 18,
-                      color: Colors.black87,),),
-                    SizedBox(width: 5,),
-                    Row(
-                      children: Pkg.getRating(feedbackList[i].rating!),
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: null,
-                      child: Text(
-                        language.report,
-                        textAlign: TextAlign.end,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.blue,
+          Column(
+            children: [
+              Row(
+                children: <Widget>[
+                  Text(language.Rating, style: TextStyle(fontSize: 18,
+                    color: Colors.black87,),),
+                  SizedBox(width: 5,),
+                  Row(
+                    children: Pkg.getRating(feedbackList[i].rating!),
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: null,
+                        child: Text(
+                          language.report,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: null,
-                      child: Text(
-                        language.report,
-                        textAlign: TextAlign.end,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.blue,
+                      TextButton(
+                        onPressed: null,
+                        child: Text(
+                          language.report,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                )
+                    ],
+                  )
 
-              ],
-            )
+                ],
+              ),
+
+            ],
+          ),
         );
 
       }

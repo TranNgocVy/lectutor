@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
-import 'package:lectutor/model/tokens.dart';
+import 'package:lectutor/model/user/tokens.dart';
 import 'package:provider/provider.dart';
 import '../config/const.dart';
-import '../model/auth.dart';
-import '../model/tutor.dart';
+import '../model/user/auth.dart';
+import '../model/tutor/tutor.dart';
 import '../view/const/constVar.dart';
-import 'dart:async';
+// import 'dart:async';
 
 class TeacherService{
   static Future <dynamic> getTeacherList(String token, int page) async{

@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/main.dart';
-import 'package:lectutor/model/tokens.dart';
+import 'package:lectutor/model/user/tokens.dart';
 import 'package:provider/provider.dart';
 import '../../config/const.dart';
 import '../../config/pkg.dart';
-import '../../model/argument.dart';
+import '../../model/argument/argument.dart';
 import '../../model/language/provider.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';

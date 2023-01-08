@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
-import '../model/auth.dart';
+import '../model/user/auth.dart';
 import '../view/const/constVar.dart';
 import 'dart:async';
 
@@ -81,7 +81,6 @@ class AuthService{
       });
 
       if(response.statusCode == 200){
-        print(response.data);
         return response.data;
       }
     }catch(e){
@@ -98,7 +97,6 @@ class AuthService{
       });
 
       if(response.statusCode == 200){
-        print(response.data);
         return response.data;
       }
     }catch(e){

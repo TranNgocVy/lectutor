@@ -6,13 +6,13 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lectutor/config/pkg.dart';
-import 'package:lectutor/model/course.dart';
+import 'package:lectutor/model/course/course.dart';
 import 'package:lectutor/model/language/english.dart';
 import 'package:lectutor/model/language/language.dart';
 import 'package:lectutor/model/language/provider.dart';
-import 'package:lectutor/model/tokens.dart';
-import 'package:lectutor/model/auth.dart';
-import 'package:lectutor/model/user.dart';
+import 'package:lectutor/model/user/tokens.dart';
+import 'package:lectutor/model/user/auth.dart';
+import 'package:lectutor/model/user/user.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../handle/auth.dart';
@@ -301,7 +301,6 @@ class _LogInPageState extends State<LogInPage> {
                         Tokens tokens = Tokens.fromJson(data["tokens"]);
                         context.read<User>().update(user);
                         context.read<Tokens>().update(tokens);
-                        print(tokens.access.token);
 
                         _saveEmailPassword(emailController.text, passwordController.text);
 

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:lectutor/model/category.dart';
+import 'package:lectutor/model/category/category.dart';
 
 import '../view/const/constVar.dart';
 

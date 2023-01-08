@@ -2,7 +2,7 @@
 // import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:lectutor/model/topic.dart';
+import '../../model/topic/topic.dart';
 import '../const/page.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;

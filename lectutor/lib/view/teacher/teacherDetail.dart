@@ -8,21 +8,20 @@ import 'package:lectutor/handle/schedule.dart';
 import 'package:lectutor/handle/teacher.dart';
 import 'package:lectutor/handle/user.dart';
 import 'package:lectutor/main.dart';
-import 'package:lectutor/model/bookingInfo.dart';
-import 'package:lectutor/model/schedule.dart';
-import 'package:lectutor/model/tutorCourseList.dart';
-import 'package:lectutor/model/tutorDetail.dart';
+import 'package:lectutor/model/booking/bookingInfo.dart';
+import 'package:lectutor/model/schedule/schedule.dart';
+import 'package:lectutor/model/tutor/tutorCourseList.dart';
+import 'package:lectutor/model/tutor/tutorDetail.dart';
 import 'package:lectutor/test.dart';
 import 'package:lectutor/view/teacher/reportTeacher.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import '../../config/const.dart';
-import '../../model/argument.dart';
-import '../../model/courses.dart';
-import '../../model/feedBack.dart';
+import '../../model/argument/argument.dart';
+import '../../model/feedback/feedBack.dart';
 import '../../model/language/provider.dart';
-import '../../model/tokens.dart';
-import '../../model/user.dart';
+import '../../model/user/tokens.dart';
+import '../../model/user/user.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 import '../const/specialtieschoiceschip.dart';
@@ -62,6 +61,8 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
   List<Schedule> schedules = [];
   DateTime date = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day);
   TextEditingController noteController = TextEditingController();
+
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -179,6 +180,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
         updateSchedule(data);
       });
     }
+    isLoading = false;
   }
 
   // void updateTutorDetail (dynamic data){
@@ -215,7 +217,10 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
     final tokenProvider = Provider.of<Tokens>(context);
     final token = tokenProvider.access.token;
 
-    getScedule(token, widget.tutorDetail.User.id);
+    if(isLoading){
+      getScedule(token, widget.tutorDetail.User.id);
+    }
+
 
     return Container(
       padding: EdgeInsets.all(20),

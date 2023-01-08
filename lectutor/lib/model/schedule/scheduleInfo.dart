@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lectutor/model/tutorCourseList.dart';
-import 'package:lectutor/model/tutorInfo.dart';
+import 'package:lectutor/model/tutor/tutorCourseList.dart';
 
-import 'bookingInfo.dart';
+import '../tutor/tutorInfo.dart';
+
 part 'scheduleInfo.g.dart';
 
 @JsonSerializable()

@@ -4,7 +4,7 @@ import 'package:lectutor/handle/auth.dart';
 import 'package:provider/provider.dart';
 import '../../config/pkg.dart';
 import '../../model/language/provider.dart';
-import '../../model/tokens.dart';
+import '../../model/user/tokens.dart';
 import '../const/constVar.dart';
 import '../const/page.dart';
 

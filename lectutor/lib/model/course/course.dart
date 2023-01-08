@@ -1,7 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lectutor/model/topic.dart';
 
-import 'category.dart';
+import '../category/category.dart';
+import '../topic/topic.dart';
+
 part 'course.g.dart';
 @JsonSerializable()
 class Course {
