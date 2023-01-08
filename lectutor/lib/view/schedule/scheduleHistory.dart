@@ -5,16 +5,16 @@ import 'package:lectutor/model/argument/argument.dart';
 import 'package:lectutor/model/booking/bookingInfo.dart';
 import 'package:lectutor/model/schedule/schedule.dart';
 import 'package:provider/provider.dart';
-import '../../../config/const.dart';
-import '../../../config/pkg.dart';
-import '../../../model/feedback/feedBack.dart';
-import '../../../model/language/language.dart';
-import '../../../model/language/provider.dart';
-import '../../../model/user/tokens.dart';
-import '../../const/constVar.dart';
+import '../../config/const.dart';
+import '../../config/pkg.dart';
+import '../../model/feedback/feedBack.dart';
+import '../../model/language/language.dart';
+import '../../model/language/provider.dart';
+import '../../model/user/tokens.dart';
+import '../const/constVar.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
-import '../../const/page.dart';
+import '../const/page.dart';
 
 
 

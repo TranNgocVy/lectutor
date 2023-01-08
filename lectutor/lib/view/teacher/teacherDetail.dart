@@ -9,6 +9,7 @@ import 'package:lectutor/handle/teacher.dart';
 import 'package:lectutor/handle/user.dart';
 import 'package:lectutor/main.dart';
 import 'package:lectutor/model/booking/bookingInfo.dart';
+import 'package:lectutor/model/language/language.dart';
 import 'package:lectutor/model/schedule/schedule.dart';
 import 'package:lectutor/model/tutor/tutorCourseList.dart';
 import 'package:lectutor/model/tutor/tutorDetail.dart';
@@ -106,7 +107,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController1,
-      autoPlay: true,
+      autoPlay: false,
       looping: true,
       progressIndicatorDelay:
       bufferDelay != null ? Duration(milliseconds: bufferDelay!) : null,
@@ -451,7 +452,7 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
                                 ),
                                 Expanded(
                                     child: ListView(
-                                        children: getReviewList(tutorDetail.feedlist!)
+                                        children: getReviewList(tutorDetail.feedlist, language)
                                     )),
                               ],
                             ),
@@ -1177,89 +1178,93 @@ class _TeacherDetailPage extends State<TeacherDetailPage> {
 
   }
   
-  List<Widget> getReviewList(List<FeedBack> feedbackList){
+  List<Widget> getReviewList(List<FeedBack>? feedbackList, Language language){
     List<Widget> list = [];
-    for(int i = 0; i < feedbackList.length; i++){
-      list.add(Container(
-        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            CircleAvatar(
-              // backgroundImage: ,
-              backgroundImage: NetworkImage((tutorDetail?.User?.avatar).toString()),
-              // backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
-              // maxRadius: 50,
-            ),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(left: 5,top: 5),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                            feedbackList[i].firstInfo!.name.toString(),
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black26
+    if(feedbackList == null){
+      list.add(Text(language.noResult));
+    }else{
+      for(int i = 0; i < feedbackList!.length; i++){
+        list.add(Container(
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              CircleAvatar(
+                // backgroundImage: ,
+                backgroundImage: NetworkImage((tutorDetail?.User?.avatar).toString()),
+                // backgroundImage: NetworkImage('${context.watch<User>().avatar}'),
+                // maxRadius: 50,
+              ),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.only(left: 5,top: 5),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              feedbackList[i].firstInfo!.name.toString(),
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black26
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                            Pkg.diffDay(feedbackList[i].createdAt!, DateTime.now()) ==  0 ?
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              Pkg.diffDay(feedbackList[i].createdAt!, DateTime.now()) ==  0 ?
                               "Today" :
                               Pkg.diffDay(feedbackList[i].createdAt!, DateTime.now()) <= 31 ?
-                                "${Pkg.diffDay(feedbackList[i].createdAt!, DateTime.now())} days ago":
-                                  Pkg.diffMonth(feedbackList[i].createdAt!, DateTime.now()) < 12 ?
-                                    "${Pkg.diffMonth(feedbackList[i].createdAt!, DateTime.now())} months ago":
-                                    "${Pkg.diffYear(feedbackList[i].createdAt!, DateTime.now())} year(s) ago",
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey
+                              "${Pkg.diffDay(feedbackList[i].createdAt!, DateTime.now())} days ago":
+                              Pkg.diffMonth(feedbackList[i].createdAt!, DateTime.now()) < 12 ?
+                              "${Pkg.diffMonth(feedbackList[i].createdAt!, DateTime.now())} months ago":
+                              "${Pkg.diffYear(feedbackList[i].createdAt!, DateTime.now())} year(s) ago",
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey
+                              ),
                             ),
                           ),
-                        ),
 
-                      ],
-                      mainAxisSize: MainAxisSize.min,
-                    ),
-                    SizedBox(height: ConstVar.minspace),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      // children: getRated(feedbackList[i].rating!),
-                      children: Pkg.getRating(feedbackList[i].rating!),
+                        ],
+                        mainAxisSize: MainAxisSize.min,
+                      ),
+                      SizedBox(height: ConstVar.minspace),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        // children: getRated(feedbackList[i].rating!),
+                        children: Pkg.getRating(feedbackList[i].rating!),
 
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                            feedbackList[i].content.toString(),
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black54,
-                            ),
-                          ),),
-                      ],
-                    ),
-                  ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              feedbackList[i].content.toString(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                            ),),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-          ],
-        ),
-      ));
+            ],
+          ),
+        ));
+      }
     }
     return list;
   }

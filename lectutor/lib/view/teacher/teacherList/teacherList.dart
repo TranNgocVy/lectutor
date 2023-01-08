@@ -513,6 +513,9 @@ class _TeacherListPage extends State<TeacherListPage> {
 
                               onPressed: () async{
                                 _nameFocus.unfocus();
+                                setState(() {
+                                  selectId = 1;
+                                });
                                 final data = await TeacherService.searchTeacher(token, selectId, Const.perPage, name: _nameController.text, nationality:nationality,date: _dController.text, time: _tController.text,specialities:specialities);
                                 setState((){
                                   tutorList = data;
@@ -699,7 +702,10 @@ class _TeacherListPage extends State<TeacherListPage> {
                     if (data != null){
                       tutorDetail = TutorDetail.fromJson(data);
                     }
-                    tutorDetail.feedlist = tutorList[i].feedbacks!;
+                    if(tutorList[i].feedbacks!= null){
+                      tutorDetail.feedlist = tutorList[i].feedbacks!;
+
+                    }
 
                     Navigator.pushNamed(context, '/tutor/detail', arguments: tutorDetail);
 

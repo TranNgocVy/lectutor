@@ -92,6 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
     nameOfTutor = user.name;
     topic = getLearnTopicList(user);
     nameController.text = user.name!;
+    learnscheduleController.text = "${user.studySchedule}";
   }
   //
   // void getUser()async{
@@ -677,7 +678,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             user.studySchedule = val;
                           });
                         },
-                        controller: learnscheduleController..text = "${user.studySchedule}",
+                        controller: learnscheduleController,
                         decoration: InputDecoration(
                           hintText: language.schedulehint,
                           hintMaxLines: 3,
